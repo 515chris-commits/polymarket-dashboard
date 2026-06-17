@@ -125,6 +125,14 @@
       color: #94a3b8;
       font-size: 13px;
     }
+    canvas {
+      width: 100%;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      margin-top: 20px;
+      display: block;
+    }
   </style>
 </head>
 
@@ -179,6 +187,15 @@
       </div>
     </div>
 
+    <section>
+      <h2>📈 Equity Curve</h2>
+      <div class="card">
+        <div class="label">Max Drawdown</div>
+        <div class="value" id="maxDrawdown">-</div>
+      </div>
+      <canvas id="equityChart" height="120"></canvas>
+    </section>
+         
     <section>
       <h2>📌 Positions ouvertes</h2>
       <table>
@@ -254,6 +271,46 @@
     function price(v){ return Number(v||0).toFixed(4); }
     function pnlClass(v){ return Number(v||0) >= 0 ? "positive" : "negative"; }
 
+    function drawEquityChart(curve) {
+      const canvas = document.getElementById("equityChart");
+      const ctx = canvas.getContext("2d");
+
+      canvas.width = canvas.offsetWidth;
+      canvas.height = 220;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (!curve || curve.length < 2) {
+        ctx.fillStyle = "#94a3b8";
+        ctx.fillText("Pas assez de données", 20, 40);
+        return;
+      }
+     
+      const padding = 30;
+      const values = curve.map(x => Number(x.equity || 0));
+      const min = Math.min(...values);
+      const max = Math.max(...values);
+      const range = max - min || 1;
+
+      ctx.beginPath();
+
+      curve.forEach((point, i) => {
+        const x = padding + (i / (curve.length - 1)) * (canvas.width - padding * 2);
+        const y = canvas.height - padding - ((point.equity - min) / range) * (canvas.height - padding * 2);
+
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+  
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "#22c55e";
+      ctx.stroke();
+
+      ctx.fillStyle = "#94a3b8";
+      ctx.fillText("Equity: $" + values[values.length - 1].toFixed(2), 20, 25);
+     }
+      
+
     async function loadDashboard() {
       try {
         const res = await fetch(API_URL);
@@ -261,6 +318,7 @@
 
         const portfolio = data.portfolio;
         const performance = data.performance || {};
+        const equity = data.equity || {};
         const pnlByStrategy = data.pnl_by_strategy || {};
         const pnlByTheme = data.pnl_by_theme || {};
         const positions = data.positions || [];
@@ -279,6 +337,11 @@
 
         document.getElementById("avgLoss").innerText =
            money(performance.avg_loss);
+
+        document.getElementById("maxDrawdown").innerText =
+           money(equity.max_drawdown);
+
+        drawEquityChart(equity.curve || []);
 
         const unreal = document.getElementById("unrealizedPnl");
         unreal.innerText = money(portfolio.unrealized_pnl);
