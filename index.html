@@ -1,20 +1,36 @@
 <!doctype html>
-<html>
+<html lang="fr">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Polymarket Bot Dashboard</title>
+
   <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #1e293b;
+      --panel-dark: #111827;
+      --border: #334155;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --green: #22c55e;
+      --red: #ef4444;
+      --blue: #60a5fa;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      background: #0f172a;
-      color: #e5e7eb;
+      background: var(--bg);
+      color: var(--text);
     }
 
     header {
       padding: 30px 40px;
       background: linear-gradient(135deg, #111827, #1e293b);
-      border-bottom: 1px solid #334155;
+      border-bottom: 1px solid var(--border);
     }
 
     h1 {
@@ -22,32 +38,51 @@
       font-size: 32px;
     }
 
-    .subtitle {
-      color: #94a3b8;
-      margin-top: 8px;
+    h2 {
+      margin: 0 0 15px;
+      font-size: 22px;
     }
 
     main {
       padding: 30px 40px;
     }
 
+    section {
+      margin-top: 30px;
+    }
+
+    .subtitle,
+    .refresh,
+    .small,
+    .label {
+      color: var(--muted);
+    }
+
+    .subtitle {
+      margin-top: 8px;
+    }
+
+    .refresh {
+      margin-top: 10px;
+      font-size: 13px;
+    }
+
     .cards {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 20px;
       margin-bottom: 30px;
     }
 
     .card {
-      background: #1e293b;
-      border: 1px solid #334155;
+      background: var(--panel);
+      border: 1px solid var(--border);
       border-radius: 16px;
       padding: 22px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
     }
 
     .label {
-      color: #94a3b8;
       font-size: 14px;
       margin-bottom: 10px;
     }
@@ -55,83 +90,96 @@
     .value {
       font-size: 30px;
       font-weight: bold;
+      overflow-wrap: anywhere;
     }
 
-    .positive { color: #22c55e; }
-    .negative { color: #ef4444; }
+    .positive { color: var(--green); }
+    .negative { color: var(--red); }
 
-    section {
-      margin-top: 30px;
-    }
-
-    h2 {
-      margin-bottom: 15px;
-      font-size: 22px;
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 16px;
+      border: 1px solid var(--border);
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      background: #1e293b;
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid #334155;
+      background: var(--panel);
+      min-width: 760px;
     }
 
     th {
-      background: #111827;
-      color: #94a3b8;
+      background: var(--panel-dark);
+      color: var(--muted);
       text-align: left;
       padding: 14px;
       font-size: 13px;
       text-transform: uppercase;
+      white-space: nowrap;
     }
 
     td {
       padding: 14px;
-      border-top: 1px solid #334155;
+      border-top: 1px solid var(--border);
       font-size: 14px;
+      vertical-align: top;
     }
 
     .badge {
+      display: inline-block;
       padding: 5px 10px;
       border-radius: 999px;
       font-size: 12px;
       font-weight: bold;
+      white-space: nowrap;
     }
 
     .open {
-      background: rgba(34,197,94,0.15);
-      color: #22c55e;
+      background: rgba(34, 197, 94, 0.15);
+      color: var(--green);
     }
 
     .closed {
-      background: rgba(239,68,68,0.15);
-      color: #ef4444;
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--red);
     }
 
     .paper {
-      background: rgba(59,130,246,0.15);
-      color: #60a5fa;
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--blue);
     }
 
     .small {
-      color: #94a3b8;
       font-size: 12px;
+      margin-top: 4px;
     }
 
-    .refresh {
-      margin-top: 10px;
-      color: #94a3b8;
-      font-size: 13px;
-    }
     canvas {
       width: 100%;
-      background: #1e293b;
-      border: 1px solid #334155;
+      background: var(--panel);
+      border: 1px solid var(--border);
       border-radius: 16px;
       margin-top: 20px;
       display: block;
+    }
+
+    .chart-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    @media (max-width: 1100px) {
+      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .chart-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 650px) {
+      header, main { padding: 22px; }
+      .cards { grid-template-columns: 1fr; }
+      .value { font-size: 24px; }
     }
   </style>
 </head>
@@ -139,68 +187,26 @@
 <body>
   <header>
     <h1>🚀 Polymarket Bot Dashboard</h1>
-    <div class="subtitle">Suivi trading + P&L + historique</div>
+    <div class="subtitle">Suivi trading, P&L, equity curve, expectancy et risk analytics</div>
     <div class="refresh" id="lastUpdate">Chargement...</div>
   </header>
 
   <main>
-
     <div class="cards">
-      <div class="card">
-        <div class="label">Positions ouvertes</div>
-        <div class="value" id="openPositions">-</div>
-      </div>
+      <div class="card"><div class="label">Positions ouvertes</div><div class="value" id="openPositions">-</div></div>
+      <div class="card"><div class="label">Exposition</div><div class="value" id="exposure">-</div></div>
+      <div class="card"><div class="label">P&L latent</div><div class="value" id="unrealizedPnl">-</div></div>
+      <div class="card"><div class="label">P&L réalisé</div><div class="value" id="realizedPnl">-</div></div>
 
-      <div class="card">
-        <div class="label">Exposition</div>
-        <div class="value" id="exposure">-</div>
-      </div>
+      <div class="card"><div class="label">Win Rate</div><div class="value" id="winRate">-</div></div>
+      <div class="card"><div class="label">Expectancy</div><div class="value" id="expectancy">-</div></div>
+      <div class="card"><div class="label">Avg Win</div><div class="value" id="avgWin">-</div></div>
+      <div class="card"><div class="label">Avg Loss</div><div class="value" id="avgLoss">-</div></div>
 
-      <div class="card">
-        <div class="label">P&L latent</div>
-        <div class="value" id="unrealizedPnl">-</div>
-      </div>
-
-      <div class="card">
-        <div class="label">P&L réalisé</div>
-        <div class="value" id="realizedPnl">-</div>
-      </div>
-
-      <div class="card">
-        <div class="label">Win Rate</div>
-        <div class="value" id="winRate">-</div>
-      </div>
-
-      <div class="card">
-        <div class="label">Expectancy</div>
-        <div class="value" id="expectancy">-</div>
-      </div>
-
-      <div class="card">
-        <div class="label">Avg Win</div>
-        <div class="value" id="avgWin">-</div>
-      </div>
-
-      <div class="card">
-        <div class="label">Avg Loss</div>
-        <div class="value" id="avgLoss">-</div>
-      </div>
-	  <div class="card">
-        <div class="label">Profit Factor</div>
-        <div class="value" id="profitFactor">-</div>
-      </div>
-	  <div class="card">
-		<div class="label">Avg Hold Time</div>
-        <div class="value" id="avgHoldTime">-</div>
-	  </div>
-	  <div class="card">
-        <div class="label">Best Strategy</div>
-        <div class="value" id="bestStrategy">-</div>
-      </div>
-	  <div class="card">
-        <div class="label">Worst Theme</div>
-        <div class="value" id="worstTheme">-</div>
-      </div>
+      <div class="card"><div class="label">Profit Factor</div><div class="value" id="profitFactor">-</div></div>
+      <div class="card"><div class="label">Avg Hold Time</div><div class="value" id="avgHoldTime">-</div></div>
+      <div class="card"><div class="label">Best Strategy</div><div class="value" id="bestStrategy">-</div></div>
+      <div class="card"><div class="label">Worst Theme</div><div class="value" id="worstTheme">-</div></div>
     </div>
 
     <section>
@@ -212,115 +218,123 @@
       <canvas id="equityChart" height="120"></canvas>
     </section>
 
-	<section>
+    <section>
       <h2>📉 Rolling Metrics</h2>
-      <canvas id="rollingWinRateChart" height="120"></canvas>
-      <canvas id="rollingExpectancyChart" height="120"></canvas>
+      <div class="chart-grid">
+        <canvas id="rollingWinRateChart" height="120"></canvas>
+        <canvas id="rollingExpectancyChart" height="120"></canvas>
+      </div>
     </section>
 
-	<section>
-	  <h2>📅 P&L par jour</h2>
-	  <table>
-		<thead>
-		  <tr>
-            <th>Date</th>
-            <th>P&L</th>
-		  </tr>
-        </thead>
-        <tbody id="dailyPnlTable"></tbody>
-      </table>
+    <section>
+      <h2>📅 P&L par jour</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Date</th><th>P&L</th></tr></thead>
+          <tbody id="dailyPnlTable"></tbody>
+        </table>
+      </div>
     </section>
-         
+
     <section>
       <h2>📌 Positions ouvertes</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Marché</th>
-	    <th>Stratégie</th>
-            <th>Theme</th>
-            <th>Score</th>
-            <th>Entrée</th>
-            <th>Actuel</th>
-            <th>Mise</th>
-            <th>P&L</th>
-          </tr>
-        </thead>
-        <tbody id="positionsTable"></tbody>
-      </table>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Marché</th>
+              <th>Stratégie</th>
+              <th>Theme</th>
+              <th>Score</th>
+              <th>Entrée</th>
+              <th>Actuel</th>
+              <th>Mise</th>
+              <th>P&L</th>
+            </tr>
+          </thead>
+          <tbody id="positionsTable"></tbody>
+        </table>
+      </div>
     </section>
 
     <section>
       <h2>📜 Historique (7 jours)</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Marché</th>
-	    <th>Status</th>
-            <th>Entrée</th>
-            <th>Sortie</th>
-            <th>P&L</th>
-          </tr>
-        </thead>
-        <tbody id="tradesTable"></tbody>
-      </table>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Marché</th>
+              <th>Status</th>
+              <th>Entrée</th>
+              <th>Sortie</th>
+              <th>P&L</th>
+            </tr>
+          </thead>
+          <tbody id="tradesTable"></tbody>
+        </table>
+      </div>
     </section>
 
     <section>
       <h2>📊 P&L par stratégie</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Stratégie</th>
-            <th>Trades</th>
-            <th>Win Rate</th>
-            <th>P&L</th>
-          </tr>
-        </thead>
-        <tbody id="strategyTable"></tbody>
-      </table>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Stratégie</th><th>Trades</th><th>Win Rate</th><th>P&L</th></tr></thead>
+          <tbody id="strategyTable"></tbody>
+        </table>
+      </div>
     </section>
 
     <section>
       <h2>🧠 P&L par thème</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Thème</th>
-            <th>Trades</th>
-            <th>Win Rate</th>
-            <th>P&L</th>
-          </tr>
-        </thead>
-        <tbody id="themeTable"></tbody>
-      </table>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Thème</th><th>Trades</th><th>Win Rate</th><th>P&L</th></tr></thead>
+          <tbody id="themeTable"></tbody>
+        </table>
+      </div>
     </section>
-
   </main>
 
   <script>
     const API_URL = "https://0698sypi76.execute-api.eu-north-1.amazonaws.com/default/dashboard_api";
 
-    function money(v){ return "$" + Number(v||0).toFixed(2); }
-    function price(v){ return Number(v||0).toFixed(4); }
-    function pnlClass(v){ return Number(v||0) >= 0 ? "positive" : "negative"; }
+    const money = (v) => "$" + Number(v || 0).toFixed(2);
+    const price = (v) => Number(v || 0).toFixed(4);
+    const percent = (v) => (Number(v || 0) * 100).toFixed(1) + "%";
+    const pnlClass = (v) => Number(v || 0) >= 0 ? "positive" : "negative";
+
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.innerText = value;
+    }
+
+    function setMoneyCard(id, value) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.innerText = money(value);
+      el.className = "value " + pnlClass(value);
+    }
+
+    function clearCanvas(canvas, height = 220) {
+      const ctx = canvas.getContext("2d");
+      canvas.width = canvas.offsetWidth;
+      canvas.height = height;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      return ctx;
+    }
 
     function drawEquityChart(curve) {
       const canvas = document.getElementById("equityChart");
-      const ctx = canvas.getContext("2d");
-
-      canvas.width = canvas.offsetWidth;
-      canvas.height = 220;
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const ctx = clearCanvas(canvas);
 
       if (!curve || curve.length < 2) {
         ctx.fillStyle = "#94a3b8";
         ctx.fillText("Pas assez de données", 20, 40);
         return;
       }
-     
+
       const padding = 30;
       const values = curve.map(x => Number(x.equity || 0));
       const min = Math.min(...values);
@@ -328,31 +342,24 @@
       const range = max - min || 1;
 
       ctx.beginPath();
-
       curve.forEach((point, i) => {
         const x = padding + (i / (curve.length - 1)) * (canvas.width - padding * 2);
-        const y = canvas.height - padding - ((point.equity - min) / range) * (canvas.height - padding * 2);
-
+        const y = canvas.height - padding - ((Number(point.equity || 0) - min) / range) * (canvas.height - padding * 2);
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       });
-  
+
       ctx.lineWidth = 3;
       ctx.strokeStyle = "#22c55e";
       ctx.stroke();
 
       ctx.fillStyle = "#94a3b8";
-      ctx.fillText("Equity: $" + values[values.length - 1].toFixed(2), 20, 25);
-     }
+      ctx.fillText("Equity: " + money(values[values.length - 1]), 20, 25);
+    }
 
-	function drawLineChart(canvasId, data, field, label, suffix = "") {
+    function drawLineChart(canvasId, data, field, label, suffix = "") {
       const canvas = document.getElementById(canvasId);
-      const ctx = canvas.getContext("2d");
-
-      canvas.width = canvas.offsetWidth;
-      canvas.height = 220;
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const ctx = clearCanvas(canvas);
 
       if (!data || data.length < 2) {
         ctx.fillStyle = "#94a3b8";
@@ -362,202 +369,141 @@
 
       const padding = 30;
       let values = data.map(x => Number(x[field] || 0));
+      if (field === "rolling_win_rate") values = values.map(v => v * 100);
 
-      const displayValues = field === "rolling_win_rate"
-        ? values.map(v => v * 100)
-        : values;
-
-      const min = Math.min(...displayValues);
-      const max = Math.max(...displayValues);
+      const min = Math.min(...values);
+      const max = Math.max(...values);
       const range = max - min || 1;
 
       ctx.beginPath();
-
-      displayValues.forEach((value, i) => {
-        const x = padding + (i / (displayValues.length - 1)) * (canvas.width - padding * 2);
+      values.forEach((value, i) => {
+        const x = padding + (i / (values.length - 1)) * (canvas.width - padding * 2);
         const y = canvas.height - padding - ((value - min) / range) * (canvas.height - padding * 2);
-
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       });
 
       ctx.lineWidth = 3;
-      ctx.strokeStyle = "#22c55e";
+      ctx.strokeStyle = "#3b82f6";
       ctx.stroke();
 
       ctx.fillStyle = "#94a3b8";
-      ctx.fillText(
-        label + ": " + displayValues[displayValues.length - 1].toFixed(2) + suffix,
-        20,
-        25
-      );
-}  
+      ctx.fillText(label + ": " + values[values.length - 1].toFixed(2) + suffix, 20, 25);
+    }
+
+    function renderPositions(positions) {
+      const table = document.getElementById("positionsTable");
+      table.innerHTML = "";
+
+      positions.forEach(p => {
+        table.innerHTML += `
+          <tr>
+            <td>${p.title || "-"}</td>
+            <td>${p.strategy || "-"}</td>
+            <td>${p.theme || "-"}</td>
+            <td>${p.score || "-"}</td>
+            <td>${price(p.entry_price)}</td>
+            <td>${price(p.current_price)}</td>
+            <td>${money(p.usd_size)}</td>
+            <td class="${pnlClass(p.pnl)}">${money(p.pnl)}</td>
+          </tr>`;
+      });
+    }
+
+    function renderHistory(history) {
+      const table = document.getElementById("tradesTable");
+      table.innerHTML = "";
+
+      history.forEach(p => {
+        const status = p.status || "open";
+        const pnl = status === "closed" ? Number(p.realized_pnl || p.pnl || 0) : Number(p.pnl || 0);
+        const exitPrice = status === "closed" ? (p.exit_price || p.current_price) : "-";
+
+        table.innerHTML += `
+          <tr>
+            <td>${(p.position_id || "").slice(0, 6)}</td>
+            <td>${p.title || "-"}</td>
+            <td><span class="badge ${status}">${status}</span></td>
+            <td>${price(p.entry_price)}</td>
+            <td>${exitPrice === "-" ? "-" : price(exitPrice)}</td>
+            <td class="${pnlClass(pnl)}">${money(pnl)}</td>
+          </tr>`;
+      });
+    }
+
+    function renderGroupedTable(tableId, data) {
+      const table = document.getElementById(tableId);
+      table.innerHTML = "";
+
+      Object.entries(data || {}).forEach(([name, stats]) => {
+        table.innerHTML += `
+          <tr>
+            <td>${name}</td>
+            <td>${stats.trades || 0}</td>
+            <td>${percent(stats.win_rate || 0)}</td>
+            <td class="${pnlClass(stats.pnl)}">${money(stats.pnl)}</td>
+          </tr>`;
+      });
+    }
+
+    function renderDailyPnl(pnlByDay) {
+      const table = document.getElementById("dailyPnlTable");
+      table.innerHTML = "";
+
+      Object.entries(pnlByDay || {}).forEach(([day, pnl]) => {
+        table.innerHTML += `
+          <tr>
+            <td>${day}</td>
+            <td class="${pnlClass(pnl)}">${money(pnl)}</td>
+          </tr>`;
+      });
+    }
 
     async function loadDashboard() {
       try {
         const res = await fetch(API_URL);
         const data = await res.json();
 
-        const portfolio = data.portfolio;
+        const portfolio = data.portfolio || {};
         const performance = data.performance || {};
         const equity = data.equity || {};
-		const analytics = data.advanced_analytics || {};
-		const rollingMetrics = data.rolling_metrics || [];
-        const pnlByStrategy = data.pnl_by_strategy || {};
-        const pnlByTheme = data.pnl_by_theme || {};
-        const positions = data.positions || [];
-        const history = data.history_7d || [];
+        const analytics = data.advanced_analytics || {};
+        const rollingMetrics = data.rolling_metrics || [];
 
-        document.getElementById("openPositions").innerText = portfolio.open_positions;
-        document.getElementById("exposure").innerText = money(portfolio.exposure);
-        document.getElementById("winRate").innerText =
-          (performance.win_rate * 100).toFixed(1) + "%";
+        setText("openPositions", portfolio.open_positions || 0);
+        setText("exposure", money(portfolio.exposure));
+        setMoneyCard("unrealizedPnl", portfolio.unrealized_pnl);
+        setMoneyCard("realizedPnl", portfolio.realized_pnl);
 
-        document.getElementById("expectancy").innerText =
-           money(performance.expectancy);
+        setText("winRate", percent(performance.win_rate));
+        setMoneyCard("expectancy", performance.expectancy);
+        setText("avgWin", money(performance.avg_win));
+        setText("avgLoss", money(performance.avg_loss));
 
-        document.getElementById("avgWin").innerText =
-           money(performance.avg_win);
-
-        document.getElementById("avgLoss").innerText =
-           money(performance.avg_loss);
-
-        document.getElementById("maxDrawdown").innerText =
-           money(equity.max_drawdown);
-
-		document.getElementById("profitFactor").innerText =
-           Number(analytics.profit_factor || 0).toFixed(2);
-
-        document.getElementById("avgHoldTime").innerText =
-           Number(analytics.avg_hold_time_hours || 0).toFixed(1) + "h";
-
-        document.getElementById("bestStrategy").innerText =
-           analytics.best_strategy || "-";
-
-        document.getElementById("worstTheme").innerText =
-           analytics.worst_theme || "-";
+        setMoneyCard("maxDrawdown", equity.max_drawdown);
+        setText("profitFactor", Number(analytics.profit_factor || 0).toFixed(2));
+        setText("avgHoldTime", Number(analytics.avg_hold_time_hours || 0).toFixed(1) + "h");
+        setText("bestStrategy", analytics.best_strategy || "-");
+        setText("worstTheme", analytics.worst_theme || "-");
 
         drawEquityChart(equity.curve || []);
+        drawLineChart("rollingWinRateChart", rollingMetrics, "rolling_win_rate", "Rolling Win Rate", "%");
+        drawLineChart("rollingExpectancyChart", rollingMetrics, "rolling_expectancy", "Rolling Expectancy", "$ ");
 
-		drawLineChart(
-           "rollingWinRateChart",
-            rollingMetrics,
-           "rolling_win_rate",
-           "Rolling Win Rate",
-           "%"
-       );
+        renderPositions(data.positions || []);
+        renderHistory(data.history_7d || []);
+        renderGroupedTable("strategyTable", data.pnl_by_strategy || {});
+        renderGroupedTable("themeTable", data.pnl_by_theme || {});
+        renderDailyPnl(analytics.pnl_by_day || {});
 
-       drawLineChart(
-           "rollingExpectancyChart",
-           rollingMetrics,
-           "rolling_expectancy",
-           "Rolling Expectancy",
-           "$"
-       );
-
-        const unreal = document.getElementById("unrealizedPnl");
-        unreal.innerText = money(portfolio.unrealized_pnl);
-        unreal.className = "value " + pnlClass(portfolio.unrealized_pnl);
-
-        const real = document.getElementById("realizedPnl");
-        real.innerText = money(portfolio.realized_pnl);
-        real.className = "value " + pnlClass(portfolio.realized_pnl);
-
-        const posTable = document.getElementById("positionsTable");
-        const tradesTable = document.getElementById("tradesTable");
-
-        posTable.innerHTML = "";
-        tradesTable.innerHTML = "";
-
-        // positions ouvertes
-        positions.forEach(p => {
-          posTable.innerHTML += `
-            <tr>
-              <td>${p.title}</td>
-	      <td>${p.strategy || "-"}</td>
-              <td>${p.theme || "-"}</td>
-              <td>${p.score || "-"}</td>
-              <td>${price(p.entry_price)}</td>
-              <td>${price(p.current_price)}</td>
-              <td>${money(p.usd_size)}</td>
-              <td class="${pnlClass(p.pnl)}">${money(p.pnl)}</td>
-            </tr>`;
-        });
-
-        // historique
-        history.forEach(p => {
-	  const status = p.status || "open";
-	  const pnl = status === "closed"
-            ? Number(p.realized_pnl || p.pnl || 0)
-	    : Number(p.pnl || 0);
-
-	  const exitPrice = status === "closed"
-	    ? (p.exit_price || p.current_price)
-	    : "-";
-
-          tradesTable.innerHTML += `
-            <tr>
-              <td>${(p.position_id || "").slice(0,6)}</td>
-              <td>${p.title}</td>
-	      <td><span class="badge ${status}">${status}</span></td>
-              <td>${price(p.entry_price)}</td>
-              <td>${price(p.exit_price || p.current_price)}</td>
-              <td class="${pnlClass(pnl)}">${money(pnl)}</td>
-            </tr>`;
-        });
-
-        const strategyTable = document.getElementById("strategyTable");
-        strategyTable.innerHTML = "";
-
-        Object.entries(pnlByStrategy).forEach(([name, stats]) => {
-          strategyTable.innerHTML += `
-            <tr>
-              <td>${name}</td>
-              <td>${stats.trades}</td>
-              <td>${(stats.win_rate * 100).toFixed(1)}%</td>
-              <td class="${pnlClass(stats.pnl)}">${money(stats.pnl)}</td>
-            </tr>
-          `;
-        });
-
-        const themeTable = document.getElementById("themeTable");
-        themeTable.innerHTML = "";
-
-        Object.entries(pnlByTheme).forEach(([name, stats]) => {
-          themeTable.innerHTML += `
-            <tr>
-              <td>${name}</td>
-              <td>${stats.trades}</td>
-              <td>${(stats.win_rate * 100).toFixed(1)}%</td>
-              <td class="${pnlClass(stats.pnl)}">${money(stats.pnl)}</td>
-            </tr>
-          `;
-        });
-
-        const dailyPnlTable = document.getElementById("dailyPnlTable");
-        dailyPnlTable.innerHTML = "";
-
-        Object.entries(analytics.pnl_by_day || {}).forEach(([day, pnl]) => {
-            dailyPnlTable.innerHTML += `
-            <tr>
-              <td>${day}</td>
-              <td class="${pnlClass(pnl)}">${money(pnl)}</td>
-            </tr>
-            `;
-        }); 
-		  
-        document.getElementById("lastUpdate").innerText =
-          "Maj: " + new Date().toLocaleTimeString();
-
+        setText("lastUpdate", "Maj: " + new Date().toLocaleTimeString());
       } catch (err) {
-        document.getElementById("lastUpdate").innerText =
-          "Erreur: " + err.message;
+        setText("lastUpdate", "Erreur: " + err.message);
       }
     }
 
     loadDashboard();
     setInterval(loadDashboard, 30000);
   </script>
-
 </body>
 </html>
