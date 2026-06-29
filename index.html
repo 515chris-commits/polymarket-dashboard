@@ -185,6 +185,22 @@
         <div class="label">Avg Loss</div>
         <div class="value" id="avgLoss">-</div>
       </div>
+	  <div class="card">
+        <div class="label">Profit Factor</div>
+        <div class="value" id="profitFactor">-</div>
+      </div>
+	  <div class="card">
+		<div class="label">Avg Hold Time</div>
+        <div class="value" id="avgHoldTime">-</div>
+	  </div>
+	  <div class="card">
+        <div class="label">Best Strategy</div>
+        <div class="value" id="bestStrategy">-</div>
+      </div>
+	  <div class="card">
+        <div class="label">Worst Theme</div>
+        <div class="value" id="worstTheme">-</div>
+      </div>
     </div>
 
     <section>
@@ -194,6 +210,19 @@
         <div class="value" id="maxDrawdown">-</div>
       </div>
       <canvas id="equityChart" height="120"></canvas>
+    </section>
+
+	<section>
+	  <h2>📅 P&L par jour</h2>
+	  <table>
+		<thead>
+		  <tr>
+            <th>Date</th>
+            <th>P&L</th>
+		  </tr>
+        </thead>
+        <tbody id="dailyPnlTable"></tbody>
+      </table>
     </section>
          
     <section>
@@ -319,6 +348,7 @@
         const portfolio = data.portfolio;
         const performance = data.performance || {};
         const equity = data.equity || {};
+		const analytics = data.advanced_analytics || {};
         const pnlByStrategy = data.pnl_by_strategy || {};
         const pnlByTheme = data.pnl_by_theme || {};
         const positions = data.positions || [];
@@ -340,6 +370,18 @@
 
         document.getElementById("maxDrawdown").innerText =
            money(equity.max_drawdown);
+
+		document.getElementById("profitFactor").innerText =
+           Number(analytics.profit_factor || 0).toFixed(2);
+
+        document.getElementById("avgHoldTime").innerText =
+           Number(analytics.avg_hold_time_hours || 0).toFixed(1) + "h";
+
+        document.getElementById("bestStrategy").innerText =
+           analytics.best_strategy || "-";
+
+        document.getElementById("worstTheme").innerText =
+           analytics.worst_theme || "-";
 
         drawEquityChart(equity.curve || []);
 
@@ -422,6 +464,18 @@
           `;
         });
 
+        const dailyPnlTable = document.getElementById("dailyPnlTable");
+        dailyPnlTable.innerHTML = "";
+
+        Object.entries(analytics.pnl_by_day || {}).forEach(([day, pnl]) => {
+            dailyPnlTable.innerHTML += `
+            <tr>
+              <td>${day}</td>
+              <td class="${pnlClass(pnl)}">${money(pnl)}</td>
+            </tr>
+            `;
+        }); 
+		  
         document.getElementById("lastUpdate").innerText =
           "Maj: " + new Date().toLocaleTimeString();
 
