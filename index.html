@@ -213,6 +213,12 @@
     </section>
 
 	<section>
+      <h2>📉 Rolling Metrics</h2>
+      <canvas id="rollingWinRateChart" height="120"></canvas>
+      <canvas id="rollingExpectancyChart" height="120"></canvas>
+    </section>
+
+	<section>
 	  <h2>📅 P&L par jour</h2>
 	  <table>
 		<thead>
@@ -349,6 +355,7 @@
         const performance = data.performance || {};
         const equity = data.equity || {};
 		const analytics = data.advanced_analytics || {};
+		const rollingMetrics = data.rolling_metrics || [];
         const pnlByStrategy = data.pnl_by_strategy || {};
         const pnlByTheme = data.pnl_by_theme || {};
         const positions = data.positions || [];
@@ -384,6 +391,22 @@
            analytics.worst_theme || "-";
 
         drawEquityChart(equity.curve || []);
+
+		drawLineChart(
+           "rollingWinRateChart",
+            rollingMetrics,
+           "rolling_win_rate",
+           "Rolling Win Rate",
+           "%"
+       );
+
+       drawLineChart(
+           "rollingExpectancyChart",
+           rollingMetrics,
+           "rolling_expectancy",
+           "Rolling Expectancy",
+           "$"
+       );
 
         const unreal = document.getElementById("unrealizedPnl");
         unreal.innerText = money(portfolio.unrealized_pnl);
