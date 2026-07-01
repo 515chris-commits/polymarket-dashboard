@@ -192,6 +192,79 @@
   </header>
 
   <main>
+    <section>
+      <h2>🔐 Trading Console</h2>
+
+        <div class="card">
+          <div class="label">Mode accès</div>
+          <div class="value" id="adminStatus">Viewer</div>
+
+          <div style="margin-top:15px;">
+            <input
+              id="adminTokenInput"
+              type="password"
+              placeholder="Admin token"
+              style="padding:10px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:#e5e7eb;width:260px;"
+            >
+            <button onclick="adminLogin()">Unlock Admin</button>
+            <button onclick="adminLogout()">Logout</button>
+          </div>
+        </div>
+
+        <div id="adminPanel" style="display:none; margin-top:20px;">
+          <div class="cards">
+            <div class="card">
+              <div class="label">Mode</div>
+              <select id="riskMode">
+                <option value="paper">paper</option>
+                <option value="live">live</option>
+                <option value="maintenance">maintenance</option>
+              </select>
+        </div>
+
+        <div class="card">
+          <div class="label">Trading Enabled</div>
+          <select id="tradingEnabled">
+            <option value="ON">ON</option>
+            <option value="OFF">OFF</option>
+          </select>
+        </div>
+
+        <div class="card">
+          <div class="label">Kill Switch</div>
+          <select id="killSwitch">
+            <option value="OFF">OFF</option>
+            <option value="ON">ON</option>
+          </select>
+        </div>
+
+        <div class="card">
+          <div class="label">Max Daily Loss</div>
+          <input id="maxDailyLoss" type="number" step="0.01">
+        </div>
+
+        <div class="card">
+        <div class="label">Max Position Size</div>
+          <input id="maxPositionSize" type="number" step="0.01">
+        </div>
+
+        <div class="card">
+          <div class="label">Max Exposure</div>
+          <input id="maxTotalExposure" type="number" step="0.01">
+        </div>
+
+        <div class="card">
+          <div class="label">Live Capital</div>
+          <input id="liveCapital" type="number" step="0.01">
+        </div>
+      </div>
+
+      <button onclick="saveRiskConfig()" style="margin-top:15px;">
+        💾 Save Configuration
+      </button>
+    </div>
+  </section>
+      
     <div class="cards">
       <div class="card"><div class="label">Positions ouvertes</div><div class="value" id="openPositions">-</div></div>
       <div class="card"><div class="label">Exposition</div><div class="value" id="exposure">-</div></div>
@@ -299,6 +372,8 @@
 
   <script>
     const API_URL = "https://0698sypi76.execute-api.eu-north-1.amazonaws.com/default/dashboard_api";
+
+    const RISK_API_URL = "https://mjqzhv4nm2.execute-api.eu-north-1.amazonaws.com/default/risk_api";
 
     const money = (v) => "$" + Number(v || 0).toFixed(2);
     const price = (v) => Number(v || 0).toFixed(4);
