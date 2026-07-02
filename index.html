@@ -620,7 +620,34 @@
 
       alert("Configuration sauvegardée");
       loadRiskConfig();
-    }  
+    }
+
+    async function runAdminAction(action) {
+      const token = sessionStorage.getItem("adminToken") || "";
+
+      if (!token) {
+        alert("Admin token manquant");
+        return;
+      }
+
+      const res = await fetch(ADMIN_API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Admin-Token": token
+        },
+        body: JSON.stringify({ action })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert("Erreur action: " + (data.error || res.status));
+        return;
+      }
+
+      alert("Action lancée: " + action);
+    }
 
     async function loadDashboard() {
       try {
