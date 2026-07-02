@@ -261,6 +261,11 @@
 
       <button onclick="saveRiskConfig()" style="margin-top:15px;">
         💾 Save Configuration
+        <div style="margin-top:20px;">
+          <button onclick="runAdminAction('backup')">💾 Backup NOW</button>
+          <button onclick="runAdminAction('learning')">🧠 Run Learning NOW</button>
+          <button onclick="runAdminAction('daily_risk')">⚠ Refresh Daily Risk</button>
+        </div>
       </button>
     </div>
   </section>
