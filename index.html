@@ -534,6 +534,92 @@
       });
     }
 
+    function isAdmin() {
+      return !!sessionStorage.getItem("adminToken");
+    }
+
+    function updateAdminUI() {
+      const admin = isAdmin();
+
+      document.getElementById("adminStatus").innerText =
+        admin ? "Admin" : "Viewer";
+
+      document.getElementById("adminPanel").style.display =
+        admin ? "block" : "none";
+    }
+
+    function adminLogin() {
+      const token = document.getElementById("adminTokenInput").value.trim();
+
+      if (!token) {
+        alert("Token manquant");
+        return;
+      }
+
+      sessionStorage.setItem("adminToken", token);
+      document.getElementById("adminTokenInput").value = "";
+
+      updateAdminUI();
+      loadRiskConfig();
+    }
+
+    function adminLogout() {
+      sessionStorage.removeItem("adminToken");
+      updateAdminUI();
+    }
+
+    async function loadRiskConfig() {
+      try {
+        const res = await fetch(RISK_API_URL);
+        const data = await res.json();
+        const risk = data.risk || {};
+
+        document.getElementById("riskMode").value = risk.mode || "paper";
+        document.getElementById("tradingEnabled").value = risk.trading_enabled || "ON";
+        document.getElementById("killSwitch").value = risk.kill_switch || "OFF";
+        document.getElementById("maxDailyLoss").value = risk.max_daily_loss || 5;
+        document.getElementById("maxPositionSize").value = risk.max_position_size || 5;
+        document.getElementById("maxTotalExposure").value = risk.max_total_exposure || 40;
+        document.getElementById("liveCapital").value = risk.live_capital || 100;
+
+      } catch (err) {
+        console.error("Risk config error:", err);
+      }
+    }
+
+    async function saveRiskConfig() {
+      const token = sessionStorage.getItem("adminToken") || "";
+
+      const payload = {
+        mode: document.getElementById("riskMode").value,
+        trading_enabled: document.getElementById("tradingEnabled").value,
+        kill_switch: document.getElementById("killSwitch").value,
+        max_daily_loss: Number(document.getElementById("maxDailyLoss").value),
+        max_position_size: Number(document.getElementById("maxPositionSize").value),
+        max_total_exposure: Number(document.getElementById("maxTotalExposure").value),
+        live_capital: Number(document.getElementById("liveCapital").value)
+      };
+
+      const res = await fetch(RISK_API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Admin-Token": token
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert("Erreur sauvegarde: " + (data.error || res.status));
+        return;
+      }
+
+      alert("Configuration sauvegardée");
+      loadRiskConfig();
+    }  
+
     async function loadDashboard() {
       try {
         const res = await fetch(API_URL);
@@ -577,8 +663,12 @@
       }
     }
 
+    updateAdminUI();
+    loadRiskConfig();
     loadDashboard();
+
     setInterval(loadDashboard, 30000);
+    setInterval(loadRiskConfig, 60000);
   </script>
 </body>
 </html>
