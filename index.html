@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Polymarket Bot Dashboard</title>
+  <title>Polymarket Trading Engine Console</title>
 
   <style>
     :root {
@@ -16,6 +16,7 @@
       --green: #22c55e;
       --red: #ef4444;
       --blue: #60a5fa;
+      --yellow: #f59e0b;
     }
 
     * { box-sizing: border-box; }
@@ -33,39 +34,14 @@
       border-bottom: 1px solid var(--border);
     }
 
-    h1 {
-      margin: 0;
-      font-size: 32px;
-    }
+    h1 { margin: 0; font-size: 32px; }
+    h2 { margin: 0 0 15px; font-size: 22px; }
+    main { padding: 30px 40px; }
+    section { margin-top: 30px; }
 
-    h2 {
-      margin: 0 0 15px;
-      font-size: 22px;
-    }
-
-    main {
-      padding: 30px 40px;
-    }
-
-    section {
-      margin-top: 30px;
-    }
-
-    .subtitle,
-    .refresh,
-    .small,
-    .label {
-      color: var(--muted);
-    }
-
-    .subtitle {
-      margin-top: 8px;
-    }
-
-    .refresh {
-      margin-top: 10px;
-      font-size: 13px;
-    }
+    .subtitle, .refresh, .small, .label { color: var(--muted); }
+    .subtitle { margin-top: 8px; }
+    .refresh { margin-top: 10px; font-size: 13px; }
 
     .cards {
       display: grid;
@@ -82,19 +58,33 @@
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
     }
 
-    .label {
-      font-size: 14px;
-      margin-bottom: 10px;
-    }
-
-    .value {
-      font-size: 30px;
-      font-weight: bold;
-      overflow-wrap: anywhere;
-    }
+    .label { font-size: 14px; margin-bottom: 10px; }
+    .value { font-size: 30px; font-weight: bold; overflow-wrap: anywhere; }
 
     .positive { color: var(--green); }
     .negative { color: var(--red); }
+    .warning { color: var(--yellow); }
+
+    input, select, button {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #0f172a;
+      color: var(--text);
+    }
+
+    button {
+      cursor: pointer;
+      margin-right: 8px;
+      margin-top: 8px;
+      background: #1d4ed8;
+      border-color: #2563eb;
+    }
+
+    button.danger { background: #7f1d1d; border-color: #991b1b; }
+    button.secondary { background: #334155; border-color: #475569; }
+
+    .admin-actions { margin-top: 20px; }
 
     .table-wrap {
       width: 100%;
@@ -136,25 +126,13 @@
       white-space: nowrap;
     }
 
-    .open {
-      background: rgba(34, 197, 94, 0.15);
-      color: var(--green);
-    }
+    .open { background: rgba(34, 197, 94, 0.15); color: var(--green); }
+    .closed { background: rgba(239, 68, 68, 0.15); color: var(--red); }
+    .paper { background: rgba(59, 130, 246, 0.15); color: var(--blue); }
+    .live { background: rgba(245, 158, 11, 0.15); color: var(--yellow); }
+    .maintenance { background: rgba(148, 163, 184, 0.15); color: var(--muted); }
 
-    .closed {
-      background: rgba(239, 68, 68, 0.15);
-      color: var(--red);
-    }
-
-    .paper {
-      background: rgba(59, 130, 246, 0.15);
-      color: var(--blue);
-    }
-
-    .small {
-      font-size: 12px;
-      margin-top: 4px;
-    }
+    .small { font-size: 12px; margin-top: 4px; }
 
     canvas {
       width: 100%;
@@ -186,8 +164,8 @@
 
 <body>
   <header>
-    <h1>🚀 Polymarket Bot Dashboard</h1>
-    <div class="subtitle">Suivi trading, P&L, equity curve, expectancy et risk analytics</div>
+    <h1>🚀 Polymarket Trading Engine Console</h1>
+    <div class="subtitle">Dashboard, risk console, equity curve, expectancy et analytics</div>
     <div class="refresh" id="lastUpdate">Chargement...</div>
   </header>
 
@@ -195,97 +173,120 @@
     <section>
       <h2>🔐 Trading Console</h2>
 
-        <div class="card">
-          <div class="label">Mode accès</div>
-          <div class="value" id="adminStatus">Viewer</div>
-
-          <div style="margin-top:15px;">
-            <input
-              id="adminTokenInput"
-              type="password"
-              placeholder="Admin token"
-              style="padding:10px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:#e5e7eb;width:260px;"
-            >
-            <button onclick="adminLogin()">Unlock Admin</button>
-            <button onclick="adminLogout()">Logout</button>
-          </div>
-        </div>
-
-        <div id="adminPanel" style="display:none; margin-top:20px;">
-          <div class="cards">
-            <div class="card">
-              <div class="label">Mode</div>
-              <select id="riskMode">
-                <option value="paper">paper</option>
-                <option value="live">live</option>
-                <option value="maintenance">maintenance</option>
-              </select>
-        </div>
-
-        <div class="card">
-          <div class="label">Trading Enabled</div>
-          <select id="tradingEnabled">
-            <option value="ON">ON</option>
-            <option value="OFF">OFF</option>
-          </select>
-        </div>
-
-        <div class="card">
-          <div class="label">Kill Switch</div>
-          <select id="killSwitch">
-            <option value="OFF">OFF</option>
-            <option value="ON">ON</option>
-          </select>
-        </div>
-
-        <div class="card">
-          <div class="label">Max Daily Loss</div>
-          <input id="maxDailyLoss" type="number" step="0.01">
-        </div>
-
-        <div class="card">
-        <div class="label">Max Position Size</div>
-          <input id="maxPositionSize" type="number" step="0.01">
-        </div>
-
-        <div class="card">
-          <div class="label">Max Exposure</div>
-          <input id="maxTotalExposure" type="number" step="0.01">
-        </div>
-
-        <div class="card">
-          <div class="label">Live Capital</div>
-          <input id="liveCapital" type="number" step="0.01">
+      <div class="card">
+        <div class="label">Mode accès</div>
+        <div class="value" id="adminStatus">Viewer</div>
+        <div style="margin-top:15px;">
+          <input id="adminTokenInput" type="password" placeholder="Admin token" style="width:260px;">
+          <button onclick="adminLogin()">Unlock Admin</button>
+          <button class="secondary" onclick="adminLogout()">Logout</button>
         </div>
       </div>
 
-      <button onclick="saveRiskConfig()" style="margin-top:15px;">
-        💾 Save Configuration
-        <div style="margin-top:20px;">
+      <div id="adminPanel" style="display:none; margin-top:20px;">
+        <div class="cards">
+          <div class="card">
+            <div class="label">Mode</div>
+            <select id="riskMode">
+              <option value="paper">paper</option>
+              <option value="live">live</option>
+              <option value="maintenance">maintenance</option>
+            </select>
+          </div>
+
+          <div class="card">
+            <div class="label">Trading Enabled</div>
+            <select id="tradingEnabled">
+              <option value="ON">ON</option>
+              <option value="OFF">OFF</option>
+            </select>
+          </div>
+
+          <div class="card">
+            <div class="label">Kill Switch</div>
+            <select id="killSwitch">
+              <option value="OFF">OFF</option>
+              <option value="ON">ON</option>
+            </select>
+          </div>
+
+          <div class="card">
+            <div class="label">Max Daily Loss</div>
+            <input id="maxDailyLoss" type="number" step="0.01">
+          </div>
+
+          <div class="card">
+            <div class="label">Max Position Size</div>
+            <input id="maxPositionSize" type="number" step="0.01">
+          </div>
+
+          <div class="card">
+            <div class="label">Max Exposure</div>
+            <input id="maxTotalExposure" type="number" step="0.01">
+          </div>
+
+          <div class="card">
+            <div class="label">Live Capital</div>
+            <input id="liveCapital" type="number" step="0.01">
+          </div>
+
+          <div class="card">
+            <div class="label">Risk Per Trade (%)</div>
+            <input id="riskPerTrade" type="number" step="0.01">
+          </div>
+        </div>
+
+        <button onclick="saveRiskConfig()">💾 Save Configuration</button>
+
+        <div class="admin-actions">
           <button onclick="runAdminAction('backup')">💾 Backup NOW</button>
           <button onclick="runAdminAction('learning')">🧠 Run Learning NOW</button>
           <button onclick="runAdminAction('daily_risk')">⚠ Refresh Daily Risk</button>
         </div>
-      </button>
-    </div>
-  </section>
-      
-    <div class="cards">
-      <div class="card"><div class="label">Positions ouvertes</div><div class="value" id="openPositions">-</div></div>
-      <div class="card"><div class="label">Exposition</div><div class="value" id="exposure">-</div></div>
-      <div class="card"><div class="label">P&L latent</div><div class="value" id="unrealizedPnl">-</div></div>
-      <div class="card"><div class="label">P&L réalisé</div><div class="value" id="realizedPnl">-</div></div>
+      </div>
+    </section>
 
-      <div class="card"><div class="label">Win Rate</div><div class="value" id="winRate">-</div></div>
-      <div class="card"><div class="label">Expectancy</div><div class="value" id="expectancy">-</div></div>
-      <div class="card"><div class="label">Avg Win</div><div class="value" id="avgWin">-</div></div>
-      <div class="card"><div class="label">Avg Loss</div><div class="value" id="avgLoss">-</div></div>
+    <section>
+      <h2>📌 Trading Overview</h2>
+      <div class="cards">
+        <div class="card"><div class="label">Positions ouvertes</div><div class="value" id="openPositions">-</div></div>
+        <div class="card"><div class="label">Exposition</div><div class="value" id="exposure">-</div></div>
+        <div class="card"><div class="label">P&L latent</div><div class="value" id="unrealizedPnl">-</div></div>
+        <div class="card"><div class="label">P&L réalisé</div><div class="value" id="realizedPnl">-</div></div>
+      </div>
+    </section>
 
-      <div class="card"><div class="label">Profit Factor</div><div class="value" id="profitFactor">-</div></div>
-      <div class="card"><div class="label">Avg Hold Time</div><div class="value" id="avgHoldTime">-</div></div>
-      <div class="card"><div class="label">Best Strategy</div><div class="value" id="bestStrategy">-</div></div>
-      <div class="card"><div class="label">Worst Theme</div><div class="value" id="worstTheme">-</div></div>
-    </div>
+    <section>
+      <h2>📈 Performance</h2>
+      <div class="cards">
+        <div class="card"><div class="label">Win Rate</div><div class="value" id="winRate">-</div></div>
+        <div class="card"><div class="label">Expectancy</div><div class="value" id="expectancy">-</div></div>
+        <div class="card"><div class="label">Profit Factor</div><div class="value" id="profitFactor">-</div></div>
+        <div class="card"><div class="label">Avg Hold Time</div><div class="value" id="avgHoldTime">-</div></div>
+        <div class="card"><div class="label">Avg Win</div><div class="value" id="avgWin">-</div></div>
+        <div class="card"><div class="label">Avg Loss</div><div class="value" id="avgLoss">-</div></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>🛡 Dynamic Risk</h2>
+      <div class="cards">
+        <div class="card"><div class="label">Equity</div><div class="value" id="riskEquity">-</div></div>
+        <div class="card"><div class="label">Peak Equity</div><div class="value" id="riskPeakEquity">-</div></div>
+        <div class="card"><div class="label">Drawdown</div><div class="value" id="riskDrawdown">-</div></div>
+        <div class="card"><div class="label">Risk Multiplier</div><div class="value" id="riskMultiplier">-</div></div>
+        <div class="card"><div class="label">Risk Per Trade</div><div class="value" id="riskPerTradeDisplay">-</div></div>
+        <div class="card"><div class="label">Daily P&L</div><div class="value" id="riskDailyPnl">-</div></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>🧠 Analytics</h2>
+      <div class="cards">
+        <div class="card"><div class="label">Best Strategy</div><div class="value" id="bestStrategy">-</div></div>
+        <div class="card"><div class="label">Worst Theme</div><div class="value" id="worstTheme">-</div></div>
+      </div>
+    </section>
 
     <section>
       <h2>📈 Equity Curve</h2>
@@ -377,9 +378,7 @@
 
   <script>
     const API_URL = "https://0698sypi76.execute-api.eu-north-1.amazonaws.com/default/dashboard_api";
-
     const RISK_API_URL = "https://mjqzhv4nm2.execute-api.eu-north-1.amazonaws.com/default/risk_api";
-
     const ADMIN_API_URL = "https://z06vl4c603.execute-api.eu-north-1.amazonaws.com/default/admin_api";
 
     const money = (v) => "$" + Number(v || 0).toFixed(2);
@@ -547,25 +546,18 @@
 
     function updateAdminUI() {
       const admin = isAdmin();
-
-      document.getElementById("adminStatus").innerText =
-        admin ? "Admin" : "Viewer";
-
-      document.getElementById("adminPanel").style.display =
-        admin ? "block" : "none";
+      setText("adminStatus", admin ? "Admin" : "Viewer");
+      document.getElementById("adminPanel").style.display = admin ? "block" : "none";
     }
 
     function adminLogin() {
       const token = document.getElementById("adminTokenInput").value.trim();
-
       if (!token) {
         alert("Token manquant");
         return;
       }
-
       sessionStorage.setItem("adminToken", token);
       document.getElementById("adminTokenInput").value = "";
-
       updateAdminUI();
       loadRiskConfig();
     }
@@ -581,6 +573,13 @@
         const data = await res.json();
         const risk = data.risk || {};
 
+        setText("riskEquity", money(risk.equity || 0));
+        setText("riskPeakEquity", money(risk.peak_equity || 0));
+        setText("riskDrawdown", (Number(risk.current_drawdown || 0) * 100).toFixed(2) + "%");
+        setText("riskMultiplier", Number(risk.risk_multiplier || 1).toFixed(2) + "x");
+        setText("riskPerTradeDisplay", Number(risk.risk_per_trade || 1).toFixed(2) + "%");
+        setMoneyCard("riskDailyPnl", risk.daily_pnl || 0);
+
         document.getElementById("riskMode").value = risk.mode || "paper";
         document.getElementById("tradingEnabled").value = risk.trading_enabled || "ON";
         document.getElementById("killSwitch").value = risk.kill_switch || "OFF";
@@ -588,7 +587,7 @@
         document.getElementById("maxPositionSize").value = risk.max_position_size || 5;
         document.getElementById("maxTotalExposure").value = risk.max_total_exposure || 40;
         document.getElementById("liveCapital").value = risk.live_capital || 100;
-
+        document.getElementById("riskPerTrade").value = risk.risk_per_trade || 1;
       } catch (err) {
         console.error("Risk config error:", err);
       }
@@ -604,7 +603,8 @@
         max_daily_loss: Number(document.getElementById("maxDailyLoss").value),
         max_position_size: Number(document.getElementById("maxPositionSize").value),
         max_total_exposure: Number(document.getElementById("maxTotalExposure").value),
-        live_capital: Number(document.getElementById("liveCapital").value)
+        live_capital: Number(document.getElementById("liveCapital").value),
+        risk_per_trade: Number(document.getElementById("riskPerTrade").value)
       };
 
       const res = await fetch(RISK_API_URL, {
@@ -617,7 +617,6 @@
       });
 
       const data = await res.json();
-
       if (!res.ok) {
         alert("Erreur sauvegarde: " + (data.error || res.status));
         return;
@@ -629,7 +628,6 @@
 
     async function runAdminAction(action) {
       const token = sessionStorage.getItem("adminToken") || "";
-
       if (!token) {
         alert("Admin token manquant");
         return;
@@ -645,7 +643,6 @@
       });
 
       const data = await res.json();
-
       if (!res.ok) {
         alert("Erreur action: " + (data.error || res.status));
         return;
@@ -672,12 +669,12 @@
 
         setText("winRate", percent(performance.win_rate));
         setMoneyCard("expectancy", performance.expectancy);
+        setText("profitFactor", Number(analytics.profit_factor || 0).toFixed(2));
+        setText("avgHoldTime", Number(analytics.avg_hold_time_hours || 0).toFixed(1) + "h");
         setText("avgWin", money(performance.avg_win));
         setText("avgLoss", money(performance.avg_loss));
 
         setMoneyCard("maxDrawdown", equity.max_drawdown);
-        setText("profitFactor", Number(analytics.profit_factor || 0).toFixed(2));
-        setText("avgHoldTime", Number(analytics.avg_hold_time_hours || 0).toFixed(1) + "h");
         setText("bestStrategy", analytics.best_strategy || "-");
         setText("worstTheme", analytics.worst_theme || "-");
 
