@@ -693,7 +693,6 @@
     return map[name] || name;
   }
 
-
   // ==================== NAVIGATION ====================
   function showView(name) {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -860,7 +859,7 @@
 
     el.innerHTML = `
       <div style="font-size:22px;font-weight:bold;margin-bottom:8px;">
-        ${item.name}
+        ${prettyLearningName(item.name)}
       </div>
       <div style="font-size:14px;color:#94a3b8;">
         Expectancy
