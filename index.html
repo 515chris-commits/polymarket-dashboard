@@ -330,6 +330,39 @@
         width: 100%;
       }
     }
+
+    /* ==========================
+   Learning Center
+  ========================== */
+
+  #view-learning .value {
+      font-size: 22px;
+      line-height: 1.25;
+  }
+
+  #view-learning .learning-name {
+      font-size: 24px;
+      font-weight: bold;
+  }
+
+  #view-learning .learning-label {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 10px;
+  }
+
+  .learning-confidence-high {
+      color: var(--green);
+  }
+
+  .learning-confidence-medium {
+      color: var(--yellow);
+  }
+
+  .learning-confidence-low {
+      color: var(--red);
+  }
+    
   </style>
 </head>
 <body>
@@ -469,10 +502,42 @@
           <div class="card report-detail" id="reportDetail" style="display:none;"></div>
         </section>
 
-        <!-- ==================== LEARNING ==================== -->
+        <!-- ==================== LEARNING Center ==================== -->
         <section id="view-learning" class="view">
-          <h2>🧠 Learning</h2>
+          <h2>🧠 Learning Center</h2>
 
+          <div class="cards">
+            <div class="card">
+              <div class="label">🏆 Best Theme</div>
+              <div class="value" id="bestLearningTheme">-</div>
+            </div>
+
+            <div class="card">
+              <div class="label">🚀 Best Strategy</div>
+              <div class="value" id="bestLearningStrategy">-</div>
+            </div>
+
+            <div class="card">
+              <div class="label">📈 Best Score Bucket</div>
+              <div class="value" id="bestLearningScore">-</div>
+            </div>
+
+            <div class="card">
+              <div class="label">⏱ Best Holding</div>
+              <div class="value" id="bestLearningHold">-</div>
+            </div>
+
+            <div class="card">
+              <div class="label">🌊 Best Volatility</div>
+              <div class="value" id="bestLearningVolatility">-</div>
+            </div>
+
+            <div class="card">
+              <div class="label">📅 Best Weekday</div>
+              <div class="value" id="bestLearningWeekday">-</div>
+            </div>
+          </div>
+          
           <section>
             <h2>📊 P&amp;L par stratégie</h2>
             <div class="table-wrap">
@@ -750,6 +815,48 @@
     });
   }
 
+  function renderLearningSummary(summary) {
+  function confidenceClass(confidence) {
+    if (confidence === "high") return "positive";
+    if (confidence === "medium") return "neutral";
+    return "negative";
+  }
+
+  function setLearningCard(id, item) {
+    const el = document.getElementById(id);
+
+    if (!el || !item) {
+      setText(id, "-");
+      return;
+    }
+
+    el.innerHTML = `
+      <div style="font-size:22px;font-weight:bold;margin-bottom:8px;">
+        ${item.name}
+      </div>
+      <div style="font-size:14px;color:#94a3b8;">
+        Expectancy
+      </div>
+      <div class="${pnlClass(item.expectancy)}" style="font-size:20px;font-weight:bold;">
+        ${money(item.expectancy)}
+      </div>
+      <div style="font-size:14px;color:#94a3b8;margin-top:8px;">
+        Confidence
+      </div>
+      <div class="${confidenceClass(item.confidence)}" style="font-size:18px;font-weight:bold;">
+        ${item.confidence.toUpperCase()}
+      </div>
+    `;
+  }
+
+  setLearningCard("bestLearningTheme", summary.theme?.best);
+  setLearningCard("bestLearningStrategy", summary.strategy?.best);
+  setLearningCard("bestLearningScore", summary.score?.best);
+  setLearningCard("bestLearningHold", summary.hold?.best);
+  setLearningCard("bestLearningVolatility", summary.volatility?.best);
+  setLearningCard("bestLearningWeekday", summary.weekday?.best);
+}
+
   // ==================== ADMIN ====================
   function isAdmin() {
     return !!sessionStorage.getItem('adminToken');
@@ -965,6 +1072,7 @@ Engine
       const performance = data.performance || {};
       const equity = data.equity || {};
       const analytics = data.advanced_analytics || {};
+      const learningSummary = data.learning_summary || {};
       const rollingMetrics = data.rolling_metrics || [];
 
       setText('openPositions', portfolio.open_positions || 0);
@@ -991,6 +1099,8 @@ Engine
       renderGroupedTable('strategyTable', data.pnl_by_strategy || {});
       renderGroupedTable('themeTable', data.pnl_by_theme || {});
       renderDailyPnl(analytics.pnl_by_day || {});
+
+      renderLearningSummary(learningSummary);
 
       setText('lastUpdate', 'Maj: ' + new Date().toLocaleTimeString());
     } catch (err) {
