@@ -634,9 +634,44 @@
 
           <button onclick="loadAIReports()">🔄 Refresh AI Report</button>
 
-          <div class="card report-detail" id="aiReportBox">
-            Chargement...
+          <div class="cards" style="margin-top:20px;">
+            <div class="card">
+              <div class="label">Daily PnL</div>
+              <div class="value" id="aiDailyPnl">-</div>
+            </div>
+
+            <div class="card">
+              <div class="label">Expectancy</div>
+              <div class="value" id="aiExpectancy">-</div>
+            </div>
+
+            <div class="card">
+              <div class="label">Profit Factor</div>
+              <div class="value" id="aiProfitFactor">-</div>
+            </div>
+
+            <div class="card">
+              <div class="label">Drawdown</div>
+              <div class="value" id="aiDrawdown">-</div>
+            </div>
+
+            <div class="card">
+              <div class="label">Best Theme</div>
+              <div class="value" id="aiBestTheme">-</div>
+            </div>
+
+            <div class="card">
+              <div class="label">Best Strategy</div>
+              <div class="value" id="aiBestStrategy">-</div>
+            </div>
           </div>
+
+          <section>
+            <h2>🧠 Analyst Notes</h2>
+            <div class="card report-detail" id="aiReportBox">
+              Chargement...
+            </div>
+          </section>
         </section>
 
       </main>
@@ -1111,7 +1146,26 @@ Engine
         return;
       }
 
-      box.innerText = reports[0].text || "Rapport IA vide.";
+      const latest = reports[0];
+      const summary = latest.summary || {};
+
+      setMoneyCard("aiDailyPnl", summary.daily_pnl || 0);
+      setMoneyCard("aiExpectancy", summary.expectancy || 0);
+
+      setText(
+        "aiProfitFactor",
+        Number(summary.profit_factor || 0).toFixed(2)
+      );
+
+      setText(
+        "aiDrawdown",
+        ((Number(summary.drawdown || 0)) * 100).toFixed(2) + "%"
+      );
+
+      setText("aiBestTheme", summary.best_theme || "-");
+      setText("aiBestStrategy", summary.best_strategy || "-");
+
+      box.innerText = latest.text || "Rapport IA vide.";
 
     } catch (err) {
       document.getElementById("aiReportBox").innerText =
