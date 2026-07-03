@@ -376,6 +376,7 @@
         <button class="active" data-view="dashboard" onclick="showView('dashboard')">📊 Dashboard</button>
         <button data-view="portfolio" onclick="showView('portfolio')">📌 Portfolio</button>
         <button data-view="risk" onclick="showView('risk')">🛡 Risk</button>
+        <button data-view="live" onclick="showView('live')">🚀 Live Readiness</button>
         <button data-view="reports" onclick="showView('reports')">📄 Reports</button>
         <button data-view="learning" onclick="showView('learning')">🧠 Learning</button>
         <button data-view="admin" onclick="showView('admin')">🔐 Admin</button>
@@ -483,6 +484,52 @@
             <div class="card"><div class="label">Trading</div><div class="value" id="riskTradingDisplay">-</div></div>
             <div class="card"><div class="label">Kill Switch</div><div class="value" id="riskKillDisplay">-</div></div>
           </div>
+        </section>
+
+        <!-- ==================== LIVE READINESS ==================== -->
+
+        <section id="view-live" class="view">
+          <h2>🚀 Live Readiness</h2>
+
+          <button onclick="loadLiveReadiness()">🔄 Refresh Readiness</button>
+
+          <div class="cards" style="margin-top:20px;">
+            <div class="card">
+              <div class="label">Readiness Score</div>
+              <div class="value" id="liveReadinessScore">-</div>
+            </div>
+
+            <div class="card">
+              <div class="label">Status</div>
+              <div class="value" id="liveReadinessStatus">-</div>
+            </div>
+
+            <div class="card">
+              <div class="label">Checks OK</div>
+              <div class="value" id="liveReadinessChecks">-</div>
+            </div>
+
+            <div class="card">
+              <div class="label">Mode</div>
+              <div class="value" id="liveReadinessMode">-</div>
+            </div>
+          </div>
+
+          <section>
+            <h2>✅ Checklist</h2>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Check</th>
+                    <th>Status</th>
+                    <th>Détail</th>
+                  </tr>
+                </thead>
+                <tbody id="liveReadinessTable"></tbody>
+              </table>
+            </div>
+          </section>
         </section>
 
         <!-- ==================== REPORTS ==================== -->
@@ -685,6 +732,7 @@
   const ADMIN_API_URL = "https://z06vl4c603.execute-api.eu-north-1.amazonaws.com/default/admin_api";
   const REPORTS_API_URL = "https://iajwc5e9tk.execute-api.eu-north-1.amazonaws.com/default/reports_api";
   const AI_REPORTS_API_URL = "https://mpp5uz83x0.execute-api.eu-north-1.amazonaws.com/default/ai_reports_api";
+  const LIVE_READINESS_API_URL = "https://9sumoyianb.execute-api.eu-north-1.amazonaws.com/default/live_readiness_api";
 
   // ==================== HELPERS ====================
   const money = v => "$" + Number(v || 0).toFixed(2);
@@ -745,6 +793,7 @@
     if (name === 'reports') loadReports();
     if (name === 'risk') loadRiskConfig();
     if (name === "ai") loadAIReports();
+    if (name === "live") loadLiveReadiness();
   }
 
   // ==================== CHARTS ====================
@@ -1047,6 +1096,46 @@
     }
   }
 
+// ==================== READINESS LIVE ====================
+  async function loadLiveReadiness() {
+    try {
+      const res = await fetch(LIVE_READINESS_API_URL);
+      const data = await res.json();
+
+      setText("liveReadinessScore", Number(data.score || 0).toFixed(1) + "%");
+      setText("liveReadinessStatus", data.status || "-");
+      setText("liveReadinessChecks", `${data.ok_count || 0}/${data.total || 0}`);
+      setText("liveReadinessMode", data.risk?.mode || "-");
+
+      const scoreEl = document.getElementById("liveReadinessScore");
+      scoreEl.className = "value " + (Number(data.score || 0) >= 80 ? "positive" : "negative");
+
+      const table = document.getElementById("liveReadinessTable");
+      table.innerHTML = "";
+
+      (data.checks || []).forEach(c => {
+        const ok = c.ok === true;
+        const detail =
+          c.reason ||
+          c.error ||
+          (c.missing && c.missing.length ? "Missing: " + c.missing.join(", ") : "") ||
+          (c.latency_ms ? c.latency_ms + " ms" : "") ||
+          "";
+
+        table.innerHTML += `
+          <tr>
+            <td>${c.name}</td>
+            <td class="${ok ? "positive" : "negative"}">${ok ? "🟢 OK" : "🔴 KO"}</td>
+            <td>${detail}</td>
+          </tr>
+        `;
+      });
+
+    } catch (err) {
+      setText("liveReadinessStatus", "Erreur: " + err.message);
+    }
+  }
+  
   // ==================== REPORTS ====================
   async function loadReports() {
     if (!REPORTS_API_URL || REPORTS_API_URL.includes('TON_REPORTS_API_URL_ICI')) return;
