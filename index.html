@@ -840,6 +840,10 @@
     if (name === "live") loadLiveReadiness();
   }
 
+  if (name === "logs") {
+    loadEngineLogs();
+  }
+
   // ==================== CHARTS ====================
   function clearCanvas(canvas, h = 220) {
     const ctx = canvas.getContext('2d');
