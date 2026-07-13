@@ -667,14 +667,48 @@
 
         <!-- ==================== LOGS ==================== -->
         <section id="view-logs" class="view">
-          <h2>📜 Logs</h2>
-          <div class="card">
-            <div class="label">Prochaine étape</div>
-            <div class="value">Risk logs &amp; execution logs</div>
-            <div class="small">À brancher sur une future logs_api.</div>
-          </div>
-        </section>
+          <h2>📜 Engine Logs</h2>
 
+          <button onclick="loadEngineLogs()">
+            🔄 Refresh Logs
+          </button>
+
+          <div class="cards" style="margin-top:20px;">
+            <div class="card">
+              <div class="label">Events</div>
+              <div class="value" id="logsCount">-</div>
+            </div>
+
+            <div class="card">
+              <div class="label">Last Scan Rejected</div>
+              <div class="value" id="lastScanRejected">-</div>
+            </div>
+
+            <div class="card">
+              <div class="label">Top Rejection Reason</div>
+              <div class="value" id="topRejectionReason">-</div>
+            </div>
+          </div>
+
+          <section>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Source</th>
+                    <th>Event</th>
+                    <th>Severity</th>
+                    <th>Message</th>
+                    <th>Details</th>
+                  </tr>
+                </thead>
+
+                <tbody id="engineLogsTable"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
         <!-- ==================== AI ==================== -->
         <section id="view-ai" class="view">
           <h2>🤖 AI Analyst</h2>
@@ -733,6 +767,7 @@
   const REPORTS_API_URL = "https://iajwc5e9tk.execute-api.eu-north-1.amazonaws.com/default/reports_api";
   const AI_REPORTS_API_URL = "https://mpp5uz83x0.execute-api.eu-north-1.amazonaws.com/default/ai_reports_api";
   const LIVE_READINESS_API_URL = "https://9sumoyianb.execute-api.eu-north-1.amazonaws.com/default/live_readiness_api";
+  const LOGS_API_URL = " https://ruvdwfvfjj.execute-api.eu-north-1.amazonaws.com/default/logs_api";
 
   // ==================== HELPERS ====================
   const money = v => "$" + Number(v || 0).toFixed(2);
