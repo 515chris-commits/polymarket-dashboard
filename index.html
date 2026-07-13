@@ -1296,6 +1296,74 @@ Engine
         "Erreur AI report: " + err.message;
     }
   }
+
+  // ==================== LOGS 
+
+  async function loadEngineLogs() {
+  try {
+    const res = await fetch(LOGS_API_URL);
+    const data = await res.json();
+    const logs = data.logs || [];
+
+    setText("logsCount", logs.length);
+
+    const lastScan = logs.find(
+      log => log.event_type === "scan_completed"
+    );
+
+    if (lastScan) {
+      const details = lastScan.details || {};
+
+      setText(
+        "lastScanRejected",
+        details.rejected_count || 0
+      );
+
+      setText(
+        "topRejectionReason",
+        details.top_rejection_reason || "-"
+      );
+    }
+
+    const table = document.getElementById("engineLogsTable");
+    table.innerHTML = "";
+
+    logs.forEach(log => {
+      const details = log.details || {};
+
+      table.innerHTML += `
+        <tr>
+          <td>
+            ${new Date(
+              Number(log.created_at || 0) * 1000
+            ).toLocaleString()}
+          </td>
+
+          <td>${log.source || "-"}</td>
+
+          <td>${log.event_type || "-"}</td>
+
+          <td class="${
+            log.severity === "ERROR"
+              ? "negative"
+              : "positive"
+          }">
+            ${log.severity || "INFO"}
+          </td>
+
+          <td>${log.message || "-"}</td>
+
+          <td>
+            ${escapeHtml(JSON.stringify(details))}
+          </td>
+        </tr>
+      `;
+    });
+
+  } catch (err) {
+    console.error("Logs error:", err);
+  }
+}
   
   // ==================== DASHBOARD ====================
   async function loadDashboard() {
