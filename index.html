@@ -377,11 +377,13 @@
         <button data-view="portfolio" onclick="showView('portfolio')">📌 Portfolio</button>
         <button data-view="risk" onclick="showView('risk')">🛡 Risk</button>
         <button data-view="live" onclick="showView('live')">🚀 Live Readiness</button>
+        <button data-view="shadow" onclick="showView('shadow')">👻 Shadow</button>
         <button data-view="reports" onclick="showView('reports')">📄 Reports</button>
         <button data-view="learning" onclick="showView('learning')">🧠 Learning</button>
         <button data-view="admin" onclick="showView('admin')">🔐 Admin</button>
         <button data-view="logs" onclick="showView('logs')">📜 Logs</button>
         <button data-view="ai" onclick="showView('ai')">🤖 AI</button>
+        👻
       </div>
     </aside>
 
@@ -532,6 +534,162 @@
           </section>
         </section>
 
+        <!-- ==================== SHADOW ==================== -->
+        <section
+          id="view-shadow"
+          class="view"
+          style="display:none;"
+        >
+          <div class="page-header">
+            <div>
+              <h2>Shadow Live</h2>
+              <p class="muted">
+                Ordres simulés, jamais envoyés au CLOB.
+              </p>
+            </div>
+
+            <button
+              class="button"
+              onclick="loadShadowOrders()"
+            >
+              Refresh
+            </button>
+          </div>
+
+          <div class="cards">
+            <div class="card">
+              <div class="label">
+                Orders Today
+              </div>
+              <div
+                class="value"
+                id="shadowOrdersToday"
+              >
+                -
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="label">
+                Ready
+              </div>
+              <div
+                class="value"
+                id="shadowReady"
+              >
+                -
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="label">
+                Exposure
+              </div>
+              <div
+                class="value"
+                id="shadowExposure"
+              >
+                -
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="label">
+                Estimated Fees
+              </div>
+              <div
+                class="value"
+                id="shadowFees"
+              >
+                -
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="label">
+                Failed
+              </div>
+              <div
+                class="value"
+                id="shadowFailed"
+              >
+                  -
+              </div>
+            </div>
+          </div>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h3>Shadow Orders</h3>
+
+              <select
+                id="shadowDays"
+                onchange="loadShadowOrders()"
+              >
+                <option value="1">
+                  Today
+                </option>
+
+                <option value="7">
+                  Last 7 days
+                </option>
+
+                <option value="30">
+                  Last 30 days
+                </option>
+              </select>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Market</th>
+                    <th>Strategy</th>
+                    <th>Theme</th>
+                    <th>Score</th>
+                    <th>Requested</th>
+                    <th>Estimated</th>
+                    <th>USD</th>
+                    <th>Shares</th>
+                    <th>Fee</th>
+                    <th>Slippage</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+
+                <tbody id="shadowOrdersTable">
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section
+            id="shadowOrderDetails"
+            class="panel"
+            style="display:none;"
+          >
+            <div class="panel-header">
+              <h3>Order Details</h3>
+
+                <button
+                class="button"
+                onclick="closeShadowDetails()"
+              >
+                Close
+              </button>
+            </div>
+
+            <div
+              id="shadowOrderDetailsContent"
+              class="details-grid"
+            >
+            </div>
+          </section>
+        </section>
+        
+        
         <!-- ==================== REPORTS ==================== -->
         <section id="view-reports" class="view">
           <h2>📄 Daily Reports</h2>
@@ -767,7 +925,8 @@
   const REPORTS_API_URL = "https://iajwc5e9tk.execute-api.eu-north-1.amazonaws.com/default/reports_api";
   const AI_REPORTS_API_URL = "https://mpp5uz83x0.execute-api.eu-north-1.amazonaws.com/default/ai_reports_api";
   const LIVE_READINESS_API_URL = "https://9sumoyianb.execute-api.eu-north-1.amazonaws.com/default/live_readiness_api";
-  const LOGS_API_URL = " https://ruvdwfvfjj.execute-api.eu-north-1.amazonaws.com/default/logs_api";
+  const LOGS_API_URL = "https://ruvdwfvfjj.execute-api.eu-north-1.amazonaws.com/default/logs_api";
+  const SHADOW_ORDERS_API_URL = " https://bx97df2201.execute-api.eu-north-1.amazonaws.com/default/shadow_orders_api"
 
   // ==================== HELPERS ====================
   const money = v => "$" + Number(v || 0).toFixed(2);
