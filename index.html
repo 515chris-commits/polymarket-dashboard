@@ -363,6 +363,21 @@
       color: var(--red);
   }
 
+  /* ---------- Slippage ---------- */
+  .slippage-good {
+    color: #34d399;
+    font-weight: 700;
+  }
+
+  .slippage-warning {
+    color: #fbbf24;
+    font-weight: 700;
+  }
+
+  .slippage-bad {
+    color: #f87171;
+    font-weight: 700;
+  }
   /* ---------- Shadow ---------- */
 
   .page-header {
@@ -443,6 +458,7 @@
 </head>
 <body>
   <div class="app">
+
 
     <!-- ==================== SIDEBAR ==================== -->
     <aside>
@@ -1064,6 +1080,20 @@
     return "status-neutral";
   }
 
+ function shadowSlippageClass(value) {
+  const bps = Number(value || 0);
+
+  if (bps < 10) {
+    return "slippage-good";
+  }
+
+  if (bps <= 25) {
+    return "slippage-warning";
+  }
+
+  return "slippage-bad";
+ }
+  
   function setText(id, value) {
     const el = document.getElementById(id);
     if (el) el.innerText = value;
@@ -1675,8 +1705,9 @@
           ?? 0
         );
 
-        const budget = (
-          order.gross_cost
+        const cost = (
+          order.cost
+          ?? order.gross_cost
           ?? order.requested_notional
           ?? order.position_size
           ?? simulation.budget_usd
@@ -1760,7 +1791,7 @@
 
             <td>
               ${shadowNumber(
-                budget,
+                cost,
                 2
               )}
             </td>
@@ -1772,14 +1803,36 @@
               )}
             </td>
 
-            <td>
+            <td
+              title="${
+                shadowNumber(
+                  Number(
+                    order.fee_rate
+                    ?? 0
+                  ) * 100,
+                  2
+                )
+              } %"
+            >
               ${shadowNumber(
                 fees,
                 4
               )}
             </td>
 
-            <td>
+            <td
+              class="${
+                shadowSlippageClass(
+                  slippageBps
+                )
+              }"
+              title="${
+                shadowNumber(
+                  slippageBps / 100,
+                  4
+                )
+              } %"
+            >
               ${shadowNumber(
                 slippageBps,
                 2
