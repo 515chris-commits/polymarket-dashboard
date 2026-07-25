@@ -363,6 +363,31 @@
       color: var(--red);
   }
 
+  /* ---------- Status ---------- */  
+  .status-ready {
+    color: #34d399;
+    font-weight: 700;
+  }
+
+  .status-pending {
+    color: #fbbf24;
+    font-weight: 700;
+  }
+
+  .status-sent {
+    color: #60a5fa;
+    font-weight: 700;
+  }
+
+  .status-failed {
+    color: #ef4444;
+    font-weight: 700;
+  }
+
+  .status-rejected {
+    color: #9ca3af;
+    font-weight: 700;
+  }  
   /* ---------- Slippage ---------- */
   .slippage-good {
     color: #34d399;
@@ -1065,34 +1090,74 @@
 
 
   function shadowStatusClass(state) {
-    if (state === "READY_NOT_SENT") {
-      return "status-ready";
+
+    switch (state) {
+
+      case "READY":
+        return "status-ready";
+
+      case "READY_NOT_SENT":
+        return "status-pending";
+
+      case "SENT":
+        return "status-sent";
+
+      case "FAILED":
+      case "SIMULATION_FAILED":
+        return "status-failed";
+
+      case "REJECTED":
+        return "status-rejected";
+
+      default:
+        return "";
     }
 
-    if (
-      state === "FAILED"
-      || state === "SIMULATION_FAILED"
-      || state === "REJECTED"
-    ) {
-      return "status-failed";
+  }
+
+  function shadowStatusLabel(state) {
+
+    switch (state) {
+
+      case "READY":
+        return "READY";
+
+      case "READY_NOT_SENT":
+        return "READY";
+
+      case "SENT":
+        return "SENT";
+
+      case "FAILED":
+      case "SIMULATION_FAILED":
+        return "FAILED";
+
+      case "REJECTED":
+        return "REJECTED";
+
+      default:
+        return state || "UNKNOWN";
+    }
+  }
+
+ function shadowSlippageClass(state, value) {
+
+    if (state !== "READY") {
+      return "";
     }
 
-    return "status-neutral";
+    const bps = Number(value || 0);
+
+    if (bps < 10) {
+      return "slippage-good";
+    }
+
+    if (bps <= 25) {
+      return "slippage-warning";
+    }
+
+    return "slippage-bad";
   }
-
- function shadowSlippageClass(value) {
-  const bps = Number(value || 0);
-
-  if (bps < 10) {
-    return "slippage-good";
-  }
-
-  if (bps <= 25) {
-    return "slippage-warning";
-  }
-
-  return "slippage-bad";
- }
   
   function setText(id, value) {
     const el = document.getElementById(id);
@@ -1823,6 +1888,7 @@
             <td
               class="${
                 shadowSlippageClass(
+                  state,
                   slippageBps
                 )
               }"
@@ -1851,7 +1917,7 @@
                 shadowStatusClass(state)
               }">
                 ${shadowEscapeHtml(
-                  state
+                  shadowStatusLabel(state)
                 )}
               </span>
             </td>
