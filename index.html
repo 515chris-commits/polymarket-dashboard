@@ -362,7 +362,83 @@
   .learning-confidence-low {
       color: var(--red);
   }
-    
+
+  /* ---------- Shadow ---------- */
+
+  .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 12px;
+  }
+
+  .muted {
+      color: var(--muted);
+  }
+
+  .panel {
+      margin-top: 20px;
+  }
+
+  .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+  }
+
+  .panel-header select {
+      width: auto;
+  }
+
+  .clickable-row {
+      cursor: pointer;
+  }
+
+  .clickable-row:hover {
+      background: rgba(255, 255, 255, .04);
+  }
+
+  .details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+  }
+
+  .detail-item {
+      background: var(--panel-dark);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+  }
+
+  .detail-item span {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+  }
+
+  .status-ready {
+      color: var(--blue);
+      font-weight: bold;
+  }
+
+  .status-failed {
+      color: var(--red);
+      font-weight: bold;
+  }
+
+  .status-neutral {
+      color: var(--text);
+      font-weight: bold;
+  }
+
   </style>
 </head>
 <body>
@@ -383,7 +459,6 @@
         <button data-view="admin" onclick="showView('admin')">🔐 Admin</button>
         <button data-view="logs" onclick="showView('logs')">📜 Logs</button>
         <button data-view="ai" onclick="showView('ai')">🤖 AI</button>
-        👻
       </div>
     </aside>
 
@@ -538,7 +613,6 @@
         <section
           id="view-shadow"
           class="view"
-          style="display:none;"
         >
           <div class="page-header">
             <div>
@@ -918,7 +992,7 @@
   </div>
 
 <script>
-  <! ==================== CONFIG ====================
+  // ==================== CONFIG ====================
   const API_URL = "https://0698sypi76.execute-api.eu-north-1.amazonaws.com/default/dashboard_api";
   const RISK_API_URL = "https://mjqzhv4nm2.execute-api.eu-north-1.amazonaws.com/default/risk_api";
   const ADMIN_API_URL = "https://z06vl4c603.execute-api.eu-north-1.amazonaws.com/default/admin_api";
@@ -926,9 +1000,9 @@
   const AI_REPORTS_API_URL = "https://mpp5uz83x0.execute-api.eu-north-1.amazonaws.com/default/ai_reports_api";
   const LIVE_READINESS_API_URL = "https://9sumoyianb.execute-api.eu-north-1.amazonaws.com/default/live_readiness_api";
   const LOGS_API_URL = "https://ruvdwfvfjj.execute-api.eu-north-1.amazonaws.com/default/logs_api";
-  const SHADOW_ORDERS_API_URL = " https://bx97df2201.execute-api.eu-north-1.amazonaws.com/default/shadow_orders_api"
+  const SHADOW_ORDERS_API_URL = "https://bx97df2201.execute-api.eu-north-1.amazonaws.com/default/shadow_orders_api";
 
-  <! ==================== HELPERS ====================
+  // ==================== HELPERS ====================
   const money = v => "$" + Number(v || 0).toFixed(2);
   const price = v => Number(v || 0).toFixed(4);
   const percent = v => (Number(v || 0) * 100).toFixed(1) + "%";
@@ -1038,7 +1112,7 @@
     .replaceAll("'", "&#039;");
 }
 
-  <! ==================== NAVIGATION ====================
+  // ==================== NAVIGATION ====================
   function showView(name) {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
@@ -1051,12 +1125,10 @@
 
     if (name === 'reports') loadReports();
     if (name === 'risk') loadRiskConfig();
-    if (name === "ai") loadAIReports();
-    if (name === "live") loadLiveReadiness();
-  }
-
-  if (name === "logs") {
-    loadEngineLogs();
+    if (name === 'ai') loadAIReports();
+    if (name === 'live') loadLiveReadiness();
+    if (name === 'logs') loadEngineLogs();
+    if (name === 'shadow') loadShadowOrders();
   }
 
   // ==================== CHARTS ====================
@@ -1222,7 +1294,7 @@
         Confidence
       </div>
       <div class="${confidenceClass(item.confidence)}" style="font-size:18px;font-weight:bold;">
-        ${item.confidence.toUpperCase()}
+        ${(item.confidence || '-').toUpperCase()}
       </div>
     `;
   }
@@ -1399,7 +1471,7 @@
     }
   }
 
-  <! ==================== SHADOW ORDERS ====================
+  // ==================== SHADOW ORDERS ====================
 
   let shadowOrdersCache = [];
 
@@ -1885,8 +1957,8 @@
       "shadowOrderDetails"
     ).style.display = "none";
   }
-  
-  <! ==================== REPORTS ====================
+
+  // ==================== REPORTS ====================
   async function loadReports() {
     if (!REPORTS_API_URL || REPORTS_API_URL.includes('TON_REPORTS_API_URL_ICI')) return;
 
@@ -2012,7 +2084,7 @@ Engine
     }
   }
 
-  // ==================== LOGS 
+  // ==================== LOGS ====================
 
   async function loadEngineLogs() {
   try {
