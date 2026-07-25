@@ -387,7 +387,22 @@
   .status-rejected {
     color: #9ca3af;
     font-weight: 700;
-  }  
+  }
+
+  /* ---------- Shadow rows ---------- */
+
+  tr.shadow-ready {
+    background: rgba(52, 211, 153, 0.03);
+  }
+
+  tr.shadow-failed {
+    background: rgba(239, 68, 68, 0.03);
+  }
+
+  tr.shadow-ready:hover,
+  tr.shadow-failed:hover {
+    filter: brightness(1.08);
+  }
   /* ---------- Slippage ---------- */
   .slippage-good {
     color: #34d399;
@@ -1804,8 +1819,8 @@
 
         return `
           <tr
-            class="clickable-row"
-            onclick="showShadowDetails(${index})"
+              class="clickable-row shadow-${state.toLowerCase()}"
+              onclick="showShadowDetails(${index})"
           >
             <td>
               ${shadowDate(
