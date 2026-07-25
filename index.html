@@ -1539,7 +1539,9 @@
         "shadowExposure"
       ).textContent = (
         `${shadowNumber(
-          summary.estimated_volume_usd
+          summary.exposure_usd
+          ?? summary.estimated_volume_usd
+          ?? 0
         )} USD`
       );
 
@@ -1547,7 +1549,9 @@
         "shadowFees"
       ).textContent = (
         `${shadowNumber(
-          summary.estimated_fees_usd,
+          summary.fees_usd
+          ?? summary.estimated_fees_usd
+          ?? 0,
           4
         )} USD`
       );
