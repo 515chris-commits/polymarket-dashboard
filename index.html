@@ -723,9 +723,9 @@
                     <th>Strategy</th>
                     <th>Theme</th>
                     <th>Score</th>
-                    <th>Requested</th>
-                    <th>Estimated</th>
-                    <th>USD</th>
+                    <th>Entry</th>
+                    <th>Filled</th>
+                    <th>Cost</th>
                     <th>Shares</th>
                     <th>Fee</th>
                     <th>Slippage</th>
@@ -1786,7 +1786,14 @@
               )} bps
             </td>
 
-            <td>
+            <td
+              title="${
+                shadowEscapeHtml(
+                  order.failure_reason
+                  || ""
+                )
+              }"
+            >
               <span class="${
                 shadowStatusClass(state)
               }">
