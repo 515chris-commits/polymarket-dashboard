@@ -1625,10 +1625,85 @@
           || {}
         );
 
+        const statusValue = order.status;
+
         const state = (
           order.state
-          || order.status?.state
+          || (
+            typeof statusValue === "object"
+            ? statusValue?.state
+            : statusValue
+          )
           || "UNKNOWN"
+        );
+
+        const question = (
+          order.title
+          || market.question
+          || "-"
+        );
+
+        const strategy = (
+          order.strategy
+          || decision.strategy
+          || "-"
+        );
+
+        const theme = (
+          order.theme
+          || decision.theme
+          || "-"
+        );
+
+        const score = (
+          order.score
+          ?? decision.score
+          ?? 0
+        );
+
+        const requestedPrice = (
+          order.requested_price
+          ?? order.price
+          ?? simulation.requested_price
+          ?? execution.limit_price
+          ?? 0
+        );
+
+        const executedPrice = (
+          order.executed_price
+          ?? simulation.estimated_price
+          ?? 0
+        );
+
+        const budget = (
+          order.gross_cost
+          ?? order.requested_notional
+          ?? order.position_size
+          ?? simulation.budget_usd
+          ?? execution.usd
+          ?? 0
+        );
+
+        const shares = (
+          order.shares
+          ?? simulation.estimated_shares
+          ?? execution.shares
+          ?? 0
+        );
+
+        const fees = (
+          order.fees
+          ?? simulation.estimated_fee_usd
+          ?? 0
+        );
+
+        const slippageBps = (
+          order.slippage_rate != null
+            ? Number(order.slippage_rate) * 10000
+            : (
+                simulation.slippage_bps
+                ?? 0
+              )
         );
 
         return `
@@ -1643,78 +1718,70 @@
             </td>
 
             <td title="${
-              shadowEscapeHtml(
-                market.question
-              )
+              shadowEscapeHtml(question)
             }">
               ${shadowEscapeHtml(
-                market.question
-                || "-"
+                question
               )}
             </td>
 
             <td>
               ${shadowEscapeHtml(
-                decision.strategy
-                || "-"
+                strategy
               )}
             </td>
 
             <td>
               ${shadowEscapeHtml(
-                decision.theme
-                || "-"
+                theme
               )}
             </td>
 
             <td>
               ${shadowNumber(
-                decision.score,
+                score,
                 0
               )}
             </td>
 
             <td>
               ${shadowNumber(
-                simulation.requested_price
-                ?? execution.limit_price,
+                requestedPrice,
                 4
               )}
             </td>
 
             <td>
               ${shadowNumber(
-                simulation.estimated_price,
+                executedPrice,
                 4
               )}
             </td>
 
             <td>
               ${shadowNumber(
-                simulation.budget_usd
-                ?? execution.usd,
+                budget,
                 2
               )}
             </td>
 
             <td>
               ${shadowNumber(
-                simulation.estimated_shares
-                ?? execution.shares,
+                shares,
                 4
               )}
             </td>
 
             <td>
               ${shadowNumber(
-                simulation.estimated_fee_usd,
+                fees,
                 4
               )}
             </td>
 
             <td>
               ${shadowNumber(
-                simulation.slippage_bps,
+                slippageBps,
                 2
               )} bps
             </td>
@@ -1733,235 +1800,6 @@
       })
       .join("");
   }
-
-  function showShadowDetails(index) {
-  const order = (
-      shadowOrdersCache[index]
-    );
-
-    if (!order) {
-      return;
-    }
-
-    const market = (
-      order.market
-      || {}
-    );
-
-    const decision = (
-      order.decision
-      || {}
-    );
-
-    const execution = (
-      order.execution
-      || {}
-    );
-
-    const simulation = (
-      execution.simulation
-      || {}
-    );
-
-    const metrics = (
-      order.metrics
-      || {}
-    );
-
-    const state = (
-      order.state
-      || order.status?.state
-      || "UNKNOWN"
-    );
-
-    const container = document.getElementById(
-      "shadowOrderDetailsContent"
-    );
-
-    container.innerHTML = `
-      <div class="detail-item">
-        <span>Market</span>
-        <strong>
-          ${shadowEscapeHtml(
-            market.question
-            || "-"
-          )}
-        </strong>
-      </div>
-
-      <div class="detail-item">
-        <span>Order ID</span>
-        <strong>
-          ${shadowEscapeHtml(
-            order.order_id
-            || "-"
-          )}
-        </strong>
-      </div>
-
-      <div class="detail-item">
-        <span>Status</span>
-        <strong class="${
-          shadowStatusClass(state)
-        }">
-          ${shadowEscapeHtml(state)}
-        </strong>
-      </div>
-
-      <div class="detail-item">
-        <span>Strategy</span>
-        <strong>
-          ${shadowEscapeHtml(
-            decision.strategy
-            || "-"
-          )}
-        </strong>
-      </div>
-
-      <div class="detail-item">
-        <span>Theme</span>
-        <strong>
-          ${shadowEscapeHtml(
-            decision.theme
-            || "-"
-          )}
-        </strong>
-      </div>
-
-      <div class="detail-item">
-        <span>Score</span>
-        <strong>
-          ${shadowNumber(
-            decision.score,
-            0
-          )}
-        </strong>
-      </div>
-
-      <div class="detail-item">
-        <span>Requested Price</span>
-        <strong>
-          ${shadowNumber(
-            simulation.requested_price
-            ?? execution.limit_price,
-            6
-          )}
-        </strong>
-      </div>
-
-      <div class="detail-item">
-        <span>Estimated Price</span>
-        <strong>
-          ${shadowNumber(
-            simulation.estimated_price,
-            6
-          )}
-        </strong>
-      </div>
-
-      <div class="detail-item">
-        <span>Budget</span>
-        <strong>
-          ${shadowNumber(
-            simulation.budget_usd
-            ?? execution.usd,
-            2
-          )} USD
-        </strong>
-      </div>
-
-      <div class="detail-item">
-        <span>Estimated Shares</span>
-        <strong>
-          ${shadowNumber(
-            simulation.estimated_shares
-            ?? execution.shares,
-            4
-          )}
-        </strong>
-      </div>
-
-      <div class="detail-item">
-        <span>Estimated Fee</span>
-        <strong>
-          ${shadowNumber(
-            simulation.estimated_fee_usd,
-            4
-          )} USD
-        </strong>
-      </div>
-
-      <div class="detail-item">
-        <span>Slippage</span>
-        <strong>
-          ${shadowNumber(
-            simulation.slippage_bps,
-            2
-          )} bps
-        </strong>
-      </div>
-
-      <div class="detail-item">
-        <span>Liquidity</span>
-        <strong>
-          ${shadowNumber(
-            metrics.liquidity,
-            2
-          )} USD
-        </strong>
-      </div>
-
-      <div class="detail-item">
-        <span>Volume 24h</span>
-        <strong>
-          ${shadowNumber(
-            metrics.volume_24h,
-            2
-          )} USD
-        </strong>
-      </div>
-
-      <div class="detail-item">
-        <span>Move</span>
-        <strong>
-          ${shadowNumber(
-            Number(metrics.move || 0)
-            * 100,
-            2
-          )} %
-        </strong>
-      </div>
-
-      <div class="detail-item">
-        <span>Days Left</span>
-        <strong>
-          ${shadowNumber(
-            metrics.days_left,
-            0
-          )}
-        </strong>
-      </div>
-    `;
-
-    const details = document.getElementById(
-      "shadowOrderDetails"
-    );
-
-    details.style.display = "block";
-
-    details.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-  }
-
-
-  function closeShadowDetails() {
-    document.getElementById(
-      "shadowOrderDetails"
-    ).style.display = "none";
-  }
-
   // ==================== REPORTS ====================
   async function loadReports() {
     if (!REPORTS_API_URL || REPORTS_API_URL.includes('TON_REPORTS_API_URL_ICI')) return;
