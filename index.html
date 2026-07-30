@@ -1359,6 +1359,226 @@
     .replaceAll("'", "&#039;");
 }
 
+  function renderShadowOpenPositions(positions) {
+    const table = document.getElementById(
+      "shadowPortfolioOpenTable"
+    );
+
+    if (!table) {
+      return;
+    }
+
+    if (!positions.length) {
+      table.innerHTML = `
+        <tr>
+          <td colspan="9">
+            No open Shadow Positions.
+          </td>
+        </tr>
+      `;
+
+      return;
+    }
+
+    table.innerHTML = positions
+      .map(position => {
+        const pnl = Number(
+          position.pnl || 0
+        );
+
+        const pnlPercent = Number(
+          position.pnl_percent || 0
+        );
+
+        const status = String(
+          position.status || "OPEN"
+        ).toUpperCase();
+
+        return `
+          <tr>
+            <td title="${shadowEscapeHtml(
+              position.title || ""
+            )}">
+              ${shadowEscapeHtml(
+                position.title || "-"
+              )}
+            </td>
+
+            <td>
+              ${shadowEscapeHtml(
+                position.strategy || "-"
+              )}
+            </td>
+
+            <td>
+              ${shadowEscapeHtml(
+                position.theme || "-"
+              )}
+            </td>
+
+            <td>
+              ${shadowNumber(
+                position.entry_price,
+                4
+              )}
+            </td>
+
+            <td>
+              ${shadowNumber(
+                position.current_price,
+                4
+              )}
+            </td>
+
+            <td>
+              ${shadowNumber(
+                position.shares,
+                4
+              )}
+            </td>
+
+            <td class="${pnlClass(pnl)}">
+              ${shadowNumber(
+                pnl,
+                2
+              )} USD
+            </td>
+
+            <td class="${pnlClass(pnlPercent)}">
+              ${shadowNumber(
+                pnlPercent,
+                2
+              )} %
+            </td>
+
+            <td>
+              <span class="badge open">
+                ${shadowEscapeHtml(status)}
+              </span>
+            </td>
+          </tr>
+        `;
+      })
+      .join("");
+  }
+
+  function renderShadowClosedPositions(positions) {
+    const table = document.getElementById(
+      "shadowPortfolioClosedTable"
+    );
+
+    if (!table) {
+      return;
+    }
+
+    if (!positions.length) {
+      table.innerHTML = `
+        <tr>
+          <td colspan="8">
+            No closed Shadow Positions.
+          </td>
+        </tr>
+      `;
+
+      return;
+    }
+
+    table.innerHTML = positions
+      .map(position => {
+        const pnl = Number(
+          position.realized_pnl
+          ?? position.pnl
+          ?? 0
+        );
+
+        const pnlPercent = Number(
+          position.realized_pnl_percent
+          ?? position.pnl_percent
+          ?? 0
+        );
+
+        const reason = String(
+          position.close_reason || "-"
+        ).toUpperCase();
+
+        return `
+          <tr>
+            <td title="${shadowEscapeHtml(
+              position.title || ""
+            )}">
+              ${shadowEscapeHtml(
+                position.title || "-"
+              )}
+            </td>
+
+            <td class="${shadowCloseReasonClass(reason)}">
+              ${shadowEscapeHtml(reason)}
+            </td>
+
+            <td>
+              ${shadowNumber(
+                position.entry_price,
+                4
+              )}
+            </td>
+
+            <td>
+              ${shadowNumber(
+                position.exit_price
+                ?? position.current_price,
+                4
+              )}
+            </td>
+
+            <td class="${pnlClass(pnl)}">
+              ${shadowNumber(
+                pnl,
+                2
+              )} USD
+            </td>
+
+            <td class="${pnlClass(pnlPercent)}">
+              ${shadowNumber(
+                pnlPercent,
+                2
+              )} %
+            </td>
+
+            <td>
+              ${shadowNumber(
+                position.exit_value
+                ?? position.current_value,
+                2
+              )} USD
+            </td>
+
+            <td>
+              ${shadowDate(
+                position.closed_at
+              )}
+            </td>
+          </tr>
+        `;
+      })
+      .join("");
+  }
+
+  function shadowCloseReasonClass(reason) {
+  switch (reason) {
+    case "TAKE_PROFIT":
+      return "positive";
+
+    case "STOP_LOSS":
+      return "negative";
+
+    case "TIME_EXIT":
+      return "slippage-warning";
+
+    default:
+      return "";
+  }
+}
+
   // ==================== NAVIGATION ====================
   function showView(name) {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -2271,7 +2491,53 @@ Engine
     console.error("Logs error:", err);
   }
 }
-  
+
+// =============== RENDER SHADOW PORTFOLIO =============
+function renderShadowPortfolio(shadowData) {
+  const shadow = shadowData || {};
+  const portfolio = shadow.portfolio || {};
+  const openPositions = shadow.open_positions || [];
+  const closedPositions = shadow.closed_positions || [];
+
+  setText(
+    "shadowPortfolioOpen",
+    portfolio.open_positions ?? openPositions.length
+  );
+
+  setText(
+    "shadowPortfolioClosed",
+    portfolio.closed_positions ?? closedPositions.length
+  );
+
+  setText(
+    "shadowPortfolioExposure",
+    `${shadowNumber(portfolio.exposure, 2)} USD`
+  );
+
+  setMoneyCard(
+    "shadowPortfolioUnrealized",
+    portfolio.unrealized_pnl || 0
+  );
+
+  setMoneyCard(
+    "shadowPortfolioRealized",
+    portfolio.realized_pnl || 0
+  );
+
+  setMoneyCard(
+    "shadowPortfolioTotal",
+    portfolio.total_pnl || 0
+  );
+
+  renderShadowOpenPositions(
+    openPositions
+  );
+
+  renderShadowClosedPositions(
+    closedPositions
+  );
+}
+   
   // ==================== DASHBOARD ====================
   async function loadDashboard() {
     try {
