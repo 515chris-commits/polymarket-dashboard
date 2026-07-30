@@ -1579,6 +1579,7 @@
   }
 }
 
+  
   // ==================== NAVIGATION ====================
   function showView(name) {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -2550,6 +2551,7 @@ function renderShadowPortfolio(shadowData) {
       const analytics = data.advanced_analytics || {};
       const learningSummary = data.learning_summary || {};
       const rollingMetrics = data.rolling_metrics || [];
+      const shadow = data.shadow || {};
 
       setText('openPositions', portfolio.open_positions || 0);
       setText('exposure', money(portfolio.exposure));
@@ -2576,9 +2578,33 @@ function renderShadowPortfolio(shadowData) {
       renderGroupedTable('themeTable', data.pnl_by_theme || {});
       renderDailyPnl(analytics.pnl_by_day || {});
 
-      renderLearningSummary(learningSummary);
+      renderPositions(data.positions || []);
+      renderHistory(data.history_7d || []);
+      renderGroupedTable(
+        "strategyTable",
+        data.pnl_by_strategy || {}
+      );
+      renderGroupedTable(
+        "themeTable",
+        data.pnl_by_theme || {}
+      );
+      renderDailyPnl(
+        analytics.pnl_by_day || {}
+      );
 
-      setText('lastUpdate', 'Maj: ' + new Date().toLocaleTimeString());
+      renderLearningSummary(
+        learningSummary
+      );
+
+      renderShadowPortfolio(
+        shadow
+      );
+
+      setText(
+        "lastUpdate",
+        "Maj: " + new Date().toLocaleTimeString()
+      );
+
     } catch (err) {
       setText('lastUpdate', 'Erreur: ' + err.message);
     }
