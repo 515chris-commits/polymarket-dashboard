@@ -499,6 +499,55 @@
 <body>
   <div class="app">
 
+   /* ---------- Shadow Portfolio refinements ---------- */
+
+  .shadow-market {
+    display: block;
+    max-width: 320px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .shadow-pnl-strong {
+    font-weight: 700;
+  }
+
+  .shadow-reason-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .shadow-reason-take-profit {
+    background: rgba(34, 197, 94, .15);
+    color: var(--green);
+  }
+
+  .shadow-reason-stop-loss {
+    background: rgba(239, 68, 68, .15);
+    color: var(--red);
+  }
+
+  .shadow-reason-time-exit {
+    background: rgba(250, 204, 21, .15);
+    color: var(--yellow);
+  }
+
+  .shadow-reason-neutral {
+    background: rgba(148, 163, 184, .15);
+    color: var(--muted);
+  }
+
+  .shadow-card-subvalue {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  }
+
 
     <!-- ==================== SIDEBAR ==================== -->
     <aside>
@@ -854,6 +903,13 @@
               <div
                 class="value"
                 id="shadowPortfolioExposure"
+              >
+                -
+              </div>
+
+              <div
+                class="shadow-card-subvalue"
+                id="shadowPortfolioExposureCount"
               >
                 -
               </div>
@@ -1399,9 +1455,11 @@
             <td title="${shadowEscapeHtml(
               position.title || ""
             )}">
-              ${shadowEscapeHtml(
-                position.title || "-"
-              )}
+              <span class="shadow-market">
+                ${shadowEscapeHtml(
+                  position.title || "-"
+                )}
+              </span>
             </td>
 
             <td>
@@ -1437,14 +1495,14 @@
               )}
             </td>
 
-            <td class="${pnlClass(pnl)}">
+            <td class="${pnlClass(pnl)} shadow-pnl-strong">
               ${shadowNumber(
                 pnl,
                 2
               )} USD
             </td>
 
-            <td class="${pnlClass(pnlPercent)}">
+            <td class="${pnlClass(pnlPercent)} hadow-pnl-strong">
               ${shadowNumber(
                 pnlPercent,
                 2
@@ -1507,12 +1565,20 @@
               position.title || ""
             )}">
               ${shadowEscapeHtml(
-                position.title || "-"
-              )}
+                <span class="shadow-market">
+                  ${shadowEscapeHtml(
+                    position.title || "-"
+                  )}
+                </span>
             </td>
 
-            <td class="${shadowCloseReasonClass(reason)}">
-              ${shadowEscapeHtml(reason)}
+            <td>
+              <span class="
+                shadow-reason-badge
+                ${shadowCloseReasonBadgeClass(reason)}
+              ">
+                ${shadowEscapeHtml(reason)}
+              </span>
             </td>
 
             <td>
@@ -1530,14 +1596,14 @@
               )}
             </td>
 
-            <td class="${pnlClass(pnl)}">
+            <td class="${pnlClass(pnl)} shadow-pnl-strong">
               ${shadowNumber(
                 pnl,
                 2
               )} USD
             </td>
 
-            <td class="${pnlClass(pnlPercent)}">
+            <td class="${pnlClass(pnlPercent)} shadow-pnl-strong">
               ${shadowNumber(
                 pnlPercent,
                 2
@@ -1579,6 +1645,21 @@
   }
 }
 
+  function shadowCloseReasonBadgeClass(reason) {
+  switch (reason) {
+    case "TAKE_PROFIT":
+      return "shadow-reason-take-profit";
+
+    case "STOP_LOSS":
+      return "shadow-reason-stop-loss";
+
+    case "TIME_EXIT":
+      return "shadow-reason-time-exit";
+
+    default:
+      return "shadow-reason-neutral";
+  }
+}
   
   // ==================== NAVIGATION ====================
   function showView(name) {
@@ -2513,6 +2594,15 @@ function renderShadowPortfolio(shadowData) {
   setText(
     "shadowPortfolioExposure",
     `${shadowNumber(portfolio.exposure, 2)} USD`
+  const openCount = Number(
+    portfolio.open_positions
+    ?? openPositions.length
+    ?? 0
+  );
+
+  setText(
+    "shadowPortfolioExposureCount",
+    `${openCount} position${openCount === 1 ? "" : "s"}`
   );
 
   setMoneyCard(
