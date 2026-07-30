@@ -114,7 +114,8 @@
     .subtitle,
     .refresh,
     .small,
-    .label {
+    .label,
+    .muted {
       color: var(--muted);
     }
 
@@ -237,7 +238,7 @@
       gap: 20px;
     }
 
-    button {
+    button, .button {
       padding: 10px 14px;
       border-radius: 10px;
       border: 1px solid var(--border);
@@ -247,7 +248,7 @@
       margin: 4px 6px 4px 0;
     }
 
-    button:hover {
+    button:hover, .button:hover {
       background: #0b1220;
     }
 
@@ -331,139 +332,84 @@
       }
     }
 
-    /* ==========================
-   Learning Center
-  ========================== */
+    /* ---------- Learning Center ---------- */
 
-  #view-learning .value {
+    #view-learning .value {
       font-size: 22px;
       line-height: 1.25;
-  }
+    }
 
-  #view-learning .learning-name {
+    #view-learning .learning-name {
       font-size: 24px;
       font-weight: bold;
-  }
+    }
 
-  #view-learning .learning-label {
+    #view-learning .learning-label {
       color: var(--muted);
       font-size: 13px;
       margin-top: 10px;
-  }
+    }
 
-  .learning-confidence-high {
-      color: var(--green);
-  }
+    .learning-confidence-high { color: var(--green); }
+    .learning-confidence-medium { color: var(--yellow); }
+    .learning-confidence-low { color: var(--red); }
 
-  .learning-confidence-medium {
-      color: var(--yellow);
-  }
+    /* ---------- Status ---------- */  
+    .status-ready { color: #34d399; font-weight: 700; }
+    .status-pending { color: #fbbf24; font-weight: 700; }
+    .status-sent { color: #60a5fa; font-weight: 700; }
+    .status-failed { color: #ef4444; font-weight: 700; }
+    .status-rejected { color: #9ca3af; font-weight: 700; }
+    .status-neutral { color: var(--text); font-weight: 700; }
 
-  .learning-confidence-low {
-      color: var(--red);
-  }
+    /* ---------- Shadow rows ---------- */
 
-  /* ---------- Status ---------- */  
-  .status-ready {
-    color: #34d399;
-    font-weight: 700;
-  }
+    tr.shadow-ready { background: rgba(52, 211, 153, 0.02); }
+    tr.shadow-failed { background: rgba(239, 68, 68, 0.02); }
 
-  .status-pending {
-    color: #fbbf24;
-    font-weight: 700;
-  }
+    tr.shadow-ready:hover,
+    tr.shadow-failed:hover {
+      filter: brightness(1.08);
+    }
 
-  .status-sent {
-    color: #60a5fa;
-    font-weight: 700;
-  }
+    /* ---------- Slippage ---------- */
+    .slippage-good { color: #34d399; font-weight: 700; }
+    .slippage-warning { color: #fbbf24; font-weight: 700; }
+    .slippage-bad { color: #f87171; font-weight: 700; }
 
-  .status-failed {
-    color: #ef4444;
-    font-weight: 700;
-  }
+    /* ---------- Panels & Details ---------- */
 
-  .status-rejected {
-    color: #9ca3af;
-    font-weight: 700;
-  }
-
-  /* ---------- Shadow rows ---------- */
-
-  tr.shadow-ready {
-    background: rgba(52, 211, 153, 0.02);
-  }
-
-  tr.shadow-failed {
-    background: rgba(239, 68, 68, 0.02);
-  }
-
-  tr.shadow-ready:hover,
-  tr.shadow-failed:hover {
-    filter: brightness(1.08);
-  }
-  /* ---------- Slippage ---------- */
-  .slippage-good {
-    color: #34d399;
-    font-weight: 700;
-  }
-
-  .slippage-warning {
-    color: #fbbf24;
-    font-weight: 700;
-  }
-
-  .slippage-bad {
-    color: #f87171;
-    font-weight: 700;
-  }
-  /* ---------- Shadow ---------- */
-
-  .page-header {
+    .page-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       flex-wrap: wrap;
       gap: 12px;
-  }
+    }
 
-  .muted {
-      color: var(--muted);
-  }
+    .panel { margin-top: 20px; }
 
-  .panel {
-      margin-top: 20px;
-  }
-
-  .panel-header {
+    .panel-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 10px;
       margin-bottom: 14px;
-  }
+    }
 
-  .panel-header select {
-      width: auto;
-  }
+    .panel-header select { width: auto; }
 
-  .clickable-row {
-      cursor: pointer;
-  }
+    .clickable-row { cursor: pointer; }
+    .clickable-row:hover { background: rgba(255, 255, 255, .04); }
 
-  .clickable-row:hover {
-      background: rgba(255, 255, 255, .04);
-  }
-
-  .details-grid {
+    .details-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 14px;
-  }
+    }
 
-  .detail-item {
+    .detail-item {
       background: var(--panel-dark);
       border: 1px solid var(--border);
       border-radius: 10px;
@@ -471,83 +417,49 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
-  }
+    }
 
-  .detail-item span {
+    .detail-item span {
       color: var(--muted);
       font-size: 12px;
       text-transform: uppercase;
-  }
+    }
 
-  .status-ready {
-      color: var(--green);
-      font-weight: bold;
-  }
+    /* ---------- Shadow Portfolio refinements ---------- */
 
-  .status-failed {
-      color: var(--red);
-      font-weight: bold;
-  }
+    .shadow-market {
+      display: block;
+      max-width: 320px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
-  .status-neutral {
-      color: var(--text);
-      font-weight: bold;
-  }
+    .shadow-pnl-strong { font-weight: 700; }
 
+    .shadow-reason-badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .shadow-reason-take-profit { background: rgba(34, 197, 94, .15); color: var(--green); }
+    .shadow-reason-stop-loss { background: rgba(239, 68, 68, .15); color: var(--red); }
+    .shadow-reason-time-exit { background: rgba(250, 204, 21, .15); color: var(--yellow); }
+    .shadow-reason-neutral { background: rgba(148, 163, 184, .15); color: var(--muted); }
+
+    .shadow-card-subvalue {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
   </style>
 </head>
 <body>
   <div class="app">
-
-   /* ---------- Shadow Portfolio refinements ---------- */
-
-  .shadow-market {
-    display: block;
-    max-width: 320px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .shadow-pnl-strong {
-    font-weight: 700;
-  }
-
-  .shadow-reason-badge {
-    display: inline-block;
-    padding: 5px 10px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 700;
-    white-space: nowrap;
-  }
-
-  .shadow-reason-take-profit {
-    background: rgba(34, 197, 94, .15);
-    color: var(--green);
-  }
-
-  .shadow-reason-stop-loss {
-    background: rgba(239, 68, 68, .15);
-    color: var(--red);
-  }
-
-  .shadow-reason-time-exit {
-    background: rgba(250, 204, 21, .15);
-    color: var(--yellow);
-  }
-
-  .shadow-reason-neutral {
-    background: rgba(148, 163, 184, .15);
-    color: var(--muted);
-  }
-
-  .shadow-card-subvalue {
-  margin-top: 8px;
-  color: var(--muted);
-  font-size: 13px;
-  }
-
 
     <!-- ==================== SIDEBAR ==================== -->
     <aside>
@@ -669,7 +581,6 @@
         </section>
 
         <!-- ==================== LIVE READINESS ==================== -->
-
         <section id="view-live" class="view">
           <h2>🚀 Live Readiness</h2>
 
@@ -715,85 +626,40 @@
         </section>
 
         <!-- ==================== SHADOW ==================== -->
-        <section
-          id="view-shadow"
-          class="view"
-        >
+        <section id="view-shadow" class="view">
           <div class="page-header">
             <div>
               <h2>Shadow Live</h2>
-              <p class="muted">
-                Ordres simulés, jamais envoyés au CLOB.
-              </p>
+              <p class="muted">Ordres simulés, jamais envoyés au CLOB.</p>
             </div>
 
-            <button
-              class="button"
-              onclick="loadShadowOrders()"
-            >
-              Refresh
-            </button>
+            <button class="button" onclick="loadShadowOrders()">Refresh</button>
           </div>
 
           <div class="cards">
             <div class="card">
-              <div class="label">
-                Orders Today
-              </div>
-              <div
-                class="value"
-                id="shadowOrdersToday"
-              >
-                -
-              </div>
+              <div class="label">Orders Today</div>
+              <div class="value" id="shadowOrdersToday">-</div>
             </div>
 
             <div class="card">
-              <div class="label">
-                Ready
-              </div>
-              <div
-                class="value"
-                id="shadowReady"
-              >
-                -
-              </div>
+              <div class="label">Ready</div>
+              <div class="value" id="shadowReady">-</div>
             </div>
 
             <div class="card">
-              <div class="label">
-                Exposure
-              </div>
-              <div
-                class="value"
-                id="shadowExposure"
-              >
-                -
-              </div>
+              <div class="label">Exposure</div>
+              <div class="value" id="shadowExposure">-</div>
             </div>
 
             <div class="card">
-              <div class="label">
-                Estimated Fees
-              </div>
-              <div
-                class="value"
-                id="shadowFees"
-              >
-                -
-              </div>
+              <div class="label">Estimated Fees</div>
+              <div class="value" id="shadowFees">-</div>
             </div>
 
             <div class="card">
-              <div class="label">
-                Failed
-              </div>
-              <div
-                class="value"
-                id="shadowFailed"
-              >
-                  -
-              </div>
+              <div class="label">Failed</div>
+              <div class="value" id="shadowFailed">-</div>
             </div>
           </div>
 
@@ -801,21 +667,10 @@
             <div class="panel-header">
               <h3>Shadow Orders</h3>
 
-              <select
-                id="shadowDays"
-                onchange="loadShadowOrders()"
-              >
-                <option value="1">
-                  Today
-                </option>
-
-                <option value="7">
-                  Last 7 days
-                </option>
-
-                <option value="30">
-                  Last 30 days
-                </option>
+              <select id="shadowDays" onchange="loadShadowOrders()">
+                <option value="1">Today</option>
+                <option value="7">Last 7 days</option>
+                <option value="30">Last 30 days</option>
               </select>
             </div>
 
@@ -837,182 +692,110 @@
                     <th>Status</th>
                   </tr>
                 </thead>
-
-                <tbody id="shadowOrdersTable">
-                </tbody>
+                <tbody id="shadowOrdersTable"></tbody>
               </table>
             </div>
           </section>
 
-          <section
-            id="shadowOrderDetails"
-            class="panel"
-            style="display:none;"
-          >
+          <section id="shadowOrderDetails" class="panel" style="display:none;">
             <div class="panel-header">
               <h3>Order Details</h3>
-
-                <button
-                class="button"
-                onclick="closeShadowDetails()"
-              >
-                Close
-              </button>
+              <button class="button" onclick="closeShadowDetails()">Close</button>
             </div>
 
-            <div
-              id="shadowOrderDetailsContent"
-              class="details-grid"
-            >
+            <div id="shadowOrderDetailsContent" class="details-grid"></div>
+          </section>
+
+          <!-- Shadow Portfolio Section -->
+          <section class="panel">
+            <div class="panel-header">
+              <h3>📈 Shadow Portfolio</h3>
+            </div>
+
+            <div class="cards">
+              <div class="card">
+                <div class="label">Open Positions</div>
+                <div class="value" id="shadowPortfolioOpen">-</div>
+              </div>
+
+              <div class="card">
+                <div class="label">Closed Positions</div>
+                <div class="value" id="shadowPortfolioClosed">-</div>
+              </div>
+
+              <div class="card">
+                <div class="label">Exposure</div>
+                <div class="value" id="shadowPortfolioExposure">-</div>
+                <div class="shadow-card-subvalue" id="shadowPortfolioExposureCount">-</div>
+              </div>
+
+              <div class="card">
+                <div class="label">Unrealized P&amp;L</div>
+                <div class="value" id="shadowPortfolioUnrealized">-</div>
+              </div>
+
+              <div class="card">
+                <div class="label">Realized P&amp;L</div>
+                <div class="value" id="shadowPortfolioRealized">-</div>
+              </div>
+
+              <div class="card">
+                <div class="label">Total P&amp;L</div>
+                <div class="value" id="shadowPortfolioTotal">-</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h3>📌 Open Shadow Positions</h3>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Market</th>
+                    <th>Strategy</th>
+                    <th>Theme</th>
+                    <th>Entry</th>
+                    <th>Current</th>
+                    <th>Shares</th>
+                    <th>P&amp;L</th>
+                    <th>P&amp;L %</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="shadowPortfolioOpenTable"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h3>📚 Closed Shadow Positions</h3>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Market</th>
+                    <th>Reason</th>
+                    <th>Entry</th>
+                    <th>Exit</th>
+                    <th>P&amp;L</th>
+                    <th>P&amp;L %</th>
+                    <th>Realized</th>
+                    <th>Closed</th>
+                  </tr>
+                </thead>
+                <tbody id="shadowPortfolioClosedTable"></tbody>
+              </table>
             </div>
           </section>
         </section>
 
-        <!-- ==================== SHADOW PORTFOLIO ==================== -->
-
-        <section class="panel">
-
-          <div class="panel-header">
-            <h3>📈 Shadow Portfolio</h3>
-          </div>
-
-          <div class="cards">
-
-            <div class="card">
-              <div class="label">Open Positions</div>
-              <div
-                class="value"
-                id="shadowPortfolioOpen"
-              >
-                -
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="label">Closed Positions</div>
-              <div
-                class="value"
-                id="shadowPortfolioClosed"
-              >
-                -
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="label">Exposure</div>
-              <div
-                class="value"
-                id="shadowPortfolioExposure"
-              >
-                -
-              </div>
-
-              <div
-                class="shadow-card-subvalue"
-                id="shadowPortfolioExposureCount"
-              >
-                -
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="label">Unrealized P&amp;L</div>
-              <div
-                class="value"
-                id="shadowPortfolioUnrealized"
-              >
-                -
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="label">Realized P&amp;L</div>
-              <div
-                class="value"
-                id="shadowPortfolioRealized"
-              >
-                -
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="label">Total P&amp;L</div>
-              <div
-                class="value"
-                id="shadowPortfolioTotal"
-              >
-                -
-              </div>
-            </div>
-
-          </div>
-
-        </section>
-
-
-        <section class="panel">
-
-          <div class="panel-header">
-            <h3>📌 Open Shadow Positions</h3>
-          </div>
-
-          <div class="table-wrap">
-            <table>
-
-              <thead>
-                <tr>
-                  <th>Market</th>
-                  <th>Strategy</th>
-                  <th>Theme</th>
-                  <th>Entry</th>
-                  <th>Current</th>
-                  <th>Shares</th>
-                  <th>P&amp;L</th>
-                  <th>P&amp;L %</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-
-              <tbody id="shadowPortfolioOpenTable">
-              </tbody>
-
-            </table>
-          </div>
-
-        </section>
-
-
-        <section class="panel">
-
-          <div class="panel-header">
-            <h3>📚 Closed Shadow Positions</h3>
-          </div>
-
-          <div class="table-wrap">
-            <table>
-
-              <thead>
-                <tr>
-                  <th>Market</th>
-                  <th>Reason</th>
-                  <th>Entry</th>
-                  <th>Exit</th>
-                  <th>P&amp;L</th>
-                  <th>P&amp;L %</th>
-                  <th>Realized</th>
-                  <th>Closed</th>
-                </tr>
-              </thead>
-
-              <tbody id="shadowPortfolioClosedTable">
-              </tbody>
-
-            </table>
-          </div>
-
-        </section>
-        
-        
         <!-- ==================== REPORTS ==================== -->
         <section id="view-reports" class="view">
           <h2>📄 Daily Reports</h2>
@@ -1030,7 +813,7 @@
           <div class="card report-detail" id="reportDetail" style="display:none;"></div>
         </section>
 
-        <!-- ==================== LEARNING Center ==================== -->
+        <!-- ==================== LEARNING ==================== -->
         <section id="view-learning" class="view">
           <h2>🧠 Learning Center</h2>
 
@@ -1150,9 +933,7 @@
         <section id="view-logs" class="view">
           <h2>📜 Engine Logs</h2>
 
-          <button onclick="loadEngineLogs()">
-            🔄 Refresh Logs
-          </button>
+          <button onclick="loadEngineLogs()">🔄 Refresh Logs</button>
 
           <div class="cards" style="margin-top:20px;">
             <div class="card">
@@ -1184,12 +965,12 @@
                     <th>Details</th>
                   </tr>
                 </thead>
-
                 <tbody id="engineLogsTable"></tbody>
               </table>
             </div>
           </section>
         </section>
+
         <!-- ==================== AI ==================== -->
         <section id="view-ai" class="view">
           <h2>🤖 AI Analyst</h2>
@@ -1211,1504 +992,11 @@
               <div class="label">Profit Factor</div>
               <div class="value" id="aiProfitFactor">-</div>
             </div>
-
-            <div class="card">
-              <div class="label">Drawdown</div>
-              <div class="value" id="aiDrawdown">-</div>
-            </div>
-
-            <div class="card">
-              <div class="label">Best Theme</div>
-              <div class="value" id="aiBestTheme">-</div>
-            </div>
-
-            <div class="card">
-              <div class="label">Best Strategy</div>
-              <div class="value" id="aiBestStrategy">-</div>
-            </div>
           </div>
-
-          <section>
-            <h2>🧠 Analyst Notes</h2>
-            <div class="card report-detail" id="aiReportBox">
-              Chargement...
-            </div>
-          </section>
         </section>
 
       </main>
     </div>
   </div>
-
-<script>
-  // ==================== CONFIG ====================
-  const API_URL = "https://0698sypi76.execute-api.eu-north-1.amazonaws.com/default/dashboard_api";
-  const RISK_API_URL = "https://mjqzhv4nm2.execute-api.eu-north-1.amazonaws.com/default/risk_api";
-  const ADMIN_API_URL = "https://z06vl4c603.execute-api.eu-north-1.amazonaws.com/default/admin_api";
-  const REPORTS_API_URL = "https://iajwc5e9tk.execute-api.eu-north-1.amazonaws.com/default/reports_api";
-  const AI_REPORTS_API_URL = "https://mpp5uz83x0.execute-api.eu-north-1.amazonaws.com/default/ai_reports_api";
-  const LIVE_READINESS_API_URL = "https://9sumoyianb.execute-api.eu-north-1.amazonaws.com/default/live_readiness_api";
-  const LOGS_API_URL = "https://ruvdwfvfjj.execute-api.eu-north-1.amazonaws.com/default/logs_api";
-  const SHADOW_ORDERS_API_URL = "https://bx97df2201.execute-api.eu-north-1.amazonaws.com/default/shadow_orders_api";
-
-  // ==================== HELPERS ====================
-  const money = v => "$" + Number(v || 0).toFixed(2);
-  const price = v => Number(v || 0).toFixed(4);
-  const percent = v => (Number(v || 0) * 100).toFixed(1) + "%";
-  const pnlClass = v => Number(v || 0) >= 0 ? "positive" : "negative";
-
-  function shadowNumber(value, digits = 2) {
-    const parsed = Number(value || 0);
-
-    if (!Number.isFinite(parsed)) {
-      return "0";
-    }
-
-    return parsed.toLocaleString(
-      undefined,
-      {
-        minimumFractionDigits: digits,
-        maximumFractionDigits: digits
-      }
-    );
-  }
-
-
-  function shadowDate(timestamp) {
-    const value = Number(timestamp || 0);
-
-    if (!value) {
-      return "-";
-    }
-
-    return new Date(
-      value * 1000
-    ).toLocaleString();
-  }
-
-
-  function shadowEscapeHtml(value) {
-    return String(value ?? "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-  }
-
-
-  function shadowStatusClass(state) {
-
-    switch (state) {
-
-      case "READY":
-        return "status-ready";
-
-      case "READY_NOT_SENT":
-        return "status-pending";
-
-      case "SENT":
-        return "status-sent";
-
-      case "FAILED":
-      case "SIMULATION_FAILED":
-        return "status-failed";
-
-      case "REJECTED":
-        return "status-rejected";
-
-      default:
-        return "";
-    }
-
-  }
-
-  function shadowStatusLabel(state) {
-
-    switch (state) {
-
-      case "READY":
-        return "READY";
-
-      case "READY_NOT_SENT":
-        return "READY";
-
-      case "SENT":
-        return "SENT";
-
-      case "FAILED":
-      case "SIMULATION_FAILED":
-        return "FAILED";
-
-      case "REJECTED":
-        return "REJECTED";
-
-      default:
-        return state || "UNKNOWN";
-    }
-  }
-
- function shadowSlippageClass(state, value) {
-
-    if (state !== "READY") {
-      return "";
-    }
-
-    const bps = Number(value || 0);
-
-    if (bps < 10) {
-      return "slippage-good";
-    }
-
-    if (bps <= 25) {
-      return "slippage-warning";
-    }
-
-    return "slippage-bad";
-  }
-  
-  function setText(id, value) {
-    const el = document.getElementById(id);
-    if (el) el.innerText = value;
-  }
-
-  function setMoneyCard(id, value) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.innerText = money(value);
-    el.className = "value " + pnlClass(value);
-  }
-
-  function prettyLearningName(name) {
-    const map = {
-        "score_lt_80": "< 80",
-        "score_80_100": "80 - 100",
-        "score_100_120": "100 - 120",
-        "score_120_150": "120 - 150",
-        "score_150_plus": "> 150",
-        "hold_0_6h": "0 - 6 h",
-        "hold_6_24h": "6 - 24 h",
-        "hold_1_3d": "1 - 3 jours",
-        "hold_3d_plus": "> 3 jours",
-        "weekday_mon": "Monday",
-        "weekday_tue": "Tuesday",
-        "weekday_wed": "Wednesday",
-        "weekday_thu": "Thursday",
-        "weekday_fri": "Friday",
-        "weekday_sat": "Saturday",
-        "weekday_sun": "Sunday",
-        "vol_low": "Low",
-        "vol_medium": "Medium",
-        "vol_high": "High",
-        "vol_extreme": "Extreme",
-        "vol_unknown": "Unknown"
-    };
-    return map[name] || name;
-  }
-
-  function escapeHtml(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-  function renderShadowOpenPositions(positions) {
-    const table = document.getElementById(
-      "shadowPortfolioOpenTable"
-    );
-
-    if (!table) {
-      return;
-    }
-
-    if (!positions.length) {
-      table.innerHTML = `
-        <tr>
-          <td colspan="9">
-            No open Shadow Positions.
-          </td>
-        </tr>
-      `;
-
-      return;
-    }
-
-    table.innerHTML = positions
-      .map(position => {
-        const pnl = Number(
-          position.pnl || 0
-        );
-
-        const pnlPercent = Number(
-          position.pnl_percent || 0
-        );
-
-        const status = String(
-          position.status || "OPEN"
-        ).toUpperCase();
-
-        return `
-          <tr>
-            <td title="${shadowEscapeHtml(
-              position.title || ""
-            )}">
-              <span class="shadow-market">
-                ${shadowEscapeHtml(
-                  position.title || "-"
-                )}
-              </span>
-            </td>
-
-            <td>
-              ${shadowEscapeHtml(
-                position.strategy || "-"
-              )}
-            </td>
-
-            <td>
-              ${shadowEscapeHtml(
-                position.theme || "-"
-              )}
-            </td>
-
-            <td>
-              ${shadowNumber(
-                position.entry_price,
-                4
-              )}
-            </td>
-
-            <td>
-              ${shadowNumber(
-                position.current_price,
-                4
-              )}
-            </td>
-
-            <td>
-              ${shadowNumber(
-                position.shares,
-                4
-              )}
-            </td>
-
-            <td class="${pnlClass(pnl)} shadow-pnl-strong">
-              ${shadowNumber(
-                pnl,
-                2
-              )} USD
-            </td>
-
-            <td class="${pnlClass(pnlPercent)} hadow-pnl-strong">
-              ${shadowNumber(
-                pnlPercent,
-                2
-              )} %
-            </td>
-
-            <td>
-              <span class="badge open">
-                ${shadowEscapeHtml(status)}
-              </span>
-            </td>
-          </tr>
-        `;
-      })
-      .join("");
-  }
-
-  function renderShadowClosedPositions(positions) {
-    const table = document.getElementById(
-      "shadowPortfolioClosedTable"
-    );
-
-    if (!table) {
-      return;
-    }
-
-    if (!positions.length) {
-      table.innerHTML = `
-        <tr>
-          <td colspan="8">
-            No closed Shadow Positions.
-          </td>
-        </tr>
-      `;
-
-      return;
-    }
-
-    table.innerHTML = positions
-      .map(position => {
-        const pnl = Number(
-          position.realized_pnl
-          ?? position.pnl
-          ?? 0
-        );
-
-        const pnlPercent = Number(
-          position.realized_pnl_percent
-          ?? position.pnl_percent
-          ?? 0
-        );
-
-        const reason = String(
-          position.close_reason || "-"
-        ).toUpperCase();
-
-        return `
-          <tr>
-            <td title="${shadowEscapeHtml(
-              position.title || ""
-            )}">
-              ${shadowEscapeHtml(
-                <span class="shadow-market">
-                  ${shadowEscapeHtml(
-                    position.title || "-"
-                  )}
-                </span>
-            </td>
-
-            <td>
-              <span class="
-                shadow-reason-badge
-                ${shadowCloseReasonBadgeClass(reason)}
-              ">
-                ${shadowEscapeHtml(reason)}
-              </span>
-            </td>
-
-            <td>
-              ${shadowNumber(
-                position.entry_price,
-                4
-              )}
-            </td>
-
-            <td>
-              ${shadowNumber(
-                position.exit_price
-                ?? position.current_price,
-                4
-              )}
-            </td>
-
-            <td class="${pnlClass(pnl)} shadow-pnl-strong">
-              ${shadowNumber(
-                pnl,
-                2
-              )} USD
-            </td>
-
-            <td class="${pnlClass(pnlPercent)} shadow-pnl-strong">
-              ${shadowNumber(
-                pnlPercent,
-                2
-              )} %
-            </td>
-
-            <td>
-              ${shadowNumber(
-                position.exit_value
-                ?? position.current_value,
-                2
-              )} USD
-            </td>
-
-            <td>
-              ${shadowDate(
-                position.closed_at
-              )}
-            </td>
-          </tr>
-        `;
-      })
-      .join("");
-  }
-
-  function shadowCloseReasonClass(reason) {
-  switch (reason) {
-    case "TAKE_PROFIT":
-      return "positive";
-
-    case "STOP_LOSS":
-      return "negative";
-
-    case "TIME_EXIT":
-      return "slippage-warning";
-
-    default:
-      return "";
-  }
-}
-
-  function shadowCloseReasonBadgeClass(reason) {
-  switch (reason) {
-    case "TAKE_PROFIT":
-      return "shadow-reason-take-profit";
-
-    case "STOP_LOSS":
-      return "shadow-reason-stop-loss";
-
-    case "TIME_EXIT":
-      return "shadow-reason-time-exit";
-
-    default:
-      return "shadow-reason-neutral";
-  }
-}
-  
-  // ==================== NAVIGATION ====================
-  function showView(name) {
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-
-    const view = document.getElementById('view-' + name);
-    if (view) view.classList.add('active');
-
-    const button = document.querySelector(`.nav button[data-view="${name}"]`);
-    if (button) button.classList.add('active');
-
-    if (name === 'reports') loadReports();
-    if (name === 'risk') loadRiskConfig();
-    if (name === 'ai') loadAIReports();
-    if (name === 'live') loadLiveReadiness();
-    if (name === 'logs') loadEngineLogs();
-    if (name === 'shadow') loadShadowOrders();
-  }
-
-  // ==================== CHARTS ====================
-  function clearCanvas(canvas, h = 220) {
-    const ctx = canvas.getContext('2d');
-    canvas.width = canvas.offsetWidth;
-    canvas.height = h;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    return ctx;
-  }
-
-  function drawEquityChart(curve) {
-    const canvas = document.getElementById('equityChart');
-    const ctx = clearCanvas(canvas);
-
-    if (!curve || curve.length < 2) {
-      ctx.fillStyle = '#94a3b8';
-      ctx.fillText('Pas assez de données', 20, 40);
-      return;
-    }
-
-    const p = 30;
-    const values = curve.map(x => Number(x.equity || 0));
-    const min = Math.min(...values);
-    const max = Math.max(...values);
-    const range = max - min || 1;
-
-    ctx.beginPath();
-    curve.forEach((point, i) => {
-      const x = p + (i / (curve.length - 1)) * (canvas.width - p * 2);
-      const y = canvas.height - p - ((Number(point.equity || 0) - min) / range) * (canvas.height - p * 2);
-      if (i === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    });
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = '#22c55e';
-    ctx.stroke();
-
-    ctx.fillStyle = '#94a3b8';
-    ctx.fillText('Equity: ' + money(values[values.length - 1]), 20, 25);
-  }
-
-  function drawLineChart(canvasId, data, field, label, suffix = '') {
-    const canvas = document.getElementById(canvasId);
-    const ctx = clearCanvas(canvas);
-
-    if (!data || data.length < 2) {
-      ctx.fillStyle = '#94a3b8';
-      ctx.fillText('Pas assez de données', 20, 40);
-      return;
-    }
-
-    const p = 30;
-    let values = data.map(x => Number(x[field] || 0));
-    if (field === 'rolling_win_rate') values = values.map(v => v * 100);
-
-    const min = Math.min(...values);
-    const max = Math.max(...values);
-    const range = max - min || 1;
-
-    ctx.beginPath();
-    values.forEach((value, i) => {
-      const x = p + (i / (values.length - 1)) * (canvas.width - p * 2);
-      const y = canvas.height - p - ((value - min) / range) * (canvas.height - p * 2);
-      if (i === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    });
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = '#3b82f6';
-    ctx.stroke();
-
-    ctx.fillStyle = '#94a3b8';
-    ctx.fillText(label + ': ' + values[values.length - 1].toFixed(2) + suffix, 20, 25);
-  }
-
-  // ==================== TABLE RENDERERS ====================
-  function renderPositions(positions) {
-    const table = document.getElementById('positionsTable');
-    table.innerHTML = '';
-    positions.forEach(p => {
-      table.innerHTML += `<tr>
-        <td>${p.title || '-'}</td>
-        <td>${p.strategy || '-'}</td>
-        <td>${p.theme || '-'}</td>
-        <td>${p.score || '-'}</td>
-        <td>${price(p.entry_price)}</td>
-        <td>${price(p.current_price)}</td>
-        <td>${money(p.usd_size)}</td>
-        <td class="${pnlClass(p.pnl)}">${money(p.pnl)}</td>
-      </tr>`;
-    });
-  }
-
-  function renderHistory(history) {
-    const table = document.getElementById('tradesTable');
-    table.innerHTML = '';
-    history.forEach(p => {
-      const status = p.status || 'open';
-      const pnl = status === 'closed' ? Number(p.realized_pnl || p.pnl || 0) : Number(p.pnl || 0);
-      const exitPrice = status === 'closed' ? (p.exit_price || p.current_price) : '-';
-
-      table.innerHTML += `<tr>
-        <td>${(p.position_id || '').slice(0, 6)}</td>
-        <td>${p.title || '-'}</td>
-        <td><span class="badge ${status}">${status}</span></td>
-        <td>${price(p.entry_price)}</td>
-        <td>${exitPrice === '-' ? '-' : price(exitPrice)}</td>
-        <td class="${pnlClass(pnl)}">${money(pnl)}</td>
-      </tr>`;
-    });
-  }
-
-  function renderGroupedTable(tableId, data) {
-    const table = document.getElementById(tableId);
-    table.innerHTML = '';
-    Object.entries(data || {}).forEach(([name, stats]) => {
-      table.innerHTML += `<tr>
-        <td>${name}</td>
-        <td>${stats.trades || 0}</td>
-        <td>${percent(stats.win_rate || 0)}</td>
-        <td class="${pnlClass(stats.pnl)}">${money(stats.pnl)}</td>
-      </tr>`;
-    });
-  }
-
-  function renderDailyPnl(pnlByDay) {
-    const table = document.getElementById('dailyPnlTable');
-    table.innerHTML = '';
-    Object.entries(pnlByDay || {}).forEach(([day, pnl]) => {
-      table.innerHTML += `<tr>
-        <td>${day}</td>
-        <td class="${pnlClass(pnl)}">${money(pnl)}</td>
-      </tr>`;
-    });
-  }
-
-  function renderLearningSummary(summary) {
-  function confidenceClass(confidence) {
-    if (confidence === "high") return "positive";
-    if (confidence === "medium") return "neutral";
-    return "negative";
-  }
-
-  function setLearningCard(id, item) {
-    const el = document.getElementById(id);
-
-    if (!el || !item) {
-      setText(id, "-");
-      return;
-    }
-
-    el.innerHTML = `
-      <div style="font-size:22px;font-weight:bold;margin-bottom:8px;">
-        ${prettyLearningName(item.name)}
-      </div>
-      <div style="font-size:14px;color:#94a3b8;">
-        Expectancy
-      </div>
-      <div class="${pnlClass(item.expectancy)}" style="font-size:20px;font-weight:bold;">
-        ${money(item.expectancy)}
-      </div>
-      <div style="font-size:14px;color:#94a3b8;margin-top:8px;">
-        Confidence
-      </div>
-      <div class="${confidenceClass(item.confidence)}" style="font-size:18px;font-weight:bold;">
-        ${(item.confidence || '-').toUpperCase()}
-      </div>
-    `;
-  }
-
-  setLearningCard("bestLearningTheme", summary.theme?.best);
-  setLearningCard("bestLearningStrategy", summary.strategy?.best);
-  setLearningCard("bestLearningScore", summary.score?.best);
-  setLearningCard("bestLearningHold", summary.hold?.best);
-  setLearningCard("bestLearningVolatility", summary.volatility?.best);
-  setLearningCard("bestLearningWeekday", summary.weekday?.best);
-}
-
-  // ==================== ADMIN ====================
-  function isAdmin() {
-    return !!sessionStorage.getItem('adminToken');
-  }
-
-  function updateAdminUI() {
-    const admin = isAdmin();
-    setText('adminStatus', admin ? 'Admin' : 'Viewer');
-    document.getElementById('adminPanel').style.display = admin ? 'block' : 'none';
-  }
-
-  function adminLogin() {
-    const token = document.getElementById('adminTokenInput').value.trim();
-    if (!token) {
-      alert('Token manquant');
-      return;
-    }
-    sessionStorage.setItem('adminToken', token);
-    document.getElementById('adminTokenInput').value = '';
-    updateAdminUI();
-    loadRiskConfig();
-  }
-
-  function adminLogout() {
-    sessionStorage.removeItem('adminToken');
-    updateAdminUI();
-  }
-
-  // ==================== RISK CONFIG ====================
-  async function loadRiskConfig() {
-    try {
-      const res = await fetch(RISK_API_URL);
-      const data = await res.json();
-      const risk = data.risk || {};
-
-      setText('riskEquity', money(risk.equity || risk.live_capital || 0));
-      setText('riskPeakEquity', money(risk.peak_equity || risk.equity || 0));
-      setText('riskDrawdown', (Number(risk.current_drawdown || 0) * 100).toFixed(2) + '%');
-      setText('riskMultiplier', Number(risk.risk_multiplier || 1).toFixed(2) + 'x');
-      setText('riskPerTradeDisplay', Number(risk.risk_per_trade || 1).toFixed(2) + '%');
-      setText('riskModeDisplay', risk.mode || 'paper');
-      setText('riskTradingDisplay', risk.trading_enabled || 'ON');
-      setText('riskKillDisplay', risk.kill_switch || 'OFF');
-
-      ['riskMode', 'tradingEnabled', 'killSwitch'].forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.value = id === 'riskMode'
-          ? (risk.mode || 'paper')
-          : id === 'tradingEnabled'
-            ? (risk.trading_enabled || 'ON')
-            : (risk.kill_switch || 'OFF');
-      });
-
-      const map = {
-        maxDailyLoss: risk.max_daily_loss || 5,
-        maxPositionSize: risk.max_position_size || 5,
-        maxTotalExposure: risk.max_total_exposure || 40,
-        liveCapital: risk.live_capital || 100,
-        riskPerTrade: risk.risk_per_trade || 1
-      };
-      Object.entries(map).forEach(([id, val]) => {
-        const el = document.getElementById(id);
-        if (el) el.value = val;
-      });
-    } catch (err) {
-      console.error('Risk config error:', err);
-    }
-  }
-
-  async function saveRiskConfig() {
-    const token = sessionStorage.getItem('adminToken') || '';
-    const payload = {
-      mode: document.getElementById('riskMode').value,
-      trading_enabled: document.getElementById('tradingEnabled').value,
-      kill_switch: document.getElementById('killSwitch').value,
-      max_daily_loss: Number(document.getElementById('maxDailyLoss').value),
-      max_position_size: Number(document.getElementById('maxPositionSize').value),
-      max_total_exposure: Number(document.getElementById('maxTotalExposure').value),
-      live_capital: Number(document.getElementById('liveCapital').value),
-      risk_per_trade: Number(document.getElementById('riskPerTrade').value)
-    };
-
-    const res = await fetch(RISK_API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Admin-Token': token },
-      body: JSON.stringify(payload)
-    });
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert('Erreur sauvegarde: ' + (data.error || res.status));
-      return;
-    }
-    alert('Configuration sauvegardée');
-    loadRiskConfig();
-  }
-
-  async function runAdminAction(action) {
-    const token = sessionStorage.getItem('adminToken') || '';
-    if (!token) {
-      alert('Admin token manquant');
-      return;
-    }
-
-    const res = await fetch(ADMIN_API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Admin-Token': token },
-      body: JSON.stringify({ action })
-    });
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert('Erreur action: ' + (data.error || res.status));
-      return;
-    }
-    alert('Action lancée: ' + action);
-    if (action === 'daily_report') setTimeout(loadReports, 2500);
-
-    if (action === "ai_report") {
-      setTimeout(loadAIReports, 2500);
-    }
-  }
-
-// ==================== READINESS LIVE ====================
-  async function loadLiveReadiness() {
-    try {
-      const res = await fetch(LIVE_READINESS_API_URL);
-      const data = await res.json();
-
-      setText("liveReadinessScore", Number(data.score || 0).toFixed(1) + "%");
-      setText("liveReadinessStatus", data.status || "-");
-      setText("liveReadinessChecks", `${data.ok_count || 0}/${data.total || 0}`);
-      setText("liveReadinessMode", data.risk?.mode || "-");
-
-      const scoreEl = document.getElementById("liveReadinessScore");
-      scoreEl.className = "value " + (Number(data.score || 0) >= 80 ? "positive" : "negative");
-
-      const table = document.getElementById("liveReadinessTable");
-      table.innerHTML = "";
-
-      (data.checks || []).forEach(c => {
-        const ok = c.ok === true;
-        const detail =
-          c.reason ||
-          c.error ||
-          (c.missing && c.missing.length ? "Missing: " + c.missing.join(", ") : "") ||
-          (c.latency_ms ? c.latency_ms + " ms" : "") ||
-          "";
-
-        table.innerHTML += `
-          <tr>
-            <td>${c.name}</td>
-            <td class="${ok ? "positive" : "negative"}">${ok ? "🟢 OK" : "🔴 KO"}</td>
-            <td>${detail}</td>
-          </tr>
-        `;
-      });
-
-    } catch (err) {
-      setText("liveReadinessStatus", "Erreur: " + err.message);
-    }
-  }
-
-  // ==================== SHADOW ORDERS ====================
-
-  let shadowOrdersCache = [];
-
-
-  async function loadShadowOrders() {
-    const table = document.getElementById(
-      "shadowOrdersTable"
-    );
-
-    table.innerHTML = `
-      <tr>
-        <td colspan="12">
-          Loading...
-        </td>
-      </tr>
-    `;
-
-    try {
-      const days = (
-        document.getElementById(
-          "shadowDays"
-        )?.value
-        || "1"
-      );
-
-      const response = await fetch(
-        `${SHADOW_ORDERS_API_URL}?days=${days}`
-      );
-
-      if (!response.ok) {
-        throw new Error(
-          `HTTP ${response.status}`
-        );
-      }
-
-      const data = await response.json();
-
-      const summary = (
-        data.summary
-        || {}
-      );
-
-      const orders = (
-        data.orders
-        || []
-      );
-
-      shadowOrdersCache = orders;
-
-      document.getElementById(
-        "shadowOrdersToday"
-      ).textContent = (
-        summary.orders_today
-        ?? 0
-      );
-
-      document.getElementById(
-        "shadowReady"
-      ).textContent = (
-        summary.ready
-        ?? 0
-      );
-
-      document.getElementById(
-        "shadowExposure"
-      ).textContent = (
-        `${shadowNumber(
-          summary.exposure_usd
-          ?? summary.estimated_volume_usd
-          ?? 0
-        )} USD`
-      );
-
-      document.getElementById(
-        "shadowFees"
-      ).textContent = (
-        `${shadowNumber(
-          summary.fees_usd
-          ?? summary.estimated_fees_usd
-          ?? 0,
-          4
-        )} USD`
-      );
-
-      document.getElementById(
-        "shadowFailed"
-      ).textContent = (
-        summary.failed
-        ?? 0
-      );
-
-      renderShadowOrders(
-        orders
-      );
-
-    } catch (error) {
-      console.error(
-        "Shadow orders error:",
-        error
-      );
-
-      table.innerHTML = `
-        <tr>
-          <td colspan="12">
-            Unable to load Shadow Orders:
-            ${shadowEscapeHtml(
-              error.message
-            )}
-          </td>
-        </tr>
-      `;
-    }
-  }
-
-  function renderShadowOrders(orders) {
-    const table = document.getElementById(
-      "shadowOrdersTable"
-    );
-
-    if (!orders.length) {
-      table.innerHTML = `
-        <tr>
-          <td colspan="12">
-            No Shadow Orders.
-          </td>
-        </tr>
-      `;
-
-      return;
-    }
-
-    table.innerHTML = orders
-      .map((order, index) => {
-        const market = (
-          order.market
-          || {}
-        );
-
-        const decision = (
-          order.decision
-          || {}
-        );
-
-        const execution = (
-          order.execution
-          || {}
-        );
-
-        const simulation = (
-          execution.simulation
-          || {}
-        );
-
-        const statusValue = order.status;
-
-        const state = (
-          order.state
-          || (
-            typeof statusValue === "object"
-            ? statusValue?.state
-            : statusValue
-          )
-          || "UNKNOWN"
-        );
-
-        const question = (
-          order.title
-          || market.question
-          || "-"
-        );
-
-        const strategy = (
-          order.strategy
-          || decision.strategy
-          || "-"
-        );
-
-        const theme = (
-          order.theme
-          || decision.theme
-          || "-"
-        );
-
-        const score = (
-          order.score
-          ?? decision.score
-          ?? 0
-        );
-
-        const requestedPrice = (
-          order.requested_price
-          ?? order.price
-          ?? simulation.requested_price
-          ?? execution.limit_price
-          ?? 0
-        );
-
-        const executedPrice = (
-          order.executed_price
-          ?? simulation.estimated_price
-          ?? 0
-        );
-
-        const cost = (
-          order.cost
-          ?? order.gross_cost
-          ?? order.requested_notional
-          ?? order.position_size
-          ?? simulation.budget_usd
-          ?? execution.usd
-          ?? 0
-        );
-
-        const shares = (
-          order.shares
-          ?? simulation.estimated_shares
-          ?? execution.shares
-          ?? 0
-        );
-
-        const fees = (
-          order.fees
-          ?? simulation.estimated_fee_usd
-          ?? 0
-        );
-
-        const slippageBps = (
-          order.slippage_rate != null
-            ? Number(order.slippage_rate) * 10000
-            : (
-                simulation.slippage_bps
-                ?? 0
-              )
-        );
-
-        return `
-          <tr
-              class="clickable-row shadow-${state.toLowerCase()}"
-              onclick="showShadowDetails(${index})"
-          >
-            <td>
-              ${shadowDate(
-                order.created_at
-              )}
-            </td>
-
-            <td title="${
-              shadowEscapeHtml(question)
-            }">
-              ${shadowEscapeHtml(
-                question
-              )}
-            </td>
-
-            <td>
-              ${shadowEscapeHtml(
-                strategy
-              )}
-            </td>
-
-            <td>
-              ${shadowEscapeHtml(
-                theme
-              )}
-            </td>
-
-            <td>
-              ${shadowNumber(
-                score,
-                0
-              )}
-            </td>
-
-            <td>
-              ${shadowNumber(
-                requestedPrice,
-                4
-              )}
-            </td>
-
-            <td>
-              ${shadowNumber(
-                executedPrice,
-                4
-              )}
-            </td>
-
-            <td>
-              ${shadowNumber(
-                cost,
-                2
-              )}
-            </td>
-
-            <td>
-              ${shadowNumber(
-                shares,
-                4
-              )}
-            </td>
-
-            <td
-              title="${
-                shadowNumber(
-                  Number(
-                    order.fee_rate
-                    ?? 0
-                  ) * 100,
-                  2
-                )
-              } %"
-            >
-              ${shadowNumber(
-                fees,
-                4
-              )}
-            </td>
-
-            <td
-              class="${
-                shadowSlippageClass(
-                  state,
-                  slippageBps
-                )
-              }"
-              title="${
-                shadowNumber(
-                  slippageBps / 100,
-                  4
-                )
-              } %"
-            >
-              ${shadowNumber(
-                slippageBps,
-                2
-              )} bps
-            </td>
-
-            <td
-              title="${
-                shadowEscapeHtml(
-                  order.failure_reason
-                  || ""
-                )
-              }"
-            >
-              <span class="${
-                shadowStatusClass(state)
-              }">
-                ${shadowEscapeHtml(
-                  shadowStatusLabel(state)
-                )}
-              </span>
-            </td>
-          </tr>
-        `;
-      })
-      .join("");
-  }
-  // ==================== REPORTS ====================
-  async function loadReports() {
-    if (!REPORTS_API_URL || REPORTS_API_URL.includes('TON_REPORTS_API_URL_ICI')) return;
-
-    try {
-      const res = await fetch(REPORTS_API_URL);
-      const data = await res.json();
-      const reports = data.reports || [];
-      const table = document.getElementById('reportsTable');
-      table.innerHTML = '';
-
-      reports.forEach(r => {
-        const dailyPnl = r.portfolio ? r.portfolio.daily_pnl : 0;
-        const winRate = r.performance ? r.performance.win_rate : 0;
-        const profitFactor = r.performance ? r.performance.profit_factor : 0;
-        const bestStrategy = r.strategy ? r.strategy.best : '-';
-        const worstTheme = r.theme ? r.theme.worst : '-';
-
-        table.innerHTML += `<tr>
-          <td>${r.report_date}</td>
-          <td class="${pnlClass(dailyPnl)}">${money(dailyPnl)}</td>
-          <td>${percent(winRate)}</td>
-          <td>${Number(profitFactor || 0).toFixed(2)}</td>
-          <td>${bestStrategy}</td>
-          <td>${worstTheme}</td>
-          <td><button onclick="showReportDetail('${r.report_date}')">Voir</button></td>
-        </tr>`;
-      });
-    } catch (err) {
-      console.error('Reports error:', err);
-    }
-  }
-
-  async function showReportDetail(reportDate) {
-    try {
-      const res = await fetch(REPORTS_API_URL + '?date=' + encodeURIComponent(reportDate));
-      const data = await res.json();
-      const r = data.report;
-      const box = document.getElementById('reportDetail');
-
-      if (!r) {
-        box.style.display = 'block';
-        box.innerText = 'Rapport introuvable.';
-        return;
-      }
-
-      box.style.display = 'block';
-      box.innerText = `📅 ${r.report_date}
-
-Portfolio
-- Equity: ${money(r.portfolio?.equity)}
-- Peak Equity: ${money(r.portfolio?.peak_equity)}
-- Daily PnL: ${money(r.portfolio?.daily_pnl)}
-- Drawdown: ${(Number(r.portfolio?.drawdown || 0) * 100).toFixed(2)}%
-- Open Positions: ${r.portfolio?.open_positions}
-- Exposure: ${money(r.portfolio?.exposure)}
-
-Performance
-- Trades: ${r.performance?.trades}
-- Wins: ${r.performance?.wins}
-- Losses: ${r.performance?.losses}
-- Win Rate: ${percent(r.performance?.win_rate)}
-- Expectancy: ${money(r.performance?.expectancy)}
-- Profit Factor: ${Number(r.performance?.profit_factor || 0).toFixed(2)}
-
-Strategy
-- Best: ${r.strategy?.best}
-- Worst: ${r.strategy?.worst}
-
-Theme
-- Best: ${r.theme?.best}
-- Worst: ${r.theme?.worst}
-
-Engine
-- Mode: ${r.engine?.mode}
-- Environment: ${r.engine?.environment}
-- Version: ${r.engine?.engine_version}
-- Risk Multiplier: ${Number(r.engine?.risk_multiplier || 1).toFixed(2)}x
-- Kill Switch: ${r.engine?.kill_switch}
-- Trading Enabled: ${r.engine?.trading_enabled}`;
-    } catch (err) {
-      console.error('Report detail error:', err);
-    }
-  }
-  // ==================== AI REPORTS ===================
-
-  async function loadAIReports() {
-    try {
-      const res = await fetch(AI_REPORTS_API_URL);
-      const data = await res.json();
-      const reports = data.reports || [];
-
-      const box = document.getElementById("aiReportBox");
-
-      if (!reports.length) {
-        box.innerText = "Aucun rapport IA disponible.";
-        return;
-      }
-
-      const latest = reports[0];
-      const summary = latest.summary || {};
-
-      setMoneyCard("aiDailyPnl", summary.daily_pnl || 0);
-      setMoneyCard("aiExpectancy", summary.expectancy || 0);
-
-      setText(
-        "aiProfitFactor",
-        Number(summary.profit_factor || 0).toFixed(2)
-      );
-
-      setText(
-        "aiDrawdown",
-        ((Number(summary.drawdown || 0)) * 100).toFixed(2) + "%"
-      );
-
-      setText("aiBestTheme", summary.best_theme || "-");
-      setText("aiBestStrategy", summary.best_strategy || "-");
-
-      box.innerText = latest.text || "Rapport IA vide.";
-
-    } catch (err) {
-      document.getElementById("aiReportBox").innerText =
-        "Erreur AI report: " + err.message;
-    }
-  }
-
-  // ==================== LOGS ====================
-
-  async function loadEngineLogs() {
-  try {
-    const res = await fetch(LOGS_API_URL);
-    const data = await res.json();
-    const logs = data.logs || [];
-
-    setText("logsCount", logs.length);
-
-    const lastScan = logs.find(
-      log => log.event_type === "scan_completed"
-    );
-
-    if (lastScan) {
-      const details = lastScan.details || {};
-
-      setText(
-        "lastScanRejected",
-        details.rejected_count || 0
-      );
-
-      setText(
-        "topRejectionReason",
-        details.top_rejection_reason || "-"
-      );
-    }
-
-    const table = document.getElementById("engineLogsTable");
-    table.innerHTML = "";
-
-    logs.forEach(log => {
-      const details = log.details || {};
-
-      table.innerHTML += `
-        <tr>
-          <td>
-            ${new Date(
-              Number(log.created_at || 0) * 1000
-            ).toLocaleString()}
-          </td>
-
-          <td>${log.source || "-"}</td>
-
-          <td>${log.event_type || "-"}</td>
-
-          <td class="${
-            log.severity === "ERROR"
-              ? "negative"
-              : "positive"
-          }">
-            ${log.severity || "INFO"}
-          </td>
-
-          <td>${log.message || "-"}</td>
-
-          <td>
-            ${escapeHtml(JSON.stringify(details))}
-          </td>
-        </tr>
-      `;
-    });
-
-  } catch (err) {
-    console.error("Logs error:", err);
-  }
-}
-
-// =============== RENDER SHADOW PORTFOLIO =============
-function renderShadowPortfolio(shadowData) {
-  const shadow = shadowData || {};
-  const portfolio = shadow.portfolio || {};
-  const openPositions = shadow.open_positions || [];
-  const closedPositions = shadow.closed_positions || [];
-
-  setText(
-    "shadowPortfolioOpen",
-    portfolio.open_positions ?? openPositions.length
-  );
-
-  setText(
-    "shadowPortfolioClosed",
-    portfolio.closed_positions ?? closedPositions.length
-  );
-
-  setText(
-    "shadowPortfolioExposure",
-    `${shadowNumber(portfolio.exposure, 2)} USD`
-  const openCount = Number(
-    portfolio.open_positions
-    ?? openPositions.length
-    ?? 0
-  );
-
-  setText(
-    "shadowPortfolioExposureCount",
-    `${openCount} position${openCount === 1 ? "" : "s"}`
-  );
-
-  setMoneyCard(
-    "shadowPortfolioUnrealized",
-    portfolio.unrealized_pnl || 0
-  );
-
-  setMoneyCard(
-    "shadowPortfolioRealized",
-    portfolio.realized_pnl || 0
-  );
-
-  setMoneyCard(
-    "shadowPortfolioTotal",
-    portfolio.total_pnl || 0
-  );
-
-  renderShadowOpenPositions(
-    openPositions
-  );
-
-  renderShadowClosedPositions(
-    closedPositions
-  );
-}
-   
-  // ==================== DASHBOARD ====================
-  async function loadDashboard() {
-    try {
-      const res = await fetch(API_URL);
-      const data = await res.json();
-
-      const portfolio = data.portfolio || {};
-      const performance = data.performance || {};
-      const equity = data.equity || {};
-      const analytics = data.advanced_analytics || {};
-      const learningSummary = data.learning_summary || {};
-      const rollingMetrics = data.rolling_metrics || [];
-      const shadow = data.shadow || {};
-
-      setText('openPositions', portfolio.open_positions || 0);
-      setText('exposure', money(portfolio.exposure));
-      setMoneyCard('unrealizedPnl', portfolio.unrealized_pnl);
-      setMoneyCard('realizedPnl', portfolio.realized_pnl);
-
-      setText('winRate', percent(performance.win_rate));
-      setMoneyCard('expectancy', performance.expectancy);
-      setText('profitFactor', Number(analytics.profit_factor || 0).toFixed(2));
-      setText('avgHoldTime', Number(analytics.avg_hold_time_hours || 0).toFixed(1) + 'h');
-      setText('avgWin', money(performance.avg_win));
-      setText('avgLoss', money(performance.avg_loss));
-      setText('bestStrategy', analytics.best_strategy || '-');
-      setText('worstTheme', analytics.worst_theme || '-');
-
-      setMoneyCard('maxDrawdown', equity.max_drawdown);
-      drawEquityChart(equity.curve || []);
-      drawLineChart('rollingWinRateChart', rollingMetrics, 'rolling_win_rate', 'Rolling Win Rate', '%');
-      drawLineChart('rollingExpectancyChart', rollingMetrics, 'rolling_expectancy', 'Rolling Expectancy', '$ ');
-
-      renderPositions(data.positions || []);
-      renderHistory(data.history_7d || []);
-      renderGroupedTable('strategyTable', data.pnl_by_strategy || {});
-      renderGroupedTable('themeTable', data.pnl_by_theme || {});
-      renderDailyPnl(analytics.pnl_by_day || {});
-
-      renderPositions(data.positions || []);
-      renderHistory(data.history_7d || []);
-      renderGroupedTable(
-        "strategyTable",
-        data.pnl_by_strategy || {}
-      );
-      renderGroupedTable(
-        "themeTable",
-        data.pnl_by_theme || {}
-      );
-      renderDailyPnl(
-        analytics.pnl_by_day || {}
-      );
-
-      renderLearningSummary(
-        learningSummary
-      );
-
-      renderShadowPortfolio(
-        shadow
-      );
-
-      setText(
-        "lastUpdate",
-        "Maj: " + new Date().toLocaleTimeString()
-      );
-
-    } catch (err) {
-      setText('lastUpdate', 'Erreur: ' + err.message);
-    }
-  }
-
-  // ==================== INIT ====================
-  updateAdminUI();
-  loadRiskConfig();
-  loadDashboard();
-  loadReports();
-
-  setInterval(loadDashboard, 30000);
-  setInterval(loadRiskConfig, 60000);
-  setInterval(loadReports, 120000);
-</script>
 </body>
 </html>
