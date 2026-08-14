@@ -1609,6 +1609,7 @@
   const LIVE_READINESS_API_URL = "https://9sumoyianb.execute-api.eu-north-1.amazonaws.com/default/live_readiness_api";
   const LOGS_API_URL = "https://ruvdwfvfjj.execute-api.eu-north-1.amazonaws.com/default/logs_api";
   const SHADOW_ORDERS_API_URL = "https://bx97df2201.execute-api.eu-north-1.amazonaws.com/default/shadow_orders_api";
+  const POLYMARKET_REPORTS_API_URL = "ttps://jlfoftnqmg.execute-api.eu-north-1.amazonaws.com/default/polymarket_reports";
 
   // ==================== HELPERS ====================
   const money = v => "$" + Number(v || 0).toFixed(2);
@@ -2738,90 +2739,444 @@
       })
       .join("");
   }
-  // ==================== REPORTS ====================
-  async function loadReports() {
-    if (!REPORTS_API_URL || REPORTS_API_URL.includes('TON_REPORTS_API_URL_ICI')) return;
+  // ==================== REPORTS V2 ====================
+  // ==================== REPORTS V2 ====================
 
-    try {
-      const res = await fetch(REPORTS_API_URL);
-      const data = await res.json();
-      const reports = data.reports || [];
-      const table = document.getElementById('reportsTable');
-      table.innerHTML = '';
+let reportsPeriod = "30d";
+let reportsCache = null;
 
-      reports.forEach(r => {
-        const dailyPnl = r.portfolio ? r.portfolio.daily_pnl : 0;
-        const winRate = r.performance ? r.performance.win_rate : 0;
-        const profitFactor = r.performance ? r.performance.profit_factor : 0;
-        const bestStrategy = r.strategy ? r.strategy.best : '-';
-        const worstTheme = r.theme ? r.theme.worst : '-';
 
-        table.innerHTML += `<tr>
-          <td>${r.report_date}</td>
-          <td class="${pnlClass(dailyPnl)}">${money(dailyPnl)}</td>
-          <td>${percent(winRate)}</td>
-          <td>${Number(profitFactor || 0).toFixed(2)}</td>
-          <td>${bestStrategy}</td>
-          <td>${worstTheme}</td>
-          <td><button onclick="showReportDetail('${r.report_date}')">Voir</button></td>
-        </tr>`;
-      });
-    } catch (err) {
-      console.error('Reports error:', err);
+function reportPercent(
+  value,
+  digits = 2
+) {
+  if (
+    value === null
+    || value === undefined
+  ) {
+    return "-";
+  }
+
+  const parsed = Number(
+    value
+  );
+
+  if (!Number.isFinite(parsed)) {
+    return "-";
+  }
+
+  return (
+    parsed.toFixed(
+      digits
+    )
+    + "%"
+  );
+}
+
+
+function reportMoney(
+  value
+) {
+  if (
+    value === null
+    || value === undefined
+  ) {
+    return "-";
+  }
+
+  const parsed = Number(
+    value
+  );
+
+  if (!Number.isFinite(parsed)) {
+    return "-";
+  }
+
+  return (
+    "$"
+    + parsed.toFixed(2)
+  );
+}
+
+
+function setReportMoney(
+  id,
+  value,
+  pnl = false
+) {
+  const element = (
+    document.getElementById(
+      id
+    )
+  );
+
+  if (!element) {
+    return;
+  }
+
+  element.textContent = (
+    reportMoney(
+      value
+    )
+  );
+
+  if (pnl) {
+    element.className = (
+      "value "
+      + pnlClass(
+        value
+      )
+    );
+  }
+}
+
+
+function setReportsPeriod(
+  period
+) {
+  reportsPeriod = period;
+
+  document.querySelectorAll(
+    ".reports-period-button"
+  ).forEach(
+    button => {
+      button.classList.toggle(
+        "active",
+        button.dataset.reportPeriod
+          === period
+      );
+    }
+  );
+
+  loadReports();
+}
+
+
+function setReportsStatus(
+  message,
+  isError = false
+) {
+  const element = (
+    document.getElementById(
+      "reportsStatus"
+    )
+  );
+
+  if (!element) {
+    return;
+  }
+
+  element.textContent = message;
+
+  element.className = (
+    "reports-status"
+    + (
+      isError
+        ? " error"
+        : ""
+    )
+  );
+}
+
+
+function renderReportsSummary(
+  report
+) {
+  const summary = (
+    report.summary
+    || {}
+  );
+
+  const annualization = (
+    summary.annualization
+    || {}
+  );
+
+  const bestTrade = (
+    summary.best_trade
+    || {}
+  );
+
+  const worstTrade = (
+    summary.worst_trade
+    || {}
+  );
+
+  setReportMoney(
+    "reportStartingCapital",
+    summary.starting_capital
+  );
+
+  setReportMoney(
+    "reportEndingEquity",
+    summary.ending_equity
+  );
+
+  setReportMoney(
+    "reportNetPnl",
+    summary.net_pnl,
+    true
+  );
+
+  const returnElement = (
+    document.getElementById(
+      "reportReturn"
+    )
+  );
+
+  if (returnElement) {
+    returnElement.textContent = (
+      reportPercent(
+        summary.return_pct
+      )
+    );
+
+    returnElement.className = (
+      "value "
+      + pnlClass(
+        summary.return_pct
+      )
+    );
+  }
+
+  setReportMoney(
+    "reportGrossPnl",
+    summary.gross_pnl,
+    true
+  );
+
+  setReportMoney(
+    "reportFees",
+    summary.fees
+  );
+
+  setText(
+    "reportWinRate",
+    reportPercent(
+      summary.win_rate_pct
+    )
+  );
+
+  const annualizedElement = (
+    document.getElementById(
+      "reportAnnualizedReturn"
+    )
+  );
+
+  if (annualizedElement) {
+    annualizedElement.textContent = (
+      reportPercent(
+        summary.annualized_return_pct
+      )
+    );
+
+    annualizedElement.className = (
+      "value "
+      + pnlClass(
+        summary.annualized_return_pct
+      )
+    );
+  }
+
+  const annualizedNote = (
+    document.getElementById(
+      "reportAnnualizedNote"
+    )
+  );
+
+  if (annualizedNote) {
+    const days = Number(
+      annualization.observation_days
+      || 0
+    );
+
+    const trades = Number(
+      annualization.closed_trades
+      || 0
+    );
+
+    if (
+      annualization.reliable
+      === true
+    ) {
+      annualizedNote.className = (
+        "reports-card-note "
+        + "reports-confidence-ok"
+      );
+
+      annualizedNote.textContent = (
+        `Reliable · ${days.toFixed(1)} days`
+        + ` · ${trades} trades`
+      );
+
+    } else {
+      annualizedNote.className = (
+        "reports-card-note "
+        + "reports-confidence-warning"
+      );
+
+      annualizedNote.textContent = (
+        `Low confidence · ${days.toFixed(1)} days`
+        + ` · ${trades} trades`
+      );
     }
   }
 
-  async function showReportDetail(reportDate) {
-    try {
-      const res = await fetch(REPORTS_API_URL + '?date=' + encodeURIComponent(reportDate));
-      const data = await res.json();
-      const r = data.report;
-      const box = document.getElementById('reportDetail');
+  setText(
+    "reportMaxDrawdown",
+    reportPercent(
+      summary.max_drawdown_pct
+    )
+  );
 
-      if (!r) {
-        box.style.display = 'block';
-        box.innerText = 'Rapport introuvable.';
-        return;
-      }
+  const drawdownElement = (
+    document.getElementById(
+      "reportMaxDrawdown"
+    )
+  );
 
-      box.style.display = 'block';
-      box.innerText = `📅 ${r.report_date}
-
-Portfolio
-- Equity: ${money(r.portfolio?.equity)}
-- Peak Equity: ${money(r.portfolio?.peak_equity)}
-- Daily PnL: ${money(r.portfolio?.daily_pnl)}
-- Drawdown: ${(Number(r.portfolio?.drawdown || 0) * 100).toFixed(2)}%
-- Open Positions: ${r.portfolio?.open_positions}
-- Exposure: ${money(r.portfolio?.exposure)}
-
-Performance
-- Trades: ${r.performance?.trades}
-- Wins: ${r.performance?.wins}
-- Losses: ${r.performance?.losses}
-- Win Rate: ${percent(r.performance?.win_rate)}
-- Expectancy: ${money(r.performance?.expectancy)}
-- Profit Factor: ${Number(r.performance?.profit_factor || 0).toFixed(2)}
-
-Strategy
-- Best: ${r.strategy?.best}
-- Worst: ${r.strategy?.worst}
-
-Theme
-- Best: ${r.theme?.best}
-- Worst: ${r.theme?.worst}
-
-Engine
-- Mode: ${r.engine?.mode}
-- Environment: ${r.engine?.environment}
-- Version: ${r.engine?.engine_version}
-- Risk Multiplier: ${Number(r.engine?.risk_multiplier || 1).toFixed(2)}x
-- Kill Switch: ${r.engine?.kill_switch}
-- Trading Enabled: ${r.engine?.trading_enabled}`;
-    } catch (err) {
-      console.error('Report detail error:', err);
-    }
+  if (drawdownElement) {
+    drawdownElement.className = (
+      "value "
+      + pnlClass(
+        summary.max_drawdown_pct
+      )
+    );
   }
+
+  setText(
+    "reportTrades",
+    summary.total_trades
+    ?? 0
+  );
+
+  setReportMoney(
+    "reportBestTradePnl",
+    bestTrade.pnl,
+    true
+  );
+
+  setText(
+    "reportBestTradeTitle",
+    bestTrade.title
+    || "-"
+  );
+
+  setReportMoney(
+    "reportWorstTradePnl",
+    worstTrade.pnl,
+    true
+  );
+
+  setText(
+    "reportWorstTradeTitle",
+    worstTrade.title
+    || "-"
+  );
+}
+
+
+async function loadReports() {
+  if (
+    !POLYMARKET_REPORTS_API_URL
+    || POLYMARKET_REPORTS_API_URL.includes(
+      "TON_URL"
+    )
+  ) {
+    setReportsStatus(
+      "URL polymarket_reports non configurée.",
+      true
+    );
+
+    return;
+  }
+
+  setReportsStatus(
+    `Chargement du rapport ${reportsPeriod}...`
+  );
+
+  try {
+    const response = await fetch(
+      (
+        POLYMARKET_REPORTS_API_URL
+        + "?period="
+        + encodeURIComponent(
+          reportsPeriod
+        )
+        + "&format=json"
+      )
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `HTTP ${response.status}`
+      );
+    }
+
+    const payload = await response.json();
+
+    /*
+      Supporte :
+      1. API Gateway renvoyant directement le report
+      2. Lambda proxy avec body JSON sérialisé
+    */
+
+    let report = payload;
+
+    if (
+      payload
+      && typeof payload.body === "string"
+    ) {
+      report = JSON.parse(
+        payload.body
+      );
+    }
+
+    reportsCache = report;
+
+    renderReportsSummary(
+      report
+    );
+
+    const generatedAt = Number(
+      report.generated_at
+      || 0
+    );
+
+    setText(
+      "reportsGeneratedAt",
+      generatedAt
+        ? (
+            "Generated "
+            + new Date(
+              generatedAt * 1000
+            ).toLocaleString()
+          )
+        : "-"
+    );
+
+    setReportsStatus(
+      (
+        `Report ${reportsPeriod} loaded`
+        + ` · ${report.summary?.total_trades ?? 0} trades`
+      )
+    );
+
+  } catch (error) {
+    console.error(
+      "Reports V2 error:",
+      error
+    );
+
+    setReportsStatus(
+      (
+        "Impossible de charger le rapport: "
+        + error.message
+      ),
+      true
+    );
+  }
+}
   // ==================== AI REPORTS ===================
 
   async function loadAIReports() {
