@@ -2740,7 +2740,6 @@
       .join("");
   }
   // ==================== REPORTS V2 ====================
-  // ==================== REPORTS V2 ====================
 
 let reportsPeriod = "30d";
 let reportsCache = null;
@@ -3177,6 +3176,78 @@ async function loadReports() {
     );
   }
 }
+
+  // ==================== EXPORT REPORTS ====================
+
+  function exportReportJson() {
+    if (!reportsCache) {
+      return;
+    }
+
+    const blob = new Blob(
+      [
+        JSON.stringify(
+          reportsCache,
+          null,
+          2
+        )
+      ],
+      {
+        type: "application/json"
+      }
+    );
+
+    const url = URL.createObjectURL(
+      blob
+    );
+
+    const link = document.createElement(
+      "a"
+    );
+
+    link.href = url;
+
+    link.download = (
+      `polymarket_report_`
+      + `${reportsPeriod}.json`
+    );
+
+    link.click();
+
+    URL.revokeObjectURL(
+      url
+    );
+  }
+  function exportReportCsv(
+    section
+  ) {
+    if (
+      !POLYMARKET_REPORTS_API_URL
+      || POLYMARKET_REPORTS_API_URL.includes(
+      "https://jlfoftnqmg.execute-api.eu-north-1.amazonaws.com/default/polymarket_reports"
+      )
+    ) {
+      return;
+    }
+
+    const url = (
+      POLYMARKET_REPORTS_API_URL
+      + "?period="
+      + encodeURIComponent(
+        reportsPeriod
+      )
+      + "&format=csv"
+      + "&section="
+      + encodeURIComponent(
+        section
+      )
+    );
+
+    window.open(
+      url,
+      "_blank"
+    );
+  }  
   // ==================== AI REPORTS ===================
 
   async function loadAIReports() {
@@ -3417,7 +3488,6 @@ function renderShadowPortfolio(shadowData) {
 
   setInterval(loadDashboard, 30000);
   setInterval(loadRiskConfig, 60000);
-  setInterval(loadReports, 120000);
 </script>
 </body>
 </html>
