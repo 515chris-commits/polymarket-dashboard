@@ -1159,7 +1159,7 @@
           <div class="reports-actions">
 
             <button
-              onclick="loadReports()"
+              onclick="loadReports(true)"
             >
               🔄 Refresh
             </button>
@@ -3075,7 +3075,9 @@ function renderReportsSummary(
 }
 
 
-async function loadReports() {
+async function loadReports(
+    forceRefresh = false
+) {
   if (
     !POLYMARKET_REPORTS_API_URL
     || POLYMARKET_REPORTS_API_URL.includes(
@@ -3103,6 +3105,11 @@ async function loadReports() {
           reportsPeriod
         )
         + "&format=json"
+        + (
+            forceRefresh
+              ? "&refresh=true"
+              : ""
+          )
       )
     );
 
@@ -3180,132 +3187,132 @@ async function loadReports() {
   // ==================== EXPORT REPORTS ====================
 
   async function exportReportCsv(
-  section
-) {
-  if (
-    !POLYMARKET_REPORTS_API_URL
+    section
   ) {
-    alert(
-      "URL polymarket_reports non configurée."
-    );
-
-    return;
-  }
-
-  try {
-    const url = (
-      POLYMARKET_REPORTS_API_URL
-      + "?period="
-      + encodeURIComponent(
-        reportsPeriod
-      )
-      + "&format=csv"
-      + "&section="
-      + encodeURIComponent(
-        section
-      )
-    );
-
-    const response = await fetch(
-      url
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        `HTTP ${response.status}`
+    if (
+      !POLYMARKET_REPORTS_API_URL
+    ) {
+      alert(
+        "URL polymarket_reports non configurée."
       );
+
+      return;
     }
 
-    const raw = await response.text();
-
-    let csvContent = raw;
-
-    /*
-      Si API Gateway renvoie encore
-      une enveloppe Lambda en JSON,
-      on extrait body.
-    */
     try {
-      const parsed = JSON.parse(
-        raw
+      const url = (
+        POLYMARKET_REPORTS_API_URL
+        + "?period="
+        + encodeURIComponent(
+          reportsPeriod
+        )
+        + "&format=csv"
+        + "&section="
+        + encodeURIComponent(
+          section
+        )
       );
+
+      const response = await fetch(
+        url
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          `HTTP ${response.status}`
+        );
+      }
+
+      const raw = await response.text();
+
+      let csvContent = raw;
+
+      /*
+        Si API Gateway renvoie encore
+        une enveloppe Lambda en JSON,
+        on extrait body.
+      */
+      try {
+        const parsed = JSON.parse(
+          raw
+        );
+
+        if (
+          parsed
+          && typeof parsed.body === "string"
+        ) {
+          csvContent = parsed.body;
+        }
+
+      } catch (error) {
+        // Pas du JSON :
+        // raw est probablement déjà le CSV.
+      }
 
       if (
-        parsed
-        && typeof parsed.body === "string"
+        !csvContent
+        || !csvContent.includes(",")
       ) {
-        csvContent = parsed.body;
+        throw new Error(
+          "Contenu CSV invalide"
+        );
       }
+
+      const blob = new Blob(
+        [
+          csvContent
+        ],
+        {
+          type: (
+            "text/csv;charset=utf-8"
+          )
+        }
+      );
+
+      const downloadUrl = (
+        URL.createObjectURL(
+          blob
+        )
+      );
+
+      const link = (
+        document.createElement(
+          "a"
+        )
+      );
+
+      link.href = downloadUrl;
+
+      link.download = (
+        `polymarket_report_`
+        + `${reportsPeriod}_`
+        + `${section}.csv`
+      );
+
+      document.body.appendChild(
+        link
+      );
+
+      link.click();
+
+      link.remove();
+
+      URL.revokeObjectURL(
+        downloadUrl
+      );
 
     } catch (error) {
-      // Pas du JSON :
-      // raw est probablement déjà le CSV.
-    }
+      console.error(
+        "CSV export error:",
+        error
+      );
 
-    if (
-      !csvContent
-      || !csvContent.includes(",")
-    ) {
-      throw new Error(
-        "Contenu CSV invalide"
+      alert(
+        "Erreur export CSV : "
+        + error.message
       );
     }
-
-    const blob = new Blob(
-      [
-        csvContent
-      ],
-      {
-        type: (
-          "text/csv;charset=utf-8"
-        )
-      }
-    );
-
-    const downloadUrl = (
-      URL.createObjectURL(
-        blob
-      )
-    );
-
-    const link = (
-      document.createElement(
-        "a"
-      )
-    );
-
-    link.href = downloadUrl;
-
-    link.download = (
-      `polymarket_report_`
-      + `${reportsPeriod}_`
-      + `${section}.csv`
-    );
-
-    document.body.appendChild(
-      link
-    );
-
-    link.click();
-
-    link.remove();
-
-    URL.revokeObjectURL(
-      downloadUrl
-    );
-
-  } catch (error) {
-    console.error(
-      "CSV export error:",
-      error
-    );
-
-    alert(
-      "Erreur export CSV : "
-      + error.message
-    );
   }
-}
   // ==================== AI REPORTS ===================
 
   async function loadAIReports() {
