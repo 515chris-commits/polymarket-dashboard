@@ -3576,44 +3576,170 @@ async function loadReports(
 
   async function loadAIReports() {
     try {
-      const res = await fetch(AI_REPORTS_API_URL);
-      const data = await res.json();
-      const reports = data.reports || [];
+      const res = await fetch(
+        AI_REPORTS_API_URL
+      );
 
-      const box = document.getElementById("aiReportBox");
+      if (!res.ok) {
+        throw new Error(
+          `HTTP ${res.status}`
+        );
+      }
+
+      const data = await res.json();
+
+      const reports = (
+        data.reports
+        || []
+      );
+
+      const box = (
+        document.getElementById(
+          "aiReportBox"
+        )
+      );
 
       if (!reports.length) {
-        box.innerText = "Aucun rapport IA disponible.";
+        if (box) {
+          box.innerText = (
+            "Aucun rapport IA disponible."
+          );
+        }
+
         return;
       }
 
       const latest = reports[0];
-      const summary = latest.summary || {};
 
-      setMoneyCard("aiDailyPnl", summary.daily_pnl || 0);
-      setMoneyCard("aiExpectancy", summary.expectancy || 0);
+      const summary = (
+        latest.summary
+        || {}
+      );
+
+
+      // --------------------------
+      // 1D NET P&L
+      // --------------------------
+
+      setMoneyCard(
+        "aiDailyPnl",
+        summary.daily_pnl
+        ?? 0
+      );
+
+
+      // --------------------------
+      // 30D NET P&L
+      // --------------------------
+
+      setMoneyCard(
+        "aiNetPnl30d",
+        summary.net_pnl_30d
+        ?? 0
+      );
+
+
+      // --------------------------
+      // 30D RETURN
+      // --------------------------
+
+      const return30d = Number(
+        summary.return_pct_30d
+        ?? 0
+      );
+
+      const returnElement = (
+        document.getElementById(
+          "aiReturn30d"
+        )
+      );
+
+      if (returnElement) {
+        returnElement.textContent = (
+          return30d.toFixed(2)
+          + "%"
+        );
+
+        returnElement.className = (
+          "value "
+          + pnlClass(
+            return30d
+          )
+        );
+      }
+
+
+      // --------------------------
+      // 30D WIN RATE
+      // --------------------------
+
+      const winRate30d = Number(
+        summary.win_rate_pct_30d
+        ?? 0
+      );
+
+      const winRateElement = (
+        document.getElementById(
+          "aiWinRate30d"
+        )
+      );
+
+      if (winRateElement) {
+        winRateElement.textContent = (
+          winRate30d.toFixed(2)
+          + "%"
+        );
+      }
+
+
+      // --------------------------
+      // BEST THEME / STRATEGY
+      // --------------------------
 
       setText(
-        "aiProfitFactor",
-        Number(summary.profit_factor || 0).toFixed(2)
+        "aiBestTheme",
+        summary.best_theme
+        || "-"
       );
 
       setText(
-        "aiDrawdown",
-        ((Number(summary.drawdown || 0)) * 100).toFixed(2) + "%"
+        "aiBestStrategy",
+        summary.best_strategy
+        || "-"
       );
 
-      setText("aiBestTheme", summary.best_theme || "-");
-      setText("aiBestStrategy", summary.best_strategy || "-");
 
-      box.innerText = latest.text || "Rapport IA vide.";
+      // --------------------------
+      // ANALYST REPORT
+      // --------------------------
+
+      if (box) {
+        box.innerText = (
+          latest.text
+          || "Rapport IA vide."
+        );
+      }
 
     } catch (err) {
-      document.getElementById("aiReportBox").innerText =
-        "Erreur AI report: " + err.message;
+      console.error(
+        "AI reports error:",
+        err
+      );
+
+      const box = (
+        document.getElementById(
+          "aiReportBox"
+        )
+      );
+
+      if (box) {
+        box.innerText = (
+          "Erreur AI report: "
+          + err.message
+        );
+      }
     }
   }
-
   // ==================== LOGS ====================
 
   async function loadEngineLogs() {
