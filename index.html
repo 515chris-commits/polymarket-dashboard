@@ -1633,7 +1633,6 @@
             <th>Trades</th>
             <th>Net P&amp;L</th>
             <th>Return</th>
-            <th>Equity</th>
           </tr>
         </thead>
 
@@ -3554,7 +3553,7 @@ function renderStrategyInsightTable(
   if (!items.length) {
     table.innerHTML = `
       <tr>
-        <td colspan="5">
+        <td colspan="4">
           No data available.
         </td>
       </tr>
@@ -3918,12 +3917,6 @@ function renderReportsHistoricalTrends(
             ?? 0
           );
 
-          const equity = (
-            item.equity
-            ?? item.ending_equity
-            ?? null
-          );
-
           return `
             <tr>
 
@@ -3944,15 +3937,6 @@ function renderReportsHistoricalTrends(
               <td class="${pnlClass(returnPct)}">
                 ${returnPct.toFixed(2)}%
               </td>
-
-              <td>
-                ${
-                  equity === null
-                    ? "-"
-                    : reportMoney(equity)
-                }
-              </td>
-
             </tr>
           `;
         }
