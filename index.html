@@ -3013,70 +3013,124 @@ function renderReportsSummary(
     report
   ) {
     const costs = (
-      report.costs
+      report?.costs
       || {}
     );
 
     const aws = (
-      costs.aws
+      costs?.aws
       || {}
     );
 
-    setReportMoney(
-      "reportOperatingTradingFees",
-      costs.trading_fees
+    const tradingFeesEl = (
+      document.getElementById(
+        "reportOperatingTradingFees"
+      )
     );
 
-    setReportMoney(
-      "reportAwsCosts",
-      aws.total
+    const awsCostsEl = (
+      document.getElementById(
+        "reportAwsCosts"
+      )
     );
 
-    setReportMoney(
-      "reportPnlBeforeCosts",
-      costs.pnl_before_operating_cost,
-      true
+    const pnlBeforeEl = (
+      document.getElementById(
+        "reportPnlBeforeCosts"
+      )
     );
 
-    setReportMoney(
-      "reportPnlAfterCosts",
-      costs.pnl_after_operating_cost,
-      true
+    const pnlAfterEl = (
+      document.getElementById(
+        "reportPnlAfterCosts"
+      )
     );
 
-    const note = (
+    const awsNoteEl = (
       document.getElementById(
         "reportAwsCostsNote"
       )
     );
 
-    if (!note) {
-      return;
-    }
-
-    if (
-      aws.available === true
-    ) {
-      const scope = (
-        aws.scope
-        || "aws_account"
-      );
-
-      const attribution = (
-        aws.attribution
-        || "unfiltered"
-      );
-
-      note.textContent = (
-        `${scope} · ${attribution}`
-      );
-
-    } else {
-      note.textContent = (
-        "AWS cost data unavailable"
+    if (tradingFeesEl) {
+      tradingFeesEl.textContent = (
+        reportMoney(
+          costs.trading_fees
+        )
       );
     }
-  }  
+
+    if (awsCostsEl) {
+      awsCostsEl.textContent = (
+        reportMoney(
+          aws.total
+        )
+      );
+    }
+
+    if (pnlBeforeEl) {
+      const value = Number(
+        costs.pnl_before_operating_cost
+        || 0
+      );
+
+      pnlBeforeEl.textContent = (
+        reportMoney(
+          value
+        )
+      );
+
+      pnlBeforeEl.classList.toggle(
+        "positive",
+        value > 0
+      );
+
+      pnlBeforeEl.classList.toggle(
+        "negative",
+        value < 0
+      );
+    }
+
+    if (pnlAfterEl) {
+      const value = Number(
+        costs.pnl_after_operating_cost
+        || 0
+      );
+
+      pnlAfterEl.textContent = (
+        reportMoney(
+          value
+        )
+      );
+
+      pnlAfterEl.classList.toggle(
+        "positive",
+        value > 0
+      );
+
+      pnlAfterEl.classList.toggle(
+        "negative",
+        value < 0
+      );
+    }
+
+      if (awsNoteEl) {
+      if (
+        aws.available === true
+      ) {
+        awsNoteEl.textContent = (
+          `${aws.scope || "aws_account"}`
+          + " · "
+          + `${aws.attribution || "unfiltered"}`
+        );
+
+      } else {
+        awsNoteEl.textContent = (
+          "AWS cost data unavailable"
+        );
+      }
+    }
+  } 
 
   setReportMoney(
     "reportGrossPnl",
