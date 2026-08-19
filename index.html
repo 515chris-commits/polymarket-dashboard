@@ -3009,6 +3009,75 @@ function renderReportsSummary(
     );
   }
 
+  function renderReportsCosts(
+    report
+  ) {
+    const costs = (
+      report.costs
+      || {}
+    );
+
+    const aws = (
+      costs.aws
+      || {}
+    );
+
+    setReportMoney(
+      "reportOperatingTradingFees",
+      costs.trading_fees
+    );
+
+    setReportMoney(
+      "reportAwsCosts",
+      aws.total
+    );
+
+    setReportMoney(
+      "reportPnlBeforeCosts",
+      costs.pnl_before_operating_cost,
+      true
+    );
+
+    setReportMoney(
+      "reportPnlAfterCosts",
+      costs.pnl_after_operating_cost,
+      true
+    );
+
+    const note = (
+      document.getElementById(
+        "reportAwsCostsNote"
+      )
+    );
+
+    if (!note) {
+      return;
+    }
+
+    if (
+      aws.available === true
+    ) {
+      const scope = (
+        aws.scope
+        || "aws_account"
+      );
+
+      const attribution = (
+        aws.attribution
+        || "unfiltered"
+      );
+
+      note.textContent = (
+        `${scope} · ${attribution}`
+      );
+
+    } else {
+      note.textContent = (
+        "AWS cost data unavailable"
+      );
+    }
+  }  
+
   setReportMoney(
     "reportGrossPnl",
     summary.gross_pnl,
