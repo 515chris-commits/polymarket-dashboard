@@ -1543,6 +1543,53 @@
 
   </div>
 
+  <!-- ENTRY PRICE -->
+
+<div>
+  <h3>By Entry Price</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Entry Price</th>
+          <th>Trades</th>
+          <th>Win Rate</th>
+          <th>Net P&amp;L</th>
+          <th>Avg Return</th>
+        </tr>
+      </thead>
+
+      <tbody id="reportEntryPriceInsightsTable">
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- SCORE -->
+
+<div>
+  <h3>By Score</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Score</th>
+          <th>Trades</th>
+          <th>Win Rate</th>
+          <th>Net P&amp;L</th>
+          <th>Avg Return</th>
+        </tr>
+      </thead>
+
+      <tbody id="reportScoreInsightsTable">
+      </tbody>
+    </table>
+  </div>
+</div>
+
 </section>
       <!-- ==================== FIN REPORTS ==================== -->
 
@@ -3568,6 +3615,16 @@ function renderReportsStrategyInsights(
     "reportResolutionInsightsTable",
     strategy.by_time_to_resolution
   );
+
+  renderStrategyInsightTable(
+  "reportEntryPriceInsightsTable",
+  strategy.by_entry_price
+);
+
+renderStrategyInsightTable(
+  "reportScoreInsightsTable",
+  strategy.by_score
+);
 }
   
 async function loadReports(
