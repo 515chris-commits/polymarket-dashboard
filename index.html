@@ -479,16 +479,6 @@
       text-transform: uppercase;
   }
 
-  .status-ready {
-      color: var(--green);
-      font-weight: bold;
-  }
-
-  .status-failed {
-      color: var(--red);
-      font-weight: bold;
-  }
-
   .status-neutral {
       color: var(--text);
       font-weight: bold;
@@ -622,12 +612,7 @@
    .reports-generated {
      color: var(--muted);
      font-size: 13px;
-   }    
-
-  </style>
-</head>
-<body>
-  <div class="app">
+   }
 
    /* ==========================
    AI Analyst v2
@@ -669,7 +654,12 @@
     #view-ai > .cards {
       grid-template-columns: 1fr;
     }
-  } 
+  }
+
+  </style>
+</head>
+<body>
+  <div class="app">
 
     <!-- ==================== SIDEBAR ==================== -->
     <aside>
@@ -2646,6 +2636,12 @@
         orders
       );
 
+      // Refresh detail panel if it stayed open across a reload
+      const detailsPanel = document.getElementById("shadowOrderDetails");
+      if (detailsPanel && detailsPanel.style.display !== "none") {
+        closeShadowDetails();
+      }
+
     } catch (error) {
       console.error(
         "Shadow orders error:",
@@ -2910,6 +2906,109 @@
       })
       .join("");
   }
+
+  // ==================== SHADOW ORDER DETAILS ====================
+  // These two functions were referenced by onclick handlers above
+  // (row click + "Close" button) but were missing from the script,
+  // so opening an order's details previously threw a
+  // "showShadowDetails is not defined" error.
+
+  function showShadowDetails(index) {
+    const order = shadowOrdersCache[index];
+    const panel = document.getElementById("shadowOrderDetails");
+    const content = document.getElementById("shadowOrderDetailsContent");
+
+    if (!order || !panel || !content) {
+      return;
+    }
+
+    const market = order.market || {};
+    const decision = order.decision || {};
+    const execution = order.execution || {};
+    const simulation = execution.simulation || {};
+
+    const statusValue = order.status;
+    const state = (
+      order.state
+      || (typeof statusValue === "object" ? statusValue?.state : statusValue)
+      || "UNKNOWN"
+    );
+
+    const question = order.title || market.question || "-";
+    const strategy = order.strategy || decision.strategy || "-";
+    const theme = order.theme || decision.theme || "-";
+    const score = order.score ?? decision.score ?? 0;
+
+    const requestedPrice = (
+      order.requested_price
+      ?? order.price
+      ?? simulation.requested_price
+      ?? execution.limit_price
+      ?? 0
+    );
+
+    const executedPrice = order.executed_price ?? simulation.estimated_price ?? 0;
+
+    const cost = (
+      order.cost
+      ?? order.gross_cost
+      ?? order.requested_notional
+      ?? order.position_size
+      ?? simulation.budget_usd
+      ?? execution.usd
+      ?? 0
+    );
+
+    const shares = order.shares ?? simulation.estimated_shares ?? execution.shares ?? 0;
+    const fees = order.fees ?? simulation.estimated_fee_usd ?? 0;
+
+    const slippageBps = (
+      order.slippage_rate != null
+        ? Number(order.slippage_rate) * 10000
+        : (simulation.slippage_bps ?? 0)
+    );
+
+    const items = [
+      ["Market", question],
+      ["Strategy", strategy],
+      ["Theme", theme],
+      ["Score", shadowNumber(score, 0)],
+      ["Status", shadowStatusLabel(state)],
+      ["Requested Price", shadowNumber(requestedPrice, 4)],
+      ["Executed Price", shadowNumber(executedPrice, 4)],
+      ["Cost", `${shadowNumber(cost, 2)} USD`],
+      ["Shares", shadowNumber(shares, 4)],
+      ["Fees", `${shadowNumber(fees, 4)} USD`],
+      ["Slippage", `${shadowNumber(slippageBps, 2)} bps`],
+      ["Created", shadowDate(order.created_at)]
+    ];
+
+    if (order.failure_reason) {
+      items.push(["Failure Reason", order.failure_reason]);
+    }
+
+    content.innerHTML = items
+      .map(([label, value]) => `
+        <div class="detail-item">
+          <span>${shadowEscapeHtml(label)}</span>
+          <strong class="${label === "Status" ? shadowStatusClass(state) : "status-neutral"}">
+            ${shadowEscapeHtml(value)}
+          </strong>
+        </div>
+      `)
+      .join("");
+
+    panel.style.display = "block";
+    panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  function closeShadowDetails() {
+    const panel = document.getElementById("shadowOrderDetails");
+    if (panel) {
+      panel.style.display = "none";
+    }
+  }
+
   // ==================== REPORTS V2 ====================
 
 let reportsPeriod = "30d";
@@ -3486,6 +3585,30 @@ async function loadReports(
 }
 
   // ==================== EXPORT REPORTS ====================
+
+  function exportReportJson() {
+    if (!reportsCache) {
+      alert("Aucun rapport chargé pour le moment.");
+      return;
+    }
+
+    const blob = new Blob(
+      [JSON.stringify(reportsCache, null, 2)],
+      { type: "application/json;charset=utf-8" }
+    );
+
+    const downloadUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = downloadUrl;
+    link.download = `polymarket_report_${reportsPeriod}.json`;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(downloadUrl);
+  }
 
   async function exportReportCsv(
     section
