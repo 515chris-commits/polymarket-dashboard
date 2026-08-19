@@ -3716,6 +3716,184 @@ function renderReportsSummary(
   }
 }
 
+  function renderReportsDataQuality(
+  report
+) {
+  const dataQuality = (
+    report?.data_quality
+    || {}
+  );
+
+  const strategyCoverage = (
+    report?.strategy?.coverage
+    || {}
+  );
+
+  const decisionCoverage = (
+    report?.decisions?.coverage
+    || {}
+  );
+
+  const annualization = (
+    report?.summary?.annualization
+    || {}
+  );
+
+  const warnings = (
+    Array.isArray(
+      dataQuality.warnings
+    )
+      ? dataQuality.warnings
+      : []
+  );
+
+
+  // --------------------------
+  // GLOBAL DATA QUALITY
+  // --------------------------
+
+  const statusElement = (
+    document.getElementById(
+      "reportDataQualityStatus"
+    )
+  );
+
+  if (statusElement) {
+    const hasWarnings = (
+      warnings.length > 0
+    );
+
+    statusElement.textContent = (
+      hasWarnings
+        ? "WARNING"
+        : (
+            dataQuality.status
+            || "OK"
+          )
+    );
+
+    statusElement.className = (
+      "value "
+      + (
+          hasWarnings
+            ? "reports-confidence-warning"
+            : "positive"
+        )
+    );
+  }
+
+
+  const warningElement = (
+    document.getElementById(
+      "reportDataQualityWarnings"
+    )
+  );
+
+  if (warningElement) {
+    warningElement.textContent = (
+      warnings.length
+        ? `${warnings.length} warning${warnings.length === 1 ? "" : "s"}`
+        : "No warnings"
+    );
+  }
+
+
+  // --------------------------
+  // STRATEGY COVERAGE
+  // --------------------------
+
+  renderCoverageCard(
+    strategyCoverage.score,
+    "reportStrategyScoreCoverage",
+    "reportStrategyScoreCoverageNote"
+  );
+
+  renderCoverageCard(
+    strategyCoverage.liquidity,
+    "reportStrategyLiquidityCoverage",
+    "reportStrategyLiquidityCoverageNote"
+  );
+
+  renderCoverageCard(
+    strategyCoverage.volatility,
+    "reportStrategyVolatilityCoverage",
+    "reportStrategyVolatilityCoverageNote"
+  );
+
+
+  // --------------------------
+  // DECISION COVERAGE
+  // --------------------------
+
+  renderCoverageCard(
+    decisionCoverage.score,
+    "reportDecisionScoreCoverage",
+    "reportDecisionScoreCoverageNote"
+  );
+
+  renderCoverageCard(
+    decisionCoverage.price,
+    "reportDecisionPriceCoverage",
+    "reportDecisionPriceCoverageNote"
+  );
+
+
+  // --------------------------
+  // ANNUALIZATION
+  // --------------------------
+
+  const annualizationElement = (
+    document.getElementById(
+      "reportAnnualizationConfidence"
+    )
+  );
+
+  const annualizationNote = (
+    document.getElementById(
+      "reportAnnualizationConfidenceNote"
+    )
+  );
+
+  if (annualizationElement) {
+    const reliable = (
+      annualization.reliable
+      === true
+    );
+
+    annualizationElement.textContent = (
+      reliable
+        ? "RELIABLE"
+        : "LOW"
+    );
+
+    annualizationElement.className = (
+      "value "
+      + (
+          reliable
+            ? "positive"
+            : "reports-confidence-warning"
+        )
+    );
+  }
+
+  if (annualizationNote) {
+    const days = Number(
+      annualization.observation_days
+      || 0
+    );
+
+    const trades = Number(
+      annualization.closed_trades
+      || 0
+    );
+
+    annualizationNote.textContent = (
+      `${days.toFixed(1)} days`
+      + ` · ${trades} trades`
+    );
+  }
+}
+
 
 async function loadReports(
     forceRefresh = false
