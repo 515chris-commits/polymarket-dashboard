@@ -629,6 +629,48 @@
 <body>
   <div class="app">
 
+   /* ==========================
+   AI Analyst v2
+   ========================== */
+
+  #view-ai > .cards {
+    width: 100%;
+    grid-template-columns: repeat(
+      3,
+      minmax(220px, 1fr)
+    );
+  }
+
+  #view-ai > .cards .card {
+    min-width: 0;
+  }
+
+  #view-ai > .cards .value {
+    overflow-wrap: normal;
+    word-break: normal;
+    white-space: normal;
+  }
+
+  #view-ai #aiBestTheme,
+  #view-ai #aiBestStrategy {
+    text-transform: none;
+  }
+
+  @media (max-width: 1100px) {
+    #view-ai > .cards {
+      grid-template-columns: repeat(
+        2,
+        minmax(220px, 1fr)
+      );
+    }
+  }
+
+  @media (max-width: 650px) {
+    #view-ai > .cards {
+      grid-template-columns: 1fr;
+    }
+  } 
+
     <!-- ==================== SIDEBAR ==================== -->
     <aside>
       <div class="brand">🚀 Trading Engine</div>
