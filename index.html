@@ -1406,8 +1406,6 @@
 
         </section>
 
-      </section>
-
         <!-- ==================== OPERATING COSTS ==================== -->
         <section class="reports-section">
           <h2>Operating Costs</h2>
@@ -1436,7 +1434,6 @@
             <div id="reportWarningsList" class="reports-quality-warning-list"></div>
           </details>
         </section>
-      </section>
 
       <!-- ==================== STRATEGY INSIGHTS ==================== -->
 
@@ -1541,8 +1538,6 @@
       </div>
     </div>
 
-  </div>
-
   <!-- ENTRY PRICE -->
 
 <div>
@@ -1590,7 +1585,15 @@
   </div>
 </div>
 
+  </div>
+  <!-- fin chart-grid -->
+
 </section>
+<!-- fin Strategy Insights -->
+
+</section>
+<!-- fin view-reports -->
+
       <!-- ==================== FIN REPORTS ==================== -->
 
         <!-- ==================== LEARNING Center ==================== -->
@@ -1760,35 +1763,12 @@
           <button onclick="loadAIReports()">🔄 Refresh AI Report</button>
 
           <div class="cards" style="margin-top:20px;">
-            <div class="card">
-              <div class="label">Daily PnL</div>
-              <div class="value" id="aiDailyPnl">-</div>
-            </div>
-
-            <div class="card">
-              <div class="label">Expectancy</div>
-              <div class="value" id="aiExpectancy">-</div>
-            </div>
-
-            <div class="card">
-              <div class="label">Profit Factor</div>
-              <div class="value" id="aiProfitFactor">-</div>
-            </div>
-
-            <div class="card">
-              <div class="label">Drawdown</div>
-              <div class="value" id="aiDrawdown">-</div>
-            </div>
-
-            <div class="card">
-              <div class="label">Best Theme</div>
-              <div class="value" id="aiBestTheme">-</div>
-            </div>
-
-            <div class="card">
-              <div class="label">Best Strategy</div>
-              <div class="value" id="aiBestStrategy">-</div>
-            </div>
+            <div class="card"><div class="label">1D Net P&amp;L</div><div class="value" id="aiDailyPnl">-</div></div>
+            <div class="card"><div class="label">30D Net P&amp;L</div><div class="value" id="aiNetPnl30d">-</div></div>
+            <div class="card"><div class="label">30D Return</div><div class="value" id="aiReturn30d">-</div></div>
+            <div class="card"><div class="label">30D Win Rate</div><div class="value" id="aiWinRate30d">-</div></div>
+            <div class="card"><div class="label">Best Theme</div><div class="value" id="aiBestTheme">-</div></div>
+            <div class="card"><div class="label">Best Strategy</div><div class="value" id="aiBestStrategy">-</div></div>
           </div>
 
           <section>
@@ -1816,7 +1796,10 @@
   const POLYMARKET_REPORTS_API_URL = "https://jlfoftnqmg.execute-api.eu-north-1.amazonaws.com/default/polymarket_reports";
 
   // ==================== HELPERS ====================
-  const money = v => "$" + Number(v || 0).toFixed(2);
+  const money = v => {
+    const n = Number(v || 0);
+    return n < 0 ? "-$" + Math.abs(n).toFixed(2) : "$" + n.toFixed(2);
+  };
   const price = v => Number(v || 0).toFixed(4);
   const percent = v => (Number(v || 0) * 100).toFixed(1) + "%";
   const pnlClass = v => Number(v || 0) >= 0 ? "positive" : "negative";
