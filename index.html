@@ -1387,8 +1387,6 @@
 
         </section>
 
-      </section>
-
         <!-- ==================== OPERATING COSTS ==================== -->
 
       <section class="reports-section">
@@ -1459,6 +1457,9 @@
         </div>
 
       </section>
+
+      </section>
+      <!-- ==================== END REPORTS ==================== -->
 
         <!-- ==================== LEARNING Center ==================== -->
         <section id="view-learning" class="view">
@@ -3009,128 +3010,7 @@ function renderReportsSummary(
     );
   }
 
-  function renderReportsCosts(
-    report
-  ) {
-    const costs = (
-      report?.costs
-      || {}
-    );
-
-    const aws = (
-      costs?.aws
-      || {}
-    );
-
-    const tradingFeesEl = (
-      document.getElementById(
-        "reportOperatingTradingFees"
-      )
-    );
-
-    const awsCostsEl = (
-      document.getElementById(
-        "reportAwsCosts"
-      )
-    );
-
-    const pnlBeforeEl = (
-      document.getElementById(
-        "reportPnlBeforeCosts"
-      )
-    );
-
-    const pnlAfterEl = (
-      document.getElementById(
-        "reportPnlAfterCosts"
-      )
-    );
-
-    const awsNoteEl = (
-      document.getElementById(
-        "reportAwsCostsNote"
-      )
-    );
-
-    if (tradingFeesEl) {
-      tradingFeesEl.textContent = (
-        reportMoney(
-          costs.trading_fees
-        )
-      );
-    }
-
-    if (awsCostsEl) {
-      awsCostsEl.textContent = (
-        reportMoney(
-          aws.total
-        )
-      );
-    }
-
-    if (pnlBeforeEl) {
-      const value = Number(
-        costs.pnl_before_operating_cost
-        || 0
-      );
-
-      pnlBeforeEl.textContent = (
-        reportMoney(
-          value
-        )
-      );
-
-      pnlBeforeEl.classList.toggle(
-        "positive",
-        value > 0
-      );
-
-      pnlBeforeEl.classList.toggle(
-        "negative",
-        value < 0
-      );
-    }
-
-    if (pnlAfterEl) {
-      const value = Number(
-        costs.pnl_after_operating_cost
-        || 0
-      );
-
-      pnlAfterEl.textContent = (
-        reportMoney(
-          value
-        )
-      );
-
-      pnlAfterEl.classList.toggle(
-        "positive",
-        value > 0
-      );
-
-      pnlAfterEl.classList.toggle(
-        "negative",
-        value < 0
-      );
-    }
-
-      if (awsNoteEl) {
-      if (
-        aws.available === true
-      ) {
-        awsNoteEl.textContent = (
-          `${aws.scope || "aws_account"}`
-          + " · "
-          + `${aws.attribution || "unfiltered"}`
-        );
-
-      } else {
-        awsNoteEl.textContent = (
-          "AWS cost data unavailable"
-        );
-      }
-    }
-  } 
+ 
 
   setReportMoney(
     "reportGrossPnl",
@@ -3267,6 +3147,130 @@ function renderReportsSummary(
     || "-"
   );
 }
+
+
+  function renderReportsCosts(
+    report
+  ) {
+    const costs = (
+      report?.costs
+      || {}
+    );
+
+    const aws = (
+      costs?.aws
+      || {}
+    );
+
+    const tradingFeesEl = (
+      document.getElementById(
+        "reportOperatingTradingFees"
+      )
+    );
+
+    const awsCostsEl = (
+      document.getElementById(
+        "reportAwsCosts"
+      )
+    );
+
+    const pnlBeforeEl = (
+      document.getElementById(
+        "reportPnlBeforeCosts"
+      )
+    );
+
+    const pnlAfterEl = (
+      document.getElementById(
+        "reportPnlAfterCosts"
+      )
+    );
+
+    const awsNoteEl = (
+      document.getElementById(
+        "reportAwsCostsNote"
+      )
+    );
+
+    if (tradingFeesEl) {
+      tradingFeesEl.textContent = (
+        reportMoney(
+          costs.trading_fees
+        )
+      );
+    }
+
+    if (awsCostsEl) {
+      awsCostsEl.textContent = (
+        reportMoney(
+          aws.total
+        )
+      );
+    }
+
+    if (pnlBeforeEl) {
+      const value = Number(
+        costs.pnl_before_operating_cost
+        || 0
+      );
+
+      pnlBeforeEl.textContent = (
+        reportMoney(
+          value
+        )
+      );
+
+      pnlBeforeEl.classList.toggle(
+        "positive",
+        value > 0
+      );
+
+      pnlBeforeEl.classList.toggle(
+        "negative",
+        value < 0
+      );
+    }
+
+    if (pnlAfterEl) {
+      const value = Number(
+        costs.pnl_after_operating_cost
+        || 0
+      );
+
+      pnlAfterEl.textContent = (
+        reportMoney(
+          value
+        )
+      );
+
+      pnlAfterEl.classList.toggle(
+        "positive",
+        value > 0
+      );
+
+      pnlAfterEl.classList.toggle(
+        "negative",
+        value < 0
+      );
+    }
+
+      if (awsNoteEl) {
+      if (
+        aws.available === true
+      ) {
+        awsNoteEl.textContent = (
+          `${aws.scope || "aws_account"}`
+          + " · "
+          + `${aws.attribution || "unfiltered"}`
+        );
+
+      } else {
+        awsNoteEl.textContent = (
+          "AWS cost data unavailable"
+        );
+      }
+    }
+  }
 
 
 async function loadReports(
