@@ -479,6 +479,16 @@
       text-transform: uppercase;
   }
 
+  .status-ready {
+      color: var(--green);
+      font-weight: bold;
+  }
+
+  .status-failed {
+      color: var(--red);
+      font-weight: bold;
+  }
+
   .status-neutral {
       color: var(--text);
       font-weight: bold;
@@ -612,86 +622,28 @@
    .reports-generated {
      color: var(--muted);
      font-size: 13px;
-   }
+   }    
 
-    .reports-quality-details {
-  margin-top: -10px;
-  margin-bottom: 30px;
-  padding: 14px 18px;
-  background: var(--panel-dark);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-}
-
-.reports-quality-details summary {
-  cursor: pointer;
-  color: var(--yellow);
-  font-weight: 700;
-}
-
-.reports-quality-warning-list {
-  margin-top: 14px;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.7;
-}
-
-.reports-quality-warning-item {
-  padding: 4px 0;
-}
-
-   /* ==========================
-   AI Analyst v2
-   ========================== */
-
-  #view-ai > .cards {
-    width: 100%;
-    grid-template-columns: repeat(
-      3,
-      minmax(220px, 1fr)
-    );
+  
+  /* ---------- AI Analyst v2 / Data Quality ---------- */
+  #view-ai > .cards { width:100%; grid-template-columns:repeat(3,minmax(220px,1fr)); }
+  #view-ai > .cards .card { min-width:0; }
+  #view-ai > .cards .value { overflow-wrap:normal; word-break:normal; white-space:normal; }
+  #view-ai #aiBestTheme, #view-ai #aiBestStrategy {
+    font-size:clamp(18px,1.7vw,22px); line-height:1.2;
+    overflow-wrap:anywhere; word-break:normal; white-space:normal; text-transform:none;
   }
-
-  #view-ai > .cards .card {
-    min-width: 0;
+  .reports-quality-details {
+    margin-top:-10px; margin-bottom:30px; padding:14px 18px;
+    background:var(--panel-dark); border:1px solid var(--border); border-radius:10px;
   }
+  .reports-quality-details summary { cursor:pointer; color:var(--yellow); font-weight:700; }
+  .reports-quality-warning-list { margin-top:14px; color:var(--muted); font-size:13px; line-height:1.7; }
+  .reports-quality-warning-item { padding:4px 0; }
+  @media (max-width:1100px) { #view-ai > .cards { grid-template-columns:repeat(2,minmax(220px,1fr)); } }
+  @media (max-width:650px) { #view-ai > .cards { grid-template-columns:1fr; } }
 
-  #view-ai > .cards .value {
-    overflow-wrap: normal;
-    word-break: normal;
-    white-space: normal;
-  }
-
-  #view-ai #aiBestTheme,
-  #view-ai #aiBestStrategy {
-    font-size: clamp(
-      18px,
-      1.7vw,
-      22px
-    );
-
-    line-height: 1.2;
-    overflow-wrap: anywhere;
-    word-break: normal;
-    white-space: normal;
-  }
-
-  @media (max-width: 1100px) {
-    #view-ai > .cards {
-      grid-template-columns: repeat(
-        2,
-        minmax(220px, 1fr)
-      );
-    }
-  }
-
-  @media (max-width: 650px) {
-    #view-ai > .cards {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  </style>
+</style>
 </head>
 <body>
   <div class="app">
@@ -1454,78 +1406,38 @@
 
         </section>
 
-        <!-- ==================== OPERATING COSTS ==================== -->
-
-      <section class="reports-section">
-
-        <h2>Operating Costs</h2>
-
-        <div class="cards">
-
-          <div class="card">
-            <div class="label">
-              Trading Fees
-            </div>
-
-            <div
-              class="value"
-              id="reportOperatingTradingFees"
-            >
-              -
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="label">
-              AWS Costs
-            </div>
-
-            <div
-              class="value"
-              id="reportAwsCosts"
-            >
-              -
-            </div>
-
-            <div
-              class="reports-card-note"
-              id="reportAwsCostsNote"
-            >
-              Current period
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="label">
-              P&amp;L Before AWS
-            </div>
-
-            <div
-              class="value"
-              id="reportPnlBeforeCosts"
-            >
-              -
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="label">
-              P&amp;L After AWS
-            </div>
-
-            <div
-              class="value"
-              id="reportPnlAfterCosts"
-            >
-              -
-            </div>
-          </div>
-
-        </div>
-
       </section>
 
-          
+        <!-- ==================== OPERATING COSTS ==================== -->
+        <section class="reports-section">
+          <h2>Operating Costs</h2>
+          <div class="cards">
+            <div class="card"><div class="label">Trading Fees</div><div class="value" id="reportOperatingTradingFees">-</div></div>
+            <div class="card"><div class="label">AWS Costs</div><div class="value" id="reportAwsCosts">-</div><div class="reports-card-note" id="reportAwsCostsNote">Current period</div></div>
+            <div class="card"><div class="label">P&amp;L Before AWS</div><div class="value" id="reportPnlBeforeCosts">-</div></div>
+            <div class="card"><div class="label">P&amp;L After AWS</div><div class="value" id="reportPnlAfterCosts">-</div></div>
+          </div>
+        </section>
+
+        <!-- ==================== DATA QUALITY ==================== -->
+        <section class="reports-section">
+          <h2>Data Quality &amp; Confidence</h2>
+          <div class="cards">
+            <div class="card"><div class="label">Data Quality</div><div class="value" id="reportDataQualityStatus">-</div><div class="reports-card-note" id="reportDataQualityWarnings">-</div></div>
+            <div class="card"><div class="label">Strategy Score Coverage</div><div class="value" id="reportStrategyScoreCoverage">-</div><div class="reports-card-note" id="reportStrategyScoreCoverageNote">-</div></div>
+            <div class="card"><div class="label">Strategy Liquidity Coverage</div><div class="value" id="reportStrategyLiquidityCoverage">-</div><div class="reports-card-note" id="reportStrategyLiquidityCoverageNote">-</div></div>
+            <div class="card"><div class="label">Strategy Volatility Coverage</div><div class="value" id="reportStrategyVolatilityCoverage">-</div><div class="reports-card-note" id="reportStrategyVolatilityCoverageNote">-</div></div>
+            <div class="card"><div class="label">Decision Score Coverage</div><div class="value" id="reportDecisionScoreCoverage">-</div><div class="reports-card-note" id="reportDecisionScoreCoverageNote">-</div></div>
+            <div class="card"><div class="label">Decision Price Coverage</div><div class="value" id="reportDecisionPriceCoverage">-</div><div class="reports-card-note" id="reportDecisionPriceCoverageNote">-</div></div>
+            <div class="card"><div class="label">Annualization Confidence</div><div class="value" id="reportAnnualizationConfidence">-</div><div class="reports-card-note" id="reportAnnualizationConfidenceNote">-</div></div>
+          </div>
+          <details class="reports-quality-details">
+            <summary id="reportWarningsSummary">Show data quality warnings</summary>
+            <div id="reportWarningsList" class="reports-quality-warning-list"></div>
+          </details>
+        </section>
+      </section>
+      <!-- ==================== FIN REPORTS ==================== -->
 
         <!-- ==================== LEARNING Center ==================== -->
         <section id="view-learning" class="view">
@@ -1694,91 +1606,34 @@
           <button onclick="loadAIReports()">🔄 Refresh AI Report</button>
 
           <div class="cards" style="margin-top:20px;">
-            <div class="cards" style="margin-top:20px;">
-
-              <div class="card">
-                <div class="label">
-                  1D Net P&amp;L
-                </div>
-
-                <div
-                  class="value"
-                  id="aiDailyPnl"
-                >
-                  -
-                </div>
-              </div>
-
-
-              <div class="card">
-                <div class="label">
-                  30D Net P&amp;L
-                </div>
-
-                <div
-                  class="value"
-                  id="aiNetPnl30d"
-                >
-                  -
-                </div>
-              </div>
-
-
-              <div class="card">
-                <div class="label">
-                  30D Return
-              </div>
-
-              <div
-                class="value"
-                id="aiReturn30d"
-              >
-                -
-              </div>
+            <div class="card">
+              <div class="label">Daily PnL</div>
+              <div class="value" id="aiDailyPnl">-</div>
             </div>
-
 
             <div class="card">
-              <div class="label">
-                30D Win Rate
-              </div>
-
-              <div
-                class="value"
-                id="aiWinRate30d"
-              >
-                -
-              </div>
+              <div class="label">Expectancy</div>
+              <div class="value" id="aiExpectancy">-</div>
             </div>
-
 
             <div class="card">
-              <div class="label">
-                Best Theme
-              </div>
-
-              <div
-                class="value"
-                id="aiBestTheme"
-              >
-                -
-              </div>
+              <div class="label">Profit Factor</div>
+              <div class="value" id="aiProfitFactor">-</div>
             </div>
-
 
             <div class="card">
-              <div class="label">
-                Best Strategy
-              </div>
-
-              <div
-                class="value"
-                id="aiBestStrategy"
-              >
-                -
-              </div>
+              <div class="label">Drawdown</div>
+              <div class="value" id="aiDrawdown">-</div>
             </div>
 
+            <div class="card">
+              <div class="label">Best Theme</div>
+              <div class="value" id="aiBestTheme">-</div>
+            </div>
+
+            <div class="card">
+              <div class="label">Best Strategy</div>
+              <div class="value" id="aiBestStrategy">-</div>
             </div>
           </div>
 
@@ -2670,12 +2525,6 @@
         orders
       );
 
-      // Refresh detail panel if it stayed open across a reload
-      const detailsPanel = document.getElementById("shadowOrderDetails");
-      if (detailsPanel && detailsPanel.style.display !== "none") {
-        closeShadowDetails();
-      }
-
     } catch (error) {
       console.error(
         "Shadow orders error:",
@@ -2940,109 +2789,6 @@
       })
       .join("");
   }
-
-  // ==================== SHADOW ORDER DETAILS ====================
-  // These two functions were referenced by onclick handlers above
-  // (row click + "Close" button) but were missing from the script,
-  // so opening an order's details previously threw a
-  // "showShadowDetails is not defined" error.
-
-  function showShadowDetails(index) {
-    const order = shadowOrdersCache[index];
-    const panel = document.getElementById("shadowOrderDetails");
-    const content = document.getElementById("shadowOrderDetailsContent");
-
-    if (!order || !panel || !content) {
-      return;
-    }
-
-    const market = order.market || {};
-    const decision = order.decision || {};
-    const execution = order.execution || {};
-    const simulation = execution.simulation || {};
-
-    const statusValue = order.status;
-    const state = (
-      order.state
-      || (typeof statusValue === "object" ? statusValue?.state : statusValue)
-      || "UNKNOWN"
-    );
-
-    const question = order.title || market.question || "-";
-    const strategy = order.strategy || decision.strategy || "-";
-    const theme = order.theme || decision.theme || "-";
-    const score = order.score ?? decision.score ?? 0;
-
-    const requestedPrice = (
-      order.requested_price
-      ?? order.price
-      ?? simulation.requested_price
-      ?? execution.limit_price
-      ?? 0
-    );
-
-    const executedPrice = order.executed_price ?? simulation.estimated_price ?? 0;
-
-    const cost = (
-      order.cost
-      ?? order.gross_cost
-      ?? order.requested_notional
-      ?? order.position_size
-      ?? simulation.budget_usd
-      ?? execution.usd
-      ?? 0
-    );
-
-    const shares = order.shares ?? simulation.estimated_shares ?? execution.shares ?? 0;
-    const fees = order.fees ?? simulation.estimated_fee_usd ?? 0;
-
-    const slippageBps = (
-      order.slippage_rate != null
-        ? Number(order.slippage_rate) * 10000
-        : (simulation.slippage_bps ?? 0)
-    );
-
-    const items = [
-      ["Market", question],
-      ["Strategy", strategy],
-      ["Theme", theme],
-      ["Score", shadowNumber(score, 0)],
-      ["Status", shadowStatusLabel(state)],
-      ["Requested Price", shadowNumber(requestedPrice, 4)],
-      ["Executed Price", shadowNumber(executedPrice, 4)],
-      ["Cost", `${shadowNumber(cost, 2)} USD`],
-      ["Shares", shadowNumber(shares, 4)],
-      ["Fees", `${shadowNumber(fees, 4)} USD`],
-      ["Slippage", `${shadowNumber(slippageBps, 2)} bps`],
-      ["Created", shadowDate(order.created_at)]
-    ];
-
-    if (order.failure_reason) {
-      items.push(["Failure Reason", order.failure_reason]);
-    }
-
-    content.innerHTML = items
-      .map(([label, value]) => `
-        <div class="detail-item">
-          <span>${shadowEscapeHtml(label)}</span>
-          <strong class="${label === "Status" ? shadowStatusClass(state) : "status-neutral"}">
-            ${shadowEscapeHtml(value)}
-          </strong>
-        </div>
-      `)
-      .join("");
-
-    panel.style.display = "block";
-    panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }
-
-  function closeShadowDetails() {
-    const panel = document.getElementById("shadowOrderDetails");
-    if (panel) {
-      panel.style.display = "none";
-    }
-  }
-
   // ==================== REPORTS V2 ====================
 
 let reportsPeriod = "30d";
@@ -3504,314 +3250,91 @@ function renderReportsSummary(
     }
   }
 
-  function renderCoverageCard(
-  coverage,
-  valueId,
-  noteId
-) {
-  const data = (
-    coverage
-    || {}
-  );
 
-  const available = Number(
-    data.available
-    ?? 0
-  );
 
-  const total = Number(
-    data.total
-    ?? 0
-  );
-
-  const pct = Number(
-    data.pct
-    ?? (
-      total > 0
-        ? (
-            available
-            / total
-            * 100
-          )
-        : 0
-    )
-  );
-
-  const valueElement = (
-    document.getElementById(
-      valueId
-    )
-  );
-
-  const noteElement = (
-    document.getElementById(
-      noteId
-    )
-  );
+function renderCoverageCard(coverage, valueId, noteId) {
+  const data = coverage || {};
+  const available = Number(data.available ?? 0);
+  const total = Number(data.total ?? 0);
+  const pct = Number(data.pct ?? (total > 0 ? available / total * 100 : 0));
+  const valueElement = document.getElementById(valueId);
+  const noteElement = document.getElementById(noteId);
 
   if (valueElement) {
-    valueElement.textContent = (
-      total > 0
-        ? pct.toFixed(1) + "%"
-        : "-"
-    );
-
+    valueElement.textContent = total > 0 ? pct.toFixed(1) + "%" : "-";
     let statusClass = "";
-
     if (total > 0) {
-      if (pct >= 95) {
-        statusClass = "positive";
-      } else if (pct >= 80) {
-        statusClass = "reports-confidence-warning";
-      } else {
-        statusClass = "negative";
-      }
+      if (pct >= 95) statusClass = "positive";
+      else if (pct >= 80) statusClass = "reports-confidence-warning";
+      else statusClass = "negative";
     }
-
-    valueElement.className = (
-      "value "
-      + statusClass
-    );
+    valueElement.className = "value " + statusClass;
   }
 
   if (noteElement) {
-    noteElement.textContent = (
-      total > 0
-        ? `${available.toLocaleString()} / ${total.toLocaleString()}`
-        : "No data"
-    );
+    noteElement.textContent = total > 0
+      ? `${available.toLocaleString()} / ${total.toLocaleString()}`
+      : "No data";
   }
 }
 
-  function renderReportsDataQuality(
-  report
-) {
-  const dataQuality = (
-    report?.data_quality
-    || {}
-  );
+function renderReportsDataQuality(report) {
+  const dataQuality = report?.data_quality || {};
+  const strategyCoverage = report?.strategy?.coverage || {};
+  const decisionCoverage = report?.decisions?.coverage || {};
+  const annualization = report?.summary?.annualization || {};
+  const warnings = Array.isArray(dataQuality.warnings) ? dataQuality.warnings : [];
 
-  const strategyCoverage = (
-    report?.strategy?.coverage
-    || {}
-  );
+  const warningsSummary = document.getElementById("reportWarningsSummary");
+  const warningsList = document.getElementById("reportWarningsList");
 
-  const decisionCoverage = (
-    report?.decisions?.coverage
-    || {}
-  );
-
-  const annualization = (
-    report?.summary?.annualization
-    || {}
-  );
-
-  const warnings = (
-    Array.isArray(
-      dataQuality.warnings
-    )
-      ? dataQuality.warnings
-      : []
-  );
-
-  const warningsSummary = (
-  document.getElementById(
-    "reportWarningsSummary"
-  )
-);
-
-const warningsList = (
-  document.getElementById(
-    "reportWarningsList"
-  )
-);
-
-if (warningsSummary) {
-  warningsSummary.textContent = (
-    warnings.length
-      ? (
-          `Show ${warnings.length} `
-          + `data quality warning`
-          + (
-              warnings.length === 1
-                ? ""
-                : "s"
-            )
-        )
-      : "No data quality warnings"
-  );
-}
-
-if (warningsList) {
-  if (warnings.length) {
-    warningsList.innerHTML = (
-      warnings
-        .map(
-          warning => (
-            `<div class="reports-quality-warning-item">`
-            + `⚠ ${escapeHtml(warning)}`
-            + `</div>`
-          )
-        )
-        .join("")
-    );
-
-  } else {
-    warningsList.innerHTML = (
-      `<div class="reports-quality-warning-item">`
-      + `No warnings.`
-      + `</div>`
-    );
+  if (warningsSummary) {
+    warningsSummary.textContent = warnings.length
+      ? `Show ${warnings.length} data quality warning${warnings.length === 1 ? "" : "s"}`
+      : "No data quality warnings";
   }
-}
 
+  if (warningsList) {
+    warningsList.innerHTML = warnings.length
+      ? warnings.map(w => `<div class="reports-quality-warning-item">⚠ ${escapeHtml(w)}</div>`).join("")
+      : `<div class="reports-quality-warning-item">No warnings.</div>`;
+  }
 
-  // --------------------------
-  // GLOBAL DATA QUALITY
-  // --------------------------
-
-  const statusElement = (
-    document.getElementById(
-      "reportDataQualityStatus"
-    )
-  );
-
+  const statusElement = document.getElementById("reportDataQualityStatus");
   if (statusElement) {
-    const hasWarnings = (
-      warnings.length > 0
-    );
-
-    statusElement.textContent = (
-      hasWarnings
-        ? "WARNING"
-        : (
-            dataQuality.status
-            || "OK"
-          )
-    );
-
-    statusElement.className = (
-      "value "
-      + (
-          hasWarnings
-            ? "reports-confidence-warning"
-            : "positive"
-        )
-    );
+    const hasWarnings = warnings.length > 0;
+    statusElement.textContent = hasWarnings ? "WARNING" : (dataQuality.status || "OK");
+    statusElement.className = "value " + (hasWarnings ? "reports-confidence-warning" : "positive");
   }
 
-
-  const warningElement = (
-    document.getElementById(
-      "reportDataQualityWarnings"
-    )
-  );
-
+  const warningElement = document.getElementById("reportDataQualityWarnings");
   if (warningElement) {
-    warningElement.textContent = (
-      warnings.length
-        ? `${warnings.length} warning${warnings.length === 1 ? "" : "s"}`
-        : "No warnings"
-    );
+    warningElement.textContent = warnings.length
+      ? `${warnings.length} warning${warnings.length === 1 ? "" : "s"}`
+      : "No warnings";
   }
 
+  renderCoverageCard(strategyCoverage.score, "reportStrategyScoreCoverage", "reportStrategyScoreCoverageNote");
+  renderCoverageCard(strategyCoverage.liquidity, "reportStrategyLiquidityCoverage", "reportStrategyLiquidityCoverageNote");
+  renderCoverageCard(strategyCoverage.volatility, "reportStrategyVolatilityCoverage", "reportStrategyVolatilityCoverageNote");
+  renderCoverageCard(decisionCoverage.score, "reportDecisionScoreCoverage", "reportDecisionScoreCoverageNote");
+  renderCoverageCard(decisionCoverage.price, "reportDecisionPriceCoverage", "reportDecisionPriceCoverageNote");
 
-  // --------------------------
-  // STRATEGY COVERAGE
-  // --------------------------
-
-  renderCoverageCard(
-    strategyCoverage.score,
-    "reportStrategyScoreCoverage",
-    "reportStrategyScoreCoverageNote"
-  );
-
-  renderCoverageCard(
-    strategyCoverage.liquidity,
-    "reportStrategyLiquidityCoverage",
-    "reportStrategyLiquidityCoverageNote"
-  );
-
-  renderCoverageCard(
-    strategyCoverage.volatility,
-    "reportStrategyVolatilityCoverage",
-    "reportStrategyVolatilityCoverageNote"
-  );
-
-
-  // --------------------------
-  // DECISION COVERAGE
-  // --------------------------
-
-  renderCoverageCard(
-    decisionCoverage.score,
-    "reportDecisionScoreCoverage",
-    "reportDecisionScoreCoverageNote"
-  );
-
-  renderCoverageCard(
-    decisionCoverage.price,
-    "reportDecisionPriceCoverage",
-    "reportDecisionPriceCoverageNote"
-  );
-
-
-  // --------------------------
-  // ANNUALIZATION
-  // --------------------------
-
-  const annualizationElement = (
-    document.getElementById(
-      "reportAnnualizationConfidence"
-    )
-  );
-
-  const annualizationNote = (
-    document.getElementById(
-      "reportAnnualizationConfidenceNote"
-    )
-  );
+  const annualizationElement = document.getElementById("reportAnnualizationConfidence");
+  const annualizationNote = document.getElementById("reportAnnualizationConfidenceNote");
+  const reliable = annualization.reliable === true;
 
   if (annualizationElement) {
-    const reliable = (
-      annualization.reliable
-      === true
-    );
-
-    annualizationElement.textContent = (
-      reliable
-        ? "RELIABLE"
-        : "LOW"
-    );
-
-    annualizationElement.className = (
-      "value "
-      + (
-          reliable
-            ? "positive"
-            : "reports-confidence-warning"
-        )
-    );
+    annualizationElement.textContent = reliable ? "RELIABLE" : "LOW";
+    annualizationElement.className = "value " + (reliable ? "positive" : "reports-confidence-warning");
   }
 
   if (annualizationNote) {
-    const days = Number(
-      annualization.observation_days
-      || 0
-    );
-
-    const trades = Number(
-      annualization.closed_trades
-      || 0
-    );
-
-    annualizationNote.textContent = (
-      `${days.toFixed(1)} days`
-      + ` · ${trades} trades`
-    );
+    const days = Number(annualization.observation_days || 0);
+    const trades = Number(annualization.closed_trades || 0);
+    annualizationNote.textContent = `${days.toFixed(1)} days · ${trades} trades`;
   }
 }
-
 
 async function loadReports(
     forceRefresh = false
@@ -3882,11 +3405,11 @@ async function loadReports(
       report
     );
 
-    renderReportsDataQuality(
+    renderReportsCosts(
       report
     );
-
-    renderReportsCosts(
+ 
+    renderReportsDataQuality(
       report
     );
 
@@ -3931,30 +3454,6 @@ async function loadReports(
 }
 
   // ==================== EXPORT REPORTS ====================
-
-  function exportReportJson() {
-    if (!reportsCache) {
-      alert("Aucun rapport chargé pour le moment.");
-      return;
-    }
-
-    const blob = new Blob(
-      [JSON.stringify(reportsCache, null, 2)],
-      { type: "application/json;charset=utf-8" }
-    );
-
-    const downloadUrl = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-
-    link.href = downloadUrl;
-    link.download = `polymarket_report_${reportsPeriod}.json`;
-
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-
-    URL.revokeObjectURL(downloadUrl);
-  }
 
   async function exportReportCsv(
     section
@@ -4087,170 +3586,44 @@ async function loadReports(
 
   async function loadAIReports() {
     try {
-      const res = await fetch(
-        AI_REPORTS_API_URL
-      );
-
-      if (!res.ok) {
-        throw new Error(
-          `HTTP ${res.status}`
-        );
-      }
-
+      const res = await fetch(AI_REPORTS_API_URL);
       const data = await res.json();
+      const reports = data.reports || [];
 
-      const reports = (
-        data.reports
-        || []
-      );
-
-      const box = (
-        document.getElementById(
-          "aiReportBox"
-        )
-      );
+      const box = document.getElementById("aiReportBox");
 
       if (!reports.length) {
-        if (box) {
-          box.innerText = (
-            "Aucun rapport IA disponible."
-          );
-        }
-
+        box.innerText = "Aucun rapport IA disponible.";
         return;
       }
 
       const latest = reports[0];
+      const summary = latest.summary || {};
 
-      const summary = (
-        latest.summary
-        || {}
-      );
-
-
-      // --------------------------
-      // 1D NET P&L
-      // --------------------------
-
-      setMoneyCard(
-        "aiDailyPnl",
-        summary.daily_pnl
-        ?? 0
-      );
-
-
-      // --------------------------
-      // 30D NET P&L
-      // --------------------------
-
-      setMoneyCard(
-        "aiNetPnl30d",
-        summary.net_pnl_30d
-        ?? 0
-      );
-
-
-      // --------------------------
-      // 30D RETURN
-      // --------------------------
-
-      const return30d = Number(
-        summary.return_pct_30d
-        ?? 0
-      );
-
-      const returnElement = (
-        document.getElementById(
-          "aiReturn30d"
-        )
-      );
-
-      if (returnElement) {
-        returnElement.textContent = (
-          return30d.toFixed(2)
-          + "%"
-        );
-
-        returnElement.className = (
-          "value "
-          + pnlClass(
-            return30d
-          )
-        );
-      }
-
-
-      // --------------------------
-      // 30D WIN RATE
-      // --------------------------
-
-      const winRate30d = Number(
-        summary.win_rate_pct_30d
-        ?? 0
-      );
-
-      const winRateElement = (
-        document.getElementById(
-          "aiWinRate30d"
-        )
-      );
-
-      if (winRateElement) {
-        winRateElement.textContent = (
-          winRate30d.toFixed(2)
-          + "%"
-        );
-      }
-
-
-      // --------------------------
-      // BEST THEME / STRATEGY
-      // --------------------------
+      setMoneyCard("aiDailyPnl", summary.daily_pnl || 0);
+      setMoneyCard("aiExpectancy", summary.expectancy || 0);
 
       setText(
-        "aiBestTheme",
-        summary.best_theme
-        || "-"
+        "aiProfitFactor",
+        Number(summary.profit_factor || 0).toFixed(2)
       );
 
       setText(
-        "aiBestStrategy",
-        summary.best_strategy
-        || "-"
+        "aiDrawdown",
+        ((Number(summary.drawdown || 0)) * 100).toFixed(2) + "%"
       );
 
+      setText("aiBestTheme", summary.best_theme || "-");
+      setText("aiBestStrategy", summary.best_strategy || "-");
 
-      // --------------------------
-      // ANALYST REPORT
-      // --------------------------
-
-      if (box) {
-        box.innerText = (
-          latest.text
-          || "Rapport IA vide."
-        );
-      }
+      box.innerText = latest.text || "Rapport IA vide.";
 
     } catch (err) {
-      console.error(
-        "AI reports error:",
-        err
-      );
-
-      const box = (
-        document.getElementById(
-          "aiReportBox"
-        )
-      );
-
-      if (box) {
-        box.innerText = (
-          "Erreur AI report: "
-          + err.message
-        );
-      }
+      document.getElementById("aiReportBox").innerText =
+        "Erreur AI report: " + err.message;
     }
   }
+
   // ==================== LOGS ====================
 
   async function loadEngineLogs() {
