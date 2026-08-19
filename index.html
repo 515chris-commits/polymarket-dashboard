@@ -1437,6 +1437,113 @@
           </details>
         </section>
       </section>
+
+      <!-- ==================== STRATEGY INSIGHTS ==================== -->
+
+<section class="reports-section">
+
+  <h2>Strategy Insights</h2>
+
+  <div class="chart-grid">
+
+    <!-- STRATEGIES -->
+
+    <div>
+      <h3>By Strategy</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Strategy</th>
+              <th>Trades</th>
+              <th>Win Rate</th>
+              <th>Net P&amp;L</th>
+              <th>Avg Return</th>
+            </tr>
+          </thead>
+
+          <tbody id="reportStrategyInsightsTable">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+    <!-- THEMES -->
+
+    <div>
+      <h3>By Theme</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Theme</th>
+              <th>Trades</th>
+              <th>Win Rate</th>
+              <th>Net P&amp;L</th>
+              <th>Avg Return</th>
+            </tr>
+          </thead>
+
+          <tbody id="reportThemeInsightsTable">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+    <!-- LIQUIDITY -->
+
+    <div>
+      <h3>By Liquidity</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Liquidity</th>
+              <th>Trades</th>
+              <th>Win Rate</th>
+              <th>Net P&amp;L</th>
+              <th>Avg Return</th>
+            </tr>
+          </thead>
+
+          <tbody id="reportLiquidityInsightsTable">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+    <!-- TIME TO RESOLUTION -->
+
+    <div>
+      <h3>By Time to Resolution</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Window</th>
+              <th>Trades</th>
+              <th>Win Rate</th>
+              <th>Net P&amp;L</th>
+              <th>Avg Return</th>
+            </tr>
+          </thead>
+
+          <tbody id="reportResolutionInsightsTable">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</section>
       <!-- ==================== FIN REPORTS ==================== -->
 
         <!-- ==================== LEARNING Center ==================== -->
@@ -3336,6 +3443,133 @@ function renderReportsDataQuality(report) {
   }
 }
 
+function renderStrategyInsightTable(
+  tableId,
+  rows
+) {
+  const table = (
+    document.getElementById(
+      tableId
+    )
+  );
+
+  if (!table) {
+    return;
+  }
+
+  const items = (
+    Array.isArray(rows)
+      ? rows
+      : []
+  );
+
+  if (!items.length) {
+    table.innerHTML = `
+      <tr>
+        <td colspan="5">
+          No data available.
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
+  table.innerHTML = (
+    items
+      .map(
+        item => {
+          const pnl = Number(
+            item.net_pnl
+            ?? 0
+          );
+
+          const winRate = Number(
+            item.win_rate_pct
+            ?? 0
+          );
+
+          const averageReturn = Number(
+            item.average_return_pct
+            ?? 0
+          );
+
+          return `
+            <tr>
+
+              <td>
+                <strong>
+                  ${escapeHtml(
+                    item.bucket
+                    || "-"
+                  )}
+                </strong>
+              </td>
+
+              <td>
+                ${Number(
+                  item.trades
+                  || 0
+                )}
+              </td>
+
+              <td>
+                ${winRate.toFixed(2)}%
+              </td>
+
+              <td
+                class="${pnlClass(pnl)}"
+              >
+                ${reportMoney(pnl)}
+              </td>
+
+              <td
+                class="${
+                  pnlClass(
+                    averageReturn
+                  )
+                }"
+              >
+                ${averageReturn.toFixed(2)}%
+              </td>
+
+            </tr>
+          `;
+        }
+      )
+      .join("")
+  );
+}
+
+function renderReportsStrategyInsights(
+  report
+) {
+  const strategy = (
+    report?.strategy
+    || {}
+  );
+
+  renderStrategyInsightTable(
+    "reportStrategyInsightsTable",
+    strategy.by_strategy
+  );
+
+  renderStrategyInsightTable(
+    "reportThemeInsightsTable",
+    strategy.by_theme
+  );
+
+  renderStrategyInsightTable(
+    "reportLiquidityInsightsTable",
+    strategy.by_liquidity
+  );
+
+  renderStrategyInsightTable(
+    "reportResolutionInsightsTable",
+    strategy.by_time_to_resolution
+  );
+}
+  
 async function loadReports(
     forceRefresh = false
 ) {
@@ -3410,6 +3644,10 @@ async function loadReports(
     );
  
     renderReportsDataQuality(
+      report
+    );
+
+    renderReportsStrategyInsights(
       report
     );
 
