@@ -614,6 +614,32 @@
      font-size: 13px;
    }
 
+    .reports-quality-details {
+  margin-top: -10px;
+  margin-bottom: 30px;
+  padding: 14px 18px;
+  background: var(--panel-dark);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.reports-quality-details summary {
+  cursor: pointer;
+  color: var(--yellow);
+  font-weight: 700;
+}
+
+.reports-quality-warning-list {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.reports-quality-warning-item {
+  padding: 4px 0;
+}
+
    /* ==========================
    AI Analyst v2
    ========================== */
@@ -1651,6 +1677,36 @@
       >
         -
       </div>
+
+      <section class="reports-section">
+
+  <h2>Data Quality &amp; Confidence</h2>
+
+  <div class="cards">
+
+    <!-- tes 7 cartes -->
+
+  </div>
+
+
+  <!-- DATA QUALITY WARNINGS -->
+
+  <details class="reports-quality-details">
+
+    <summary id="reportWarningsSummary">
+      Show data quality warnings
+    </summary>
+
+    <div
+      id="reportWarningsList"
+      class="reports-quality-warning-list"
+    >
+    </div>
+
+  </details>
+
+</section>
+      
     </div>
 
   </div>
@@ -3746,6 +3802,57 @@ function renderReportsSummary(
       ? dataQuality.warnings
       : []
   );
+
+  const warningsSummary = (
+  document.getElementById(
+    "reportWarningsSummary"
+  )
+);
+
+const warningsList = (
+  document.getElementById(
+    "reportWarningsList"
+  )
+);
+
+if (warningsSummary) {
+  warningsSummary.textContent = (
+    warnings.length
+      ? (
+          `Show ${warnings.length} `
+          + `data quality warning`
+          + (
+              warnings.length === 1
+                ? ""
+                : "s"
+            )
+        )
+      : "No data quality warnings"
+  );
+}
+
+if (warningsList) {
+  if (warnings.length) {
+    warningsList.innerHTML = (
+      warnings
+        .map(
+          warning => (
+            `<div class="reports-quality-warning-item">`
+            + `⚠ ${escapeHtml(warning)}`
+            + `</div>`
+          )
+        )
+        .join("")
+    );
+
+  } else {
+    warningsList.innerHTML = (
+      `<div class="reports-quality-warning-item">`
+      + `No warnings.`
+      + `</div>`
+    );
+  }
+}
 
 
   // --------------------------
