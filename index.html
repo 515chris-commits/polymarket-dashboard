@@ -3284,6 +3284,10 @@ async function loadReports(
       report
     );
 
+    renderReportsCosts(
+      report
+    );
+
     const generatedAt = Number(
       report.generated_at
       || 0
