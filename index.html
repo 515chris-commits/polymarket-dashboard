@@ -3637,6 +3637,85 @@ function renderReportsSummary(
     }
   }
 
+  function renderCoverageCard(
+  coverage,
+  valueId,
+  noteId
+) {
+  const data = (
+    coverage
+    || {}
+  );
+
+  const available = Number(
+    data.available
+    ?? 0
+  );
+
+  const total = Number(
+    data.total
+    ?? 0
+  );
+
+  const pct = Number(
+    data.pct
+    ?? (
+      total > 0
+        ? (
+            available
+            / total
+            * 100
+          )
+        : 0
+    )
+  );
+
+  const valueElement = (
+    document.getElementById(
+      valueId
+    )
+  );
+
+  const noteElement = (
+    document.getElementById(
+      noteId
+    )
+  );
+
+  if (valueElement) {
+    valueElement.textContent = (
+      total > 0
+        ? pct.toFixed(1) + "%"
+        : "-"
+    );
+
+    let statusClass = "";
+
+    if (total > 0) {
+      if (pct >= 95) {
+        statusClass = "positive";
+      } else if (pct >= 80) {
+        statusClass = "reports-confidence-warning";
+      } else {
+        statusClass = "negative";
+      }
+    }
+
+    valueElement.className = (
+      "value "
+      + statusClass
+    );
+  }
+
+  if (noteElement) {
+    noteElement.textContent = (
+      total > 0
+        ? `${available.toLocaleString()} / ${total.toLocaleString()}`
+        : "No data"
+    );
+  }
+}
+
 
 async function loadReports(
     forceRefresh = false
