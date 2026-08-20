@@ -1798,8 +1798,19 @@
           <h2>📄 Reports Administration</h2>
 
           <p class="muted">
-            Manual report generation, refresh and exports.
+            Daily Telegram delivery, report refresh and exports.
           </p>
+
+          <div class="admin-row">
+
+            <button
+              onclick="adminGenerateReport()"
+            >
+              📲 Send Daily Telegram Report
+            </button>
+
+          </div>
+
 
           <div class="admin-row">
 
@@ -1826,13 +1837,6 @@
                 ALL
               </option>
             </select>
-
-
-            <button
-              onclick="adminGenerateReport()"
-            >
-              📄 Generate Report NOW
-            </button>
 
 
             <button
