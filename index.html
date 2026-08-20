@@ -1174,28 +1174,7 @@
             </button>
 
           </div>
-
-          <div class="reports-actions">
-
-            <button
-              onclick="loadReports(true)"
-            >
-              🔄 Refresh
-            </button>
-
-            <button
-              onclick="exportReportJson()"
-            >
-              JSON
-            </button>
-
-            <button
-              onclick="exportReportCsv('summary')"
-            >
-              CSV Summary
-            </button>
-
-          </div>
+          
         </div>
 
         <div
@@ -1812,6 +1791,39 @@
               </table>
             </div>
           </section>
+        </section>
+
+        <!-- =========== Report Administration ========== -->
+        <section>
+
+          <h2>📄 Reports Administration</h2>
+
+          <p class="muted">
+            Manual report refresh and exports.
+          </p>
+
+          <div class="admin-row">
+
+            <button
+              onclick="loadReports(true)"
+            >
+              🔄 Force Refresh Report
+            </button>
+
+            <button
+              onclick="exportReportJson()"
+            >
+              📦 Export JSON
+            </button>
+
+            <button
+              onclick="exportReportCsv('summary')"
+            >
+              📄 Export CSV Summary
+            </button>
+
+          </div>
+
         </section>
         <!-- ==================== AI ==================== -->
         <section id="view-ai" class="view">
