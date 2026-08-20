@@ -1742,7 +1742,6 @@
               <button onclick="runAdminAction('learning')">🧠 Run Learning NOW</button>
               <button onclick="runAdminAction('daily_risk')">⚠ Refresh Daily Risk</button>
               <button onclick="runAdminAction('health')">❤️ Health Check</button>
-              <button onclick="runAdminAction('daily_report')">📄 Generate Report NOW</button>
               <button onclick="runAdminAction('ai_report')">🤖 Generate AI Report</button>
             </section>
           </div>
@@ -1799,25 +1798,59 @@
           <h2>📄 Reports Administration</h2>
 
           <p class="muted">
-            Manual report refresh and exports.
+            Manual report generation, refresh and exports.
           </p>
 
           <div class="admin-row">
 
+            <select
+              id="adminReportsPeriod"
+              style="width:120px;"
+            >
+              <option value="7d">
+                7D
+              </option>
+
+              <option
+                value="30d"
+                selected
+              >
+                30D
+              </option>
+
+              <option value="90d">
+                90D
+              </option>
+
+              <option value="all">
+                ALL
+              </option>
+            </select>
+
+
             <button
-              onclick="loadReports(true)"
+              onclick="adminGenerateReport()"
+            >
+              📄 Generate Report NOW
+            </button>
+
+
+            <button
+              onclick="adminRefreshReport()"
             >
               🔄 Force Refresh Report
             </button>
 
+
             <button
-              onclick="exportReportJson()"
+              onclick="adminExportReportJson()"
             >
               📦 Export JSON
             </button>
 
+
             <button
-              onclick="exportReportCsv('summary')"
+              onclick="adminExportReportCsv()"
             >
               📄 Export CSV Summary
             </button>
@@ -3956,6 +3989,53 @@ function renderReportsHistoricalTrends(
       .join("")
   );
 }
+
+function getAdminReportsPeriod() {
+  return (
+    document.getElementById(
+      "adminReportsPeriod"
+    )?.value
+    || "30d"
+  );
+}
+
+
+function adminRefreshReport() {
+  reportsPeriod = (
+    getAdminReportsPeriod()
+  );
+
+  loadReports(
+    true
+  );
+}
+
+
+function adminExportReportJson() {
+  reportsPeriod = (
+    getAdminReportsPeriod()
+  );
+
+  exportReportJson();
+}
+
+
+function adminExportReportCsv() {
+  reportsPeriod = (
+    getAdminReportsPeriod()
+  );
+
+  exportReportCsv(
+    "summary"
+  );
+}
+
+
+function adminGenerateReport() {
+  runAdminAction(
+    "daily_report"
+  );
+}  
   
 async function loadReports(
     forceRefresh = false
