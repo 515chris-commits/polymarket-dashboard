@@ -1746,6 +1746,49 @@
           </div>
         </section>
 
+        <!-- =========== Report Administration ========== -->
+<section>
+
+  <h2>📄 Reports Administration</h2>
+
+  <p class="muted">
+    Daily Telegram delivery, report refresh and exports.
+  </p>
+
+  <div class="admin-row">
+    <button onclick="adminGenerateReport()">
+      📲 Send Daily Telegram Report
+    </button>
+  </div>
+
+  <div class="admin-row">
+
+    <select
+      id="adminReportsPeriod"
+      style="width:120px;"
+    >
+      <option value="7d">7D</option>
+      <option value="30d" selected>30D</option>
+      <option value="90d">90D</option>
+      <option value="all">ALL</option>
+    </select>
+
+    <button onclick="adminRefreshReport()">
+      🔄 Force Refresh Report
+    </button>
+
+    <button onclick="adminExportReportJson()">
+      📦 Export JSON
+    </button>
+
+    <button onclick="adminExportReportCsv()">
+      📄 Export CSV Summary
+    </button>
+
+  </div>
+
+</section>
+
         <!-- ==================== LOGS ==================== -->
         <section id="view-logs" class="view">
           <h2>📜 Engine Logs</h2>
@@ -1791,78 +1834,7 @@
           </section>
         </section>
 
-        <!-- =========== Report Administration ========== -->
-        <section>
-
-          <h2>📄 Reports Administration</h2>
-
-          <p class="muted">
-            Daily Telegram delivery, report refresh and exports.
-          </p>
-
-          <div class="admin-row">
-
-            <button
-              onclick="adminGenerateReport()"
-            >
-              📲 Send Daily Telegram Report
-            </button>
-
-          </div>
-
-
-          <div class="admin-row">
-
-            <select
-              id="adminReportsPeriod"
-              style="width:120px;"
-            >
-              <option value="7d">
-                7D
-              </option>
-
-              <option
-                value="30d"
-                selected
-              >
-                30D
-              </option>
-
-              <option value="90d">
-                90D
-              </option>
-
-              <option value="all">
-                ALL
-              </option>
-            </select>
-
-
-            <button
-              onclick="adminRefreshReport()"
-            >
-              🔄 Force Refresh Report
-            </button>
-
-
-            <button
-              onclick="adminExportReportJson()"
-            >
-              📦 Export JSON
-            </button>
-
-
-            <button
-              onclick="adminExportReportCsv()"
-            >
-              📄 Export CSV Summary
-            </button>
-
-          </div>
-
-        </section>
-    </div>
-  </section>
+        
         <!-- ==================== AI ==================== -->
         <section id="view-ai" class="view">
           <h2>🤖 AI Analyst</h2>
