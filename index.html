@@ -1633,6 +1633,12 @@
       <div class="scoring-progress"><div id="scoringFalconProgress"></div></div>
       <div class="scoring-subtitle" id="scoringFalconNote">-</div>
     </div>
+
+    <div class="card">
+      <div class="label">Smart Money Closed</div>
+      <div class="value" id="scoringSmartMoneyClosed">-</div>
+      <div class="scoring-subtitle" id="scoringSmartMoneySummary">-</div>
+    </div>
   </div>
 
   <div class="chart-grid">
@@ -1665,6 +1671,12 @@
     <div class="label">Falcon Provider</div>
     <div class="value" id="scoringFalconStatus">-</div>
     <div class="scoring-subtitle" id="scoringFalconStatusNote">-</div>
+  </div>
+
+  <div class="card" style="margin-top:20px;">
+    <div class="label">Smart Money Observer</div>
+    <div class="value" id="scoringSmartMoneyStatus">-</div>
+    <div class="scoring-subtitle" id="scoringSmartMoneyDetail">-</div>
   </div>
 </section>
 
@@ -4617,6 +4629,47 @@ function renderShadowPortfolio(shadowData) {
       provider.enabled_observed ? "ACTIVE" : "WAITING"
     );
     setText("scoringFalconStatusNote", statusText);
+
+    const smartMoney = lab.smart_money || {};
+
+    setText(
+      "scoringSmartMoneyClosed",
+      smartMoney.closed_with_observation ?? 0
+    );
+
+    setText(
+      "scoringSmartMoneySummary",
+      `${smartMoney.persisted_observations ?? 0} persisted · `
+      + `${smartMoney.active_on_market ?? 0} active wallets`
+    );
+
+    const smartKnown = (
+      Number(smartMoney.aligned || 0)
+      + Number(smartMoney.opposed || 0)
+    );
+
+    setText(
+      "scoringSmartMoneyStatus",
+      smartMoney.persisted_observations > 0
+        ? "OBSERVING"
+        : "WAITING"
+    );
+
+    setText(
+      "scoringSmartMoneyDetail",
+      `${smartMoney.aligned ?? 0} aligned · `
+      + `${smartMoney.opposed ?? 0} opposed · `
+      + `${smartMoney.unknown_side ?? 0} unknown`
+      + (
+          smartKnown > 0
+            ? ` · ${(
+                Number(smartMoney.aligned || 0)
+                / smartKnown
+                * 100
+              ).toFixed(1)}% alignment`
+            : ""
+        )
+    );
   }
 
   // ==================== DASHBOARD ====================
