@@ -643,6 +643,36 @@
   @media (max-width:1100px) { #view-ai > .cards { grid-template-columns:repeat(2,minmax(220px,1fr)); } }
   @media (max-width:650px) { #view-ai > .cards { grid-template-columns:1fr; } }
 
+  /* ---------- Scoring Lab ---------- */
+  .scoring-status {
+    display:inline-block;
+    padding:7px 12px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:700;
+    background:rgba(250,204,21,.15);
+    color:var(--yellow);
+  }
+  .scoring-progress {
+    width:100%;
+    height:10px;
+    border-radius:999px;
+    background:var(--panel-dark);
+    border:1px solid var(--border);
+    overflow:hidden;
+    margin-top:10px;
+  }
+  .scoring-progress > div {
+    height:100%;
+    background:var(--blue);
+    transition:width .25s ease;
+  }
+  .scoring-subtitle {
+    color:var(--muted);
+    font-size:13px;
+    margin-top:8px;
+  }
+
 </style>
 </head>
 <body>
@@ -1568,6 +1598,75 @@
 
 </section>
 <!-- fin Strategy Insights -->
+
+
+<!-- ==================== SCORING LAB ==================== -->
+<section class="reports-section">
+  <div class="page-header">
+    <div>
+      <h2>🧪 Scoring Lab</h2>
+      <p class="muted">
+        Observation V1 / V2 / Falcon. Read-only, aucun impact trading.
+      </p>
+    </div>
+    <span id="scoringLabStatus" class="scoring-status">LEARNING</span>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="label">Closed Shadow</div>
+      <div class="value" id="scoringClosedTotal">-</div>
+    </div>
+    <div class="card">
+      <div class="label">V1 Scored</div>
+      <div class="value" id="scoringV1Scored">-</div>
+    </div>
+    <div class="card">
+      <div class="label">V1 / V2 Paired</div>
+      <div class="value" id="scoringPaired">-</div>
+      <div class="scoring-progress"><div id="scoringPairedProgress"></div></div>
+      <div class="scoring-subtitle" id="scoringPairedNote">-</div>
+    </div>
+    <div class="card">
+      <div class="label">Falcon Closed</div>
+      <div class="value" id="scoringFalconClosed">-</div>
+      <div class="scoring-progress"><div id="scoringFalconProgress"></div></div>
+      <div class="scoring-subtitle" id="scoringFalconNote">-</div>
+    </div>
+  </div>
+
+  <div class="chart-grid">
+    <div>
+      <h3>V1 by Score</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Score</th><th>Closed</th><th>Win Rate</th><th>P&amp;L</th><th>Expectancy</th></tr>
+          </thead>
+          <tbody id="scoringV1Table"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <h3>Strategy × Theme</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Combination</th><th>Closed</th><th>Win Rate</th><th>P&amp;L</th><th>Expectancy</th></tr>
+          </thead>
+          <tbody id="scoringMatrixTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:20px;">
+    <div class="label">Falcon Provider</div>
+    <div class="value" id="scoringFalconStatus">-</div>
+    <div class="scoring-subtitle" id="scoringFalconStatusNote">-</div>
+  </div>
+</section>
 
 <!-- ==================== HISTORICAL TRENDS ==================== -->
 
@@ -4437,6 +4536,89 @@ function renderShadowPortfolio(shadowData) {
   );
 }
    
+
+  // ==================== SCORING LAB ====================
+
+  function scoringProgress(current, preferred) {
+    const c = Number(current || 0);
+    const p = Number(preferred || 1);
+    return Math.max(0, Math.min(100, c / p * 100));
+  }
+
+  function renderScoringStatsTable(tableId, data) {
+    const table = document.getElementById(tableId);
+    if (!table) return;
+
+    const rows = Object.entries(data || {});
+
+    if (!rows.length) {
+      table.innerHTML = `<tr><td colspan="5">No data available.</td></tr>`;
+      return;
+    }
+
+    table.innerHTML = rows.map(([name, stats]) => `
+      <tr>
+        <td><strong>${escapeHtml(name)}</strong></td>
+        <td>${Number(stats.closed || 0)}</td>
+        <td>${Number(stats.win_rate_pct || 0).toFixed(2)}%</td>
+        <td class="${pnlClass(stats.pnl)}">${reportMoney(stats.pnl)}</td>
+        <td class="${pnlClass(stats.expectancy_pnl)}">${reportMoney(stats.expectancy_pnl)}</td>
+      </tr>
+    `).join("");
+  }
+
+  function renderScoringLab(scoringLab) {
+    const lab = scoringLab || {};
+    const collection = lab.collection || {};
+    const readiness = lab.readiness || {};
+    const pair = readiness.v1_v2 || {};
+    const falcon = readiness.falcon || {};
+
+    setText("scoringLabStatus", lab.status || "LEARNING");
+    setText("scoringClosedTotal", collection.closed_total ?? 0);
+    setText("scoringV1Scored", collection.v1_scored_closed ?? 0);
+    setText("scoringPaired", collection.v1_v2_paired_closed ?? 0);
+    setText("scoringFalconClosed", collection.falcon_closed ?? 0);
+
+    const pairBar = document.getElementById("scoringPairedProgress");
+    if (pairBar) pairBar.style.width = scoringProgress(pair.current, pair.preferred) + "%";
+
+    const falconBar = document.getElementById("scoringFalconProgress");
+    if (falconBar) falconBar.style.width = scoringProgress(falcon.current, falcon.preferred) + "%";
+
+    setText(
+      "scoringPairedNote",
+      `${pair.current ?? 0} / ${pair.minimum ?? 30} minimum · ${pair.preferred ?? 50} preferred`
+    );
+
+    setText(
+      "scoringFalconNote",
+      `${falcon.current ?? 0} / ${falcon.minimum ?? 20} minimum · ${falcon.preferred ?? 30} preferred`
+    );
+
+    renderScoringStatsTable(
+      "scoringV1Table",
+      lab.v1_by_score || {}
+    );
+
+    renderScoringStatsTable(
+      "scoringMatrixTable",
+      lab.strategy_theme_matrix || {}
+    );
+
+    const provider = lab.falcon || {};
+    const statuses = provider.provider_status_counts || {};
+    const statusText = Object.keys(statuses).length
+      ? Object.entries(statuses).map(([k, v]) => `${k}: ${v}`).join(" · ")
+      : "No persisted Falcon samples yet";
+
+    setText(
+      "scoringFalconStatus",
+      provider.enabled_observed ? "ACTIVE" : "WAITING"
+    );
+    setText("scoringFalconStatusNote", statusText);
+  }
+
   // ==================== DASHBOARD ====================
   async function loadDashboard() {
     try {
@@ -4490,6 +4672,10 @@ function renderShadowPortfolio(shadowData) {
 
       renderShadowPortfolio(
         shadow
+      );
+
+      renderScoringLab(
+        shadow.scoring_lab || {}
       );
 
       setText(
