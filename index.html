@@ -2495,6 +2495,7 @@
   // ==================== TABLE RENDERERS ====================
   function renderPositions(positions) {
     const table = document.getElementById('positionsTable');
+    if (!table) return;
     table.innerHTML = '';
     positions.forEach(p => {
       table.innerHTML += `<tr>
@@ -2512,6 +2513,7 @@
 
   function renderHistory(history) {
     const table = document.getElementById('tradesTable');
+    if (!table) return;
     table.innerHTML = '';
     history.forEach(p => {
       const status = p.status || 'open';
@@ -2531,6 +2533,7 @@
 
   function renderGroupedTable(tableId, data) {
     const table = document.getElementById(tableId);
+    if (!table) return;
     table.innerHTML = '';
     Object.entries(data || {}).forEach(([name, stats]) => {
       table.innerHTML += `<tr>
@@ -2544,6 +2547,7 @@
 
   function renderDailyPnl(pnlByDay) {
     const table = document.getElementById('dailyPnlTable');
+    if (!table) return;
     table.innerHTML = '';
     Object.entries(pnlByDay || {}).forEach(([day, pnl]) => {
       table.innerHTML += `<tr>
