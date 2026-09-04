@@ -335,17 +335,17 @@
    Learning Center
   ========================== */
 
-  #view-learning .value {
+  #view-strategy .value {
       font-size: 22px;
       line-height: 1.25;
   }
 
-  #view-learning .learning-name {
+  #view-strategy .learning-name {
       font-size: 24px;
       font-weight: bold;
   }
 
-  #view-learning .learning-label {
+  #view-strategy .learning-label {
       color: var(--muted);
       font-size: 13px;
       margin-top: 10px;
@@ -643,7 +643,7 @@
   @media (max-width:1100px) { #view-ai > .cards { grid-template-columns:repeat(2,minmax(220px,1fr)); } }
   @media (max-width:650px) { #view-ai > .cards { grid-template-columns:1fr; } }
 
-  /* ---------- Scoring Lab ---------- */
+  /* ---------- Strategy Lab ---------- */
   .scoring-status {
     display:inline-block;
     padding:7px 12px;
@@ -1216,335 +1216,6 @@
 
         <!-- EXECUTIVE SUMMARY -->
 
-        <!-- ==================== OPERATING COSTS ==================== -->
-        <section class="reports-section">
-          <h2>Operating Costs</h2>
-          <div class="cards">
-            <div class="card"><div class="label">Trading Fees</div><div class="value" id="reportOperatingTradingFees">-</div></div>
-            <div class="card"><div class="label">AWS Costs</div><div class="value" id="reportAwsCosts">-</div><div class="reports-card-note" id="reportAwsCostsNote">Current period</div></div>
-            <div class="card"><div class="label">P&amp;L Before AWS</div><div class="value" id="reportPnlBeforeCosts">-</div></div>
-            <div class="card"><div class="label">P&amp;L After AWS</div><div class="value" id="reportPnlAfterCosts">-</div></div>
-          </div>
-        </section>
-
-        <!-- ==================== DATA QUALITY ==================== -->
-        <section class="reports-section">
-          <h2>Data Quality &amp; Confidence</h2>
-          <div class="cards">
-            <div class="card"><div class="label">Data Quality</div><div class="value" id="reportDataQualityStatus">-</div><div class="reports-card-note" id="reportDataQualityWarnings">-</div></div>
-            <div class="card"><div class="label">Strategy Score Coverage</div><div class="value" id="reportStrategyScoreCoverage">-</div><div class="reports-card-note" id="reportStrategyScoreCoverageNote">-</div></div>
-            <div class="card"><div class="label">Strategy Liquidity Coverage</div><div class="value" id="reportStrategyLiquidityCoverage">-</div><div class="reports-card-note" id="reportStrategyLiquidityCoverageNote">-</div></div>
-            <div class="card"><div class="label">Strategy Volatility Coverage</div><div class="value" id="reportStrategyVolatilityCoverage">-</div><div class="reports-card-note" id="reportStrategyVolatilityCoverageNote">-</div></div>
-            <div class="card"><div class="label">Decision Score Coverage</div><div class="value" id="reportDecisionScoreCoverage">-</div><div class="reports-card-note" id="reportDecisionScoreCoverageNote">-</div></div>
-            <div class="card"><div class="label">Decision Price Coverage</div><div class="value" id="reportDecisionPriceCoverage">-</div><div class="reports-card-note" id="reportDecisionPriceCoverageNote">-</div></div>
-            <div class="card"><div class="label">Annualization Confidence</div><div class="value" id="reportAnnualizationConfidence">-</div><div class="reports-card-note" id="reportAnnualizationConfidenceNote">-</div></div>
-          </div>
-          <details class="reports-quality-details">
-            <summary id="reportWarningsSummary">Show data quality warnings</summary>
-            <div id="reportWarningsList" class="reports-quality-warning-list"></div>
-          </details>
-        </section>
-
-      <!-- ==================== STRATEGY INSIGHTS ==================== -->
-
-<section class="reports-section">
-
-  <h2>Strategy Insights</h2>
-
-  <div class="chart-grid">
-
-    <!-- STRATEGIES -->
-
-    <div>
-      <h3>By Strategy</h3>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Strategy</th>
-              <th>Trades</th>
-              <th>Win Rate</th>
-              <th>Net P&amp;L</th>
-              <th>Avg Return</th>
-            </tr>
-          </thead>
-
-          <tbody id="reportStrategyInsightsTable">
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-
-    <!-- THEMES -->
-
-    <div>
-      <h3>By Theme</h3>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Theme</th>
-              <th>Trades</th>
-              <th>Win Rate</th>
-              <th>Net P&amp;L</th>
-              <th>Avg Return</th>
-            </tr>
-          </thead>
-
-          <tbody id="reportThemeInsightsTable">
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-
-    <!-- LIQUIDITY -->
-
-    <div>
-      <h3>By Liquidity</h3>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Liquidity</th>
-              <th>Trades</th>
-              <th>Win Rate</th>
-              <th>Net P&amp;L</th>
-              <th>Avg Return</th>
-            </tr>
-          </thead>
-
-          <tbody id="reportLiquidityInsightsTable">
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-
-    <!-- TIME TO RESOLUTION -->
-
-    <div>
-      <h3>By Time to Resolution</h3>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Window</th>
-              <th>Trades</th>
-              <th>Win Rate</th>
-              <th>Net P&amp;L</th>
-              <th>Avg Return</th>
-            </tr>
-          </thead>
-
-          <tbody id="reportResolutionInsightsTable">
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-  <!-- ENTRY PRICE -->
-
-<div>
-  <h3>By Entry Price</h3>
-
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Entry Price</th>
-          <th>Trades</th>
-          <th>Win Rate</th>
-          <th>Net P&amp;L</th>
-          <th>Avg Return</th>
-        </tr>
-      </thead>
-
-      <tbody id="reportEntryPriceInsightsTable">
-      </tbody>
-    </table>
-  </div>
-</div>
-
-
-<!-- SCORE -->
-
-<div>
-  <h3>By Score</h3>
-
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Score</th>
-          <th>Trades</th>
-          <th>Win Rate</th>
-          <th>Net P&amp;L</th>
-          <th>Avg Return</th>
-        </tr>
-      </thead>
-
-      <tbody id="reportScoreInsightsTable">
-      </tbody>
-    </table>
-  </div>
-</div>
-
-  </div>
-  <!-- fin chart-grid -->
-
-</section>
-<!-- fin Strategy Insights -->
-
-
-<!-- ==================== SCORING LAB ==================== -->
-<section class="reports-section">
-  <div class="page-header">
-    <div>
-      <h2>🧪 Scoring Lab</h2>
-      <p class="muted">
-        Observation V1 / V2 / Falcon. Read-only, aucun impact trading.
-      </p>
-    </div>
-    <span id="scoringLabStatus" class="scoring-status">LEARNING</span>
-  </div>
-
-  <div class="cards">
-    <div class="card">
-      <div class="label">Closed Shadow</div>
-      <div class="value" id="scoringClosedTotal">-</div>
-    </div>
-    <div class="card">
-      <div class="label">V1 Scored</div>
-      <div class="value" id="scoringV1Scored">-</div>
-    </div>
-    <div class="card">
-      <div class="label">V1 / V2 Paired</div>
-      <div class="value" id="scoringPaired">-</div>
-      <div class="scoring-progress"><div id="scoringPairedProgress"></div></div>
-      <div class="scoring-subtitle" id="scoringPairedNote">-</div>
-    </div>
-    <div class="card">
-      <div class="label">Falcon Closed</div>
-      <div class="value" id="scoringFalconClosed">-</div>
-      <div class="scoring-progress"><div id="scoringFalconProgress"></div></div>
-      <div class="scoring-subtitle" id="scoringFalconNote">-</div>
-    </div>
-
-    <div class="card">
-      <div class="label">Smart Money Closed</div>
-      <div class="value" id="scoringSmartMoneyClosed">-</div>
-      <div class="scoring-subtitle" id="scoringSmartMoneySummary">-</div>
-    </div>
-  </div>
-
-  <div class="chart-grid">
-    <div>
-      <h3>V1 by Score</h3>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Score</th><th>Closed</th><th>Win Rate</th><th>P&amp;L</th><th>Expectancy</th></tr>
-          </thead>
-          <tbody id="scoringV1Table"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div>
-      <h3>Strategy × Theme</h3>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Combination</th><th>Closed</th><th>Win Rate</th><th>P&amp;L</th><th>Expectancy</th></tr>
-          </thead>
-          <tbody id="scoringMatrixTable"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <div class="card" style="margin-top:20px;">
-    <div class="label">Falcon Provider</div>
-    <div class="value" id="scoringFalconStatus">-</div>
-    <div class="scoring-subtitle" id="scoringFalconStatusNote">-</div>
-  </div>
-
-  <div class="card" style="margin-top:20px;">
-    <div class="label">Smart Money Observer</div>
-    <div class="value" id="scoringSmartMoneyStatus">-</div>
-    <div class="scoring-subtitle" id="scoringSmartMoneyDetail">-</div>
-  </div>
-</section>
-
-<!-- ==================== HISTORICAL TRENDS ==================== -->
-
-<section class="reports-section">
-
-  <h2>Historical Trends</h2>
-
-  <div class="chart-grid">
-
-    <div>
-      <h3>Equity Curve</h3>
-
-      <canvas
-        id="reportEquityCurveChart"
-        height="220"
-      ></canvas>
-    </div>
-
-    <div>
-      <h3>Period P&amp;L</h3>
-
-      <canvas
-        id="reportPeriodPnlChart"
-        height="220"
-      ></canvas>
-    </div>
-
-  </div>
-
-
-  <div style="margin-top:24px;">
-
-    <h3>Period Breakdown</h3>
-
-    <div class="table-wrap">
-      <table>
-
-        <thead>
-          <tr>
-            <th>Period</th>
-            <th>Trades</th>
-            <th>Net P&amp;L</th>
-            <th>Return</th>
-          </tr>
-        </thead>
-
-        <tbody id="reportPeriodBreakdownTable">
-        </tbody>
-
-      </table>
-    </div>
-
-  </div>
-
-</section>
-<!-- fin historical trend -->
-
-
-</section>
-<!-- fin view-reports -->
-
-      <!-- ==================== FIN REPORTS ==================== -->
-
-        <!-- ==================== Scoring Lab  ==================== -->
         <section class="reports-section">
 
           <h2>Executive Summary</h2>
@@ -1742,6 +1413,390 @@
           </div>
 
         </section>
+
+        <!-- ==================== OPERATING COSTS ==================== -->
+        <section class="reports-section">
+          <h2>Operating Costs</h2>
+          <div class="cards">
+            <div class="card"><div class="label">Trading Fees</div><div class="value" id="reportOperatingTradingFees">-</div></div>
+            <div class="card"><div class="label">AWS Costs</div><div class="value" id="reportAwsCosts">-</div><div class="reports-card-note" id="reportAwsCostsNote">Current period</div></div>
+            <div class="card"><div class="label">P&amp;L Before AWS</div><div class="value" id="reportPnlBeforeCosts">-</div></div>
+            <div class="card"><div class="label">P&amp;L After AWS</div><div class="value" id="reportPnlAfterCosts">-</div></div>
+          </div>
+        </section>
+
+        <!-- ==================== DATA QUALITY ==================== -->
+        <section class="reports-section">
+          <h2>Data Quality &amp; Confidence</h2>
+          <div class="cards">
+            <div class="card"><div class="label">Data Quality</div><div class="value" id="reportDataQualityStatus">-</div><div class="reports-card-note" id="reportDataQualityWarnings">-</div></div>
+            <div class="card"><div class="label">Strategy Score Coverage</div><div class="value" id="reportStrategyScoreCoverage">-</div><div class="reports-card-note" id="reportStrategyScoreCoverageNote">-</div></div>
+            <div class="card"><div class="label">Strategy Liquidity Coverage</div><div class="value" id="reportStrategyLiquidityCoverage">-</div><div class="reports-card-note" id="reportStrategyLiquidityCoverageNote">-</div></div>
+            <div class="card"><div class="label">Strategy Volatility Coverage</div><div class="value" id="reportStrategyVolatilityCoverage">-</div><div class="reports-card-note" id="reportStrategyVolatilityCoverageNote">-</div></div>
+            <div class="card"><div class="label">Decision Score Coverage</div><div class="value" id="reportDecisionScoreCoverage">-</div><div class="reports-card-note" id="reportDecisionScoreCoverageNote">-</div></div>
+            <div class="card"><div class="label">Decision Price Coverage</div><div class="value" id="reportDecisionPriceCoverage">-</div><div class="reports-card-note" id="reportDecisionPriceCoverageNote">-</div></div>
+            <div class="card"><div class="label">Annualization Confidence</div><div class="value" id="reportAnnualizationConfidence">-</div><div class="reports-card-note" id="reportAnnualizationConfidenceNote">-</div></div>
+          </div>
+          <details class="reports-quality-details">
+            <summary id="reportWarningsSummary">Show data quality warnings</summary>
+            <div id="reportWarningsList" class="reports-quality-warning-list"></div>
+          </details>
+        </section>
+
+      <!-- ==================== STRATEGY INSIGHTS ==================== -->
+
+<section class="reports-section">
+
+  <h2>Strategy Insights</h2>
+
+  <div class="chart-grid">
+
+    <!-- STRATEGIES -->
+
+    <div>
+      <h3>By Strategy</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Strategy</th>
+              <th>Trades</th>
+              <th>Win Rate</th>
+              <th>Net P&amp;L</th>
+              <th>Avg Return</th>
+            </tr>
+          </thead>
+
+          <tbody id="reportStrategyInsightsTable">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+    <!-- THEMES -->
+
+    <div>
+      <h3>By Theme</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Theme</th>
+              <th>Trades</th>
+              <th>Win Rate</th>
+              <th>Net P&amp;L</th>
+              <th>Avg Return</th>
+            </tr>
+          </thead>
+
+          <tbody id="reportThemeInsightsTable">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+    <!-- LIQUIDITY -->
+
+    <div>
+      <h3>By Liquidity</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Liquidity</th>
+              <th>Trades</th>
+              <th>Win Rate</th>
+              <th>Net P&amp;L</th>
+              <th>Avg Return</th>
+            </tr>
+          </thead>
+
+          <tbody id="reportLiquidityInsightsTable">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+    <!-- TIME TO RESOLUTION -->
+
+    <div>
+      <h3>By Time to Resolution</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Window</th>
+              <th>Trades</th>
+              <th>Win Rate</th>
+              <th>Net P&amp;L</th>
+              <th>Avg Return</th>
+            </tr>
+          </thead>
+
+          <tbody id="reportResolutionInsightsTable">
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  <!-- ENTRY PRICE -->
+
+<div>
+  <h3>By Entry Price</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Entry Price</th>
+          <th>Trades</th>
+          <th>Win Rate</th>
+          <th>Net P&amp;L</th>
+          <th>Avg Return</th>
+        </tr>
+      </thead>
+
+      <tbody id="reportEntryPriceInsightsTable">
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- SCORE -->
+
+<div>
+  <h3>By Score</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Score</th>
+          <th>Trades</th>
+          <th>Win Rate</th>
+          <th>Net P&amp;L</th>
+          <th>Avg Return</th>
+        </tr>
+      </thead>
+
+      <tbody id="reportScoreInsightsTable">
+      </tbody>
+    </table>
+  </div>
+</div>
+
+  </div>
+  <!-- fin chart-grid -->
+
+</section>
+<!-- fin Strategy Insights -->
+
+
+<!-- ==================== HISTORICAL TRENDS ==================== -->
+
+<section class="reports-section">
+
+  <h2>Historical Trends</h2>
+
+  <div class="chart-grid">
+
+    <div>
+      <h3>Equity Curve</h3>
+
+      <canvas
+        id="reportEquityCurveChart"
+        height="220"
+      ></canvas>
+    </div>
+
+    <div>
+      <h3>Period P&amp;L</h3>
+
+      <canvas
+        id="reportPeriodPnlChart"
+        height="220"
+      ></canvas>
+    </div>
+
+  </div>
+
+
+  <div style="margin-top:24px;">
+
+    <h3>Period Breakdown</h3>
+
+    <div class="table-wrap">
+      <table>
+
+        <thead>
+          <tr>
+            <th>Period</th>
+            <th>Trades</th>
+            <th>Net P&amp;L</th>
+            <th>Return</th>
+          </tr>
+        </thead>
+
+        <tbody id="reportPeriodBreakdownTable">
+        </tbody>
+
+      </table>
+    </div>
+
+  </div>
+
+</section>
+<!-- fin historical trend -->
+
+
+</section>
+<!-- fin view-reports -->
+
+      <!-- ==================== FIN REPORTS ==================== -->
+
+        <!-- ==================== STRATEGY LAB ==================== -->
+        <section id="view-strategy" class="view">
+          <div class="page-header">
+            <div>
+              <h2>🧪 Strategy Lab</h2>
+              <p class="muted">
+                Analyse du scoring, des stratégies et des signaux externes.
+                Read-only, aucun impact direct sur le trading.
+              </p>
+            </div>
+
+            <button onclick="loadDashboard()">
+              🔄 Refresh Strategy Lab
+            </button>
+          </div>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h3>Validation Status</h3>
+              <span id="scoringLabStatus" class="scoring-status">LEARNING</span>
+            </div>
+
+            <div class="cards">
+              <div class="card">
+                <div class="label">Closed Shadow</div>
+                <div class="value" id="scoringClosedTotal">-</div>
+              </div>
+
+              <div class="card">
+                <div class="label">V1 Scored</div>
+                <div class="value" id="scoringV1Scored">-</div>
+              </div>
+
+              <div class="card">
+                <div class="label">V1 / V2 Paired</div>
+                <div class="value" id="scoringPaired">-</div>
+                <div class="scoring-progress"><div id="scoringPairedProgress"></div></div>
+                <div class="scoring-subtitle" id="scoringPairedNote">-</div>
+              </div>
+
+              <div class="card">
+                <div class="label">Falcon Closed</div>
+                <div class="value" id="scoringFalconClosed">-</div>
+                <div class="scoring-progress"><div id="scoringFalconProgress"></div></div>
+                <div class="scoring-subtitle" id="scoringFalconNote">-</div>
+              </div>
+
+              <div class="card">
+                <div class="label">Smart Money Closed</div>
+                <div class="value" id="scoringSmartMoneyClosed">-</div>
+                <div class="scoring-subtitle" id="scoringSmartMoneySummary">-</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <div>
+                <h3>🧠 Strategy Insights</h3>
+                <p class="muted">
+                  Synthèse des observations historiques issues du moteur Learning.
+                </p>
+              </div>
+            </div>
+
+            <div class="cards">
+              <div class="card"><div class="label">🏆 Best Theme</div><div class="value" id="bestLearningTheme">-</div></div>
+              <div class="card"><div class="label">🚀 Best Strategy</div><div class="value" id="bestLearningStrategy">-</div></div>
+              <div class="card"><div class="label">📈 Best Score Bucket</div><div class="value" id="bestLearningScore">-</div></div>
+              <div class="card"><div class="label">⏱ Best Holding</div><div class="value" id="bestLearningHold">-</div></div>
+              <div class="card"><div class="label">🌊 Best Volatility</div><div class="value" id="bestLearningVolatility">-</div></div>
+              <div class="card"><div class="label">📅 Best Weekday</div><div class="value" id="bestLearningWeekday">-</div></div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="chart-grid">
+              <div>
+                <h3>V1 by Score</h3>
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr><th>Score</th><th>Closed</th><th>Win Rate</th><th>P&amp;L</th><th>Expectancy</th></tr>
+                    </thead>
+                    <tbody id="scoringV1Table"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div>
+                <h3>Strategy × Theme</h3>
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr><th>Combination</th><th>Closed</th><th>Win Rate</th><th>P&amp;L</th><th>Expectancy</th></tr>
+                    </thead>
+                    <tbody id="scoringMatrixTable"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h3>External Signals</h3>
+            </div>
+
+            <div class="cards">
+              <div class="card">
+                <div class="label">Falcon Provider</div>
+                <div class="value" id="scoringFalconStatus">-</div>
+                <div class="scoring-subtitle" id="scoringFalconStatusNote">-</div>
+              </div>
+
+              <div class="card">
+                <div class="label">Smart Money Observer</div>
+                <div class="value" id="scoringSmartMoneyStatus">-</div>
+                <div class="scoring-subtitle" id="scoringSmartMoneyDetail">-</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="card">
+              <div class="label">Trading Impact</div>
+              <div class="value positive">NONE</div>
+              <div class="scoring-subtitle">
+                Strategy Lab is observational and read-only. No signal displayed here modifies trading decisions automatically.
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <!-- ==================== FIN STRATEGY LAB ==================== -->
 
         <!-- ==================== ADMIN ==================== -->
         <section id="view-admin" class="view">
@@ -2361,6 +2416,7 @@
     if (name === 'live') loadLiveReadiness();
     if (name === 'logs') loadEngineLogs();
     if (name === 'shadow') refreshShadowView();
+    if (name === 'strategy') loadDashboard();
   }
 
   // ==================== CHARTS ====================
