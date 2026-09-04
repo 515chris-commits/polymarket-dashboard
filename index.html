@@ -857,7 +857,7 @@
 
             <button
               class="button"
-              onclick="loadShadowOrders()"
+              onclick="refreshShadowView()"
             >
               Refresh
             </button>
@@ -1986,6 +1986,7 @@
   const LOGS_API_URL = "https://ruvdwfvfjj.execute-api.eu-north-1.amazonaws.com/default/logs_api";
   const SHADOW_ORDERS_API_URL = "https://bx97df2201.execute-api.eu-north-1.amazonaws.com/default/shadow_orders_api";
   const POLYMARKET_REPORTS_API_URL = "https://jlfoftnqmg.execute-api.eu-north-1.amazonaws.com/default/polymarket_reports";
+  const SHADOW_PORTFOLIO_API_URL = "https://4r68bwgrde.execute-api.eu-north-1.amazonaws.com/default/shadow_portfolio_api";
 
   // ==================== HELPERS ====================
   const money = v => {
@@ -2415,7 +2416,7 @@
     if (name === 'ai') loadAIReports();
     if (name === 'live') loadLiveReadiness();
     if (name === 'logs') loadEngineLogs();
-    if (name === 'shadow') loadShadowOrders();
+    if (name === 'shadow') refreshShadowView();
   }
 
   // ==================== CHARTS ====================
@@ -2762,7 +2763,13 @@
 
   let shadowOrdersCache = [];
 
-
+  async function refreshShadowView() {
+    await Promise.all([
+      loadShadowOrders(),
+      loadShadowPortfolio()
+    ]);
+  }
+  
   async function loadShadowOrders() {
     const table = document.getElementById(
       "shadowOrdersTable"
@@ -3118,6 +3125,49 @@
       })
       .join("");
   }
+
+  async function loadShadowPortfolio() {
+  try {
+    const res = await fetch(
+      SHADOW_PORTFOLIO_API_URL,
+      {
+        cache: "no-store"
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error(
+        `HTTP ${res.status}`
+      );
+    }
+
+    const shadow = await res.json();
+
+    renderShadowPortfolio(
+      shadow
+    );
+
+    console.log(
+      "Shadow portfolio updated",
+      {
+        open:
+          shadow?.portfolio?.open_positions,
+        closed:
+          shadow?.portfolio?.closed_positions,
+        total_pnl:
+          shadow?.portfolio?.total_pnl,
+        api_version:
+          shadow?.meta?.api_version
+      }
+    );
+
+  } catch (err) {
+    console.error(
+      "Shadow portfolio error:",
+      err
+    );
+  }
+}
   // ==================== REPORTS V2 ====================
 
 let reportsPeriod = "30d";
@@ -4723,10 +4773,6 @@ function renderShadowPortfolio(shadowData) {
         learningSummary
       );
 
-      renderShadowPortfolio(
-        shadow
-      );
-
       renderScoringLab(
         shadow.scoring_lab || {}
       );
@@ -4743,12 +4789,26 @@ function renderShadowPortfolio(shadowData) {
 
   // ==================== INIT ====================
   updateAdminUI();
+
   loadRiskConfig();
   loadDashboard();
+  loadShadowPortfolio();
   loadReports();
 
-  setInterval(loadDashboard, 30000);
-  setInterval(loadRiskConfig, 60000);
+  setInterval(
+    loadDashboard,
+    30000
+  );
+
+  setInterval(
+    loadShadowPortfolio,
+    30000
+  );
+
+  setInterval(
+    loadRiskConfig,
+    60000
+  );
 </script>
 </body>
 </html>
