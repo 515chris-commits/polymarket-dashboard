@@ -1673,7 +1673,7 @@
               </p>
             </div>
 
-            <button onclick="loadDashboard()">
+            <button onclick="loadStrategyLab()">
               🔄 Refresh Strategy Lab
             </button>
           </div>
@@ -1986,6 +1986,7 @@
   const SHADOW_ORDERS_API_URL = "https://bx97df2201.execute-api.eu-north-1.amazonaws.com/default/shadow_orders_api";
   const POLYMARKET_REPORTS_API_URL = "https://jlfoftnqmg.execute-api.eu-north-1.amazonaws.com/default/polymarket_reports";
   const SHADOW_PORTFOLIO_API_URL = "https://4r68bwgrde.execute-api.eu-north-1.amazonaws.com/default/shadow_portfolio_api";
+  const STRATEGY_LAB_API_URL = "https://cemn19trqe.execute-api.eu-north-1.amazonaws.com/default/scoring_lab_api";
 
   // ==================== HELPERS ====================
   const money = v => {
@@ -2416,7 +2417,7 @@
     if (name === 'live') loadLiveReadiness();
     if (name === 'logs') loadEngineLogs();
     if (name === 'shadow') refreshShadowView();
-    if (name === 'strategy') loadDashboard();
+    if (name === 'strategy') loadStrategyLab();
   }
 
   // ==================== CHARTS ====================
@@ -4726,6 +4727,52 @@ function renderShadowPortfolio(shadowData) {
     );
   }
 
+  // ==================== STRATEGY LAB API ====================
+  async function loadStrategyLab() {
+    try {
+      const statusEl = document.getElementById("scoringLabStatus");
+      if (statusEl) {
+        statusEl.textContent = "LOADING";
+      }
+
+      const res = await fetch(
+        STRATEGY_LAB_API_URL,
+        {
+          cache: "no-store"
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+
+      const data = await res.json();
+      const strategyLab = data.strategy_lab || {};
+      const scoring = strategyLab.scoring || {};
+      const learningSummary = strategyLab.learning_summary || {};
+
+      renderScoringLab(scoring);
+      renderLearningSummary(learningSummary);
+
+      console.log("Strategy Lab updated", {
+        status: scoring.status,
+        closed_shadow: scoring?.collection?.closed_total,
+        v1_v2_paired: scoring?.collection?.v1_v2_paired_closed,
+        falcon_closed: scoring?.collection?.falcon_closed,
+        api_version: strategyLab?.meta?.api_version
+      });
+
+    } catch (err) {
+      console.error("Strategy Lab error:", err);
+
+      const statusEl = document.getElementById("scoringLabStatus");
+      if (statusEl) {
+        statusEl.textContent = "ERROR";
+        statusEl.className = "scoring-status negative";
+      }
+    }
+  }
+
   // ==================== DASHBOARD ====================
   async function loadDashboard() {
     try {
@@ -4736,9 +4783,7 @@ function renderShadowPortfolio(shadowData) {
       const performance = data.performance || {};
       const equity = data.equity || {};
       const analytics = data.advanced_analytics || {};
-      const learningSummary = data.learning_summary || {};
       const rollingMetrics = data.rolling_metrics || [];
-      const shadow = data.shadow || {};
 
       setText('openPositions', portfolio.open_positions || 0);
       setText('exposure', money(portfolio.exposure));
@@ -4771,14 +4816,6 @@ function renderShadowPortfolio(shadowData) {
       );
       renderDailyPnl(
         analytics.pnl_by_day || {}
-      );
-
-      renderLearningSummary(
-        learningSummary
-      );
-
-      renderScoringLab(
-        shadow.scoring_lab || {}
       );
 
       setText(
