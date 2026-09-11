@@ -2261,112 +2261,124 @@
   }
 
   function renderShadowClosedPositions(positions) {
-    const table = document.getElementById(
-      "shadowPortfolioClosedTable"
-    );
+  const table = document.getElementById(
+    "shadowPortfolioClosedTable"
+  );
 
-    if (!table) {
-      return;
-    }
+  if (!table) {
+    return;
+  }
 
-    if (!positions.length) {
-      table.innerHTML = `
+  if (!positions.length) {
+    table.innerHTML = `
+      <tr>
+        <td colspan="8">
+          No closed Shadow Positions.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  table.innerHTML = positions
+    .map(position => {
+      const pnl = Number(
+        position.realized_pnl
+        ?? position.pnl
+        ?? 0
+      );
+
+      const pnlPercent = Number(
+        position.realized_pnl_percent
+        ?? position.pnl_percent
+        ?? 0
+      );
+
+      const realizedValue = Number(
+        position.exit_value
+        ?? position.current_value
+        ?? (
+          Number(position.shares || 0)
+          * Number(
+              position.exit_price
+              ?? position.current_price
+              ?? 0
+            )
+        )
+        ?? 0
+      );
+
+      const reason = String(
+        position.close_reason || "-"
+      ).toUpperCase();
+
+      return `
         <tr>
-          <td colspan="8">
-            No closed Shadow Positions.
+          <td title="${shadowEscapeHtml(
+            position.title || ""
+          )}">
+            <span class="shadow-market">
+              ${shadowEscapeHtml(
+                position.title || "-"
+              )}
+            </span>
+          </td>
+
+          <td>
+            <span class="
+              shadow-reason-badge
+              ${shadowCloseReasonBadgeClass(reason)}
+            ">
+              ${shadowEscapeHtml(reason)}
+            </span>
+          </td>
+
+          <td>
+            ${shadowNumber(
+              position.entry_price,
+              4
+            )}
+          </td>
+
+          <td>
+            ${shadowNumber(
+              position.exit_price
+              ?? position.current_price,
+              4
+            )}
+          </td>
+
+          <td class="${pnlClass(pnl)} shadow-pnl-strong">
+            ${shadowNumber(
+              pnl,
+              2
+            )} USD
+          </td>
+
+          <td class="${pnlClass(pnlPercent)} shadow-pnl-strong">
+            ${shadowNumber(
+              pnlPercent,
+              2
+            )} %
+          </td>
+
+          <td>
+            ${shadowNumber(
+              realizedValue,
+              2
+            )} USD
+          </td>
+
+          <td>
+            ${shadowDate(
+              position.closed_at
+            )}
           </td>
         </tr>
       `;
-
-      return;
-    }
-
-    table.innerHTML = positions
-      .map(position => {
-        const pnl = Number(
-          position.realized_pnl
-          ?? position.pnl
-          ?? 0
-        );
-
-        const pnlPercent = Number(
-          position.realized_pnl_percent
-          ?? position.pnl_percent
-          ?? 0
-        );
-
-        const reason = String(
-          position.close_reason || "-"
-        ).toUpperCase();
-
-        return `
-          <tr>
-            <td title="${shadowEscapeHtml(
-              position.title || ""
-            )}">
-              <span class="shadow-market">
-                ${shadowEscapeHtml(
-                  position.title || "-"
-                )}
-              </span>
-            </td>
-
-            <td>
-              <span class="
-                shadow-reason-badge
-                ${shadowCloseReasonBadgeClass(reason)}
-              ">
-                ${shadowEscapeHtml(reason)}
-              </span>
-            </td>
-
-            <td>
-              ${shadowNumber(
-                position.entry_price,
-                4
-              )}
-            </td>
-
-            <td>
-              ${shadowNumber(
-                position.exit_price
-                ?? position.current_price,
-                4
-              )}
-            </td>
-
-            <td class="${pnlClass(pnl)} shadow-pnl-strong">
-              ${shadowNumber(
-                pnl,
-                2
-              )} USD
-            </td>
-
-            <td class="${pnlClass(pnlPercent)} shadow-pnl-strong">
-              ${shadowNumber(
-                pnlPercent,
-                2
-              )} %
-            </td>
-
-            <td>
-              ${shadowNumber(
-                position.exit_value
-                ?? position.current_value,
-                2
-              )} USD
-            </td>
-
-            <td>
-              ${shadowDate(
-                position.closed_at
-              )}
-            </td>
-          </tr>
-        `;
-      })
-      .join("");
-  }
+    })
+    .join("");
+}
 
   function shadowCloseReasonClass(reason) {
   switch (reason) {
