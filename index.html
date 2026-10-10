@@ -741,7 +741,7 @@
             <div class="card"><div class="label">Win rate (historique)</div><div class="value" id="ovWinRate">—</div></div>
             <div class="card"><div class="label">Profit factor (historique)</div><div class="value" id="ovProfitFactor">—</div></div>
           </div>
-          <div class="overview-error" id="overviewError" role="status"></div>
+          <div class="overview-error" id="overviewError" role="status"></div><div class="overview-foot" id="ovAnalyticsStatus">Statistiques historiques : en attente de l’API.</div>
           <div class="overview-grid">
             <div class="overview-panel"><h3>Positions Shadow ouvertes</h3><div style="overflow-x:auto"><table class="overview-table"><thead><tr><th>Marché</th><th>Stratégie</th><th>P&amp;L</th></tr></thead><tbody id="overviewPositions"><tr><td colspan="3">Chargement…</td></tr></tbody></table></div><div class="overview-foot">Valorisation selon les données transmises par shadow_portfolio_api.</div></div>
             <div class="overview-panel"><h3>État du système</h3><div class="overview-status"><span>Environnement principal</span><strong>SHADOW</strong></div><div class="overview-status"><span>Paper</span><strong>ARCHIVES</strong></div><div class="overview-status"><span>Live readiness</span><strong id="ovReadiness">À vérifier</strong></div><div class="overview-status"><span>Strategy Lab</span><strong id="ovLab">À vérifier</strong></div><div class="overview-status"><span>JEV</span><strong>Non intégré</strong></div><div class="overview-status"><span>Risk Engine PR-035</span><strong>À corriger avant Live</strong></div><div class="overview-actions"><button onclick="showView('shadow')">Voir les positions</button><button onclick="showView('strategy')">Strategy Lab</button><button onclick="showView('live')">Live Readiness</button><button onclick="refreshOverview()">Actualiser</button></div><div class="overview-foot" id="overviewUpdated">Dernière mise à jour : —</div></div>
@@ -4659,12 +4659,6 @@ function renderShadowPortfolio(shadowData) {
   renderShadowClosedPositions(
     closedPositions
   );
-
-  setText(
-    "lastUpdate",
-    "Dernière actualisation Shadow : "
-    + new Date().toLocaleString("fr-CH")
-  );
 }
    
 
@@ -4916,7 +4910,7 @@ function renderShadowPortfolio(shadowData) {
       ovSet('ovExposure',ovNum(p.exposure));ovSet('ovOpen',p.open_positions ?? opened.length);
       ovSet('ovClosed',p.closed_positions ?? '—');
       const closed=Array.isArray(shadow.closed_positions)?shadow.closed_positions:null;
-      // Only derive metrics when complete history is guaranteed by the API.
+      // Historical metrics are sourced from the complete scoring_lab_api attribution.
       ovSet('ovWinRate','—');ovSet('ovProfitFactor','—');
       const body=document.getElementById('overviewPositions');
       if(body)body.innerHTML=opened.length?opened.slice(0,12).map(pos=>`<tr><td title="${shadowEscapeHtml(pos.title||'')}">${shadowEscapeHtml(pos.title||'—')}</td><td>${shadowEscapeHtml(pos.strategy||'—')}</td><td class="${pnlClass(pos.pnl)}">${ovNum(pos.pnl)}</td></tr>`).join(''):'<tr><td colspan="3">Aucune position ouverte.</td></tr>';
@@ -4931,8 +4925,16 @@ function renderShadowPortfolio(shadowData) {
     if(results[2].status==='fulfilled'){
       const lab=results[2].value?.strategy_lab?.scoring||{};
       ovSet('ovLab',lab.status||'Données disponibles');
-    }else ovSet('ovLab','API indisponible');
+      const attr=results[2].value?.performance_attribution;
+      const all=attr?.all_time;
+      if(all && all.closed>0){
+        ovSet('ovWinRate',all.win_rate_pct == null ? '—' : Number(all.win_rate_pct).toFixed(2)+'%');
+        ovSet('ovProfitFactor',all.profit_factor == null ? '—' : all.profit_factor==='INF' ? '∞' : Number(all.profit_factor).toFixed(3));
+        ovSet('ovAnalyticsStatus','Historique complet · '+all.closed+' positions clôturées · espérance '+(all.expectancy_usd == null ? '—' : money(all.expectancy_usd))+' / trade · comparaison Recovery : '+(attr.recovery_comparison?.status==='AVAILABLE'?'disponible':'non établie'));
+      }else ovSet('ovAnalyticsStatus','Statistiques indisponibles : vérifier PR-034.3 sur scoring_lab_api.');
+    }else {ovSet('ovLab','API indisponible');ovSet('ovAnalyticsStatus','Statistiques indisponibles : API Strategy Lab inaccessible.');}
     ovSet('overviewUpdated','Dernière actualisation : '+new Date().toLocaleString());
+    if(results[0].status==='fulfilled')ovSet('lastUpdate','Dernière actualisation Shadow : '+new Date().toLocaleString('fr-CH'));
     overviewRefreshRunning=false;
   }
 
