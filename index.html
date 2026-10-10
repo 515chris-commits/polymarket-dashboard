@@ -4659,6 +4659,12 @@ function renderShadowPortfolio(shadowData) {
   renderShadowClosedPositions(
     closedPositions
   );
+
+  setText(
+    "lastUpdate",
+    "Dernière actualisation Shadow : "
+    + new Date().toLocaleString("fr-CH")
+  );
 }
    
 
