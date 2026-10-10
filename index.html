@@ -673,6 +673,28 @@
     margin-top:8px;
   }
 
+
+/* PR-034.2 Shadow First */
+:root { --bg:#0b1020; --sidebar:#090d1a; --panel:#172238; --panel-dark:#101a2d; --border:#2a3b55; --text:#e9eff8; --muted:#9aaec8; --blue:#79a9ff; }
+.brand {letter-spacing:.04em} .nav button.active {background:linear-gradient(90deg,#203e68,#192840);border-color:#4674ad;color:#fff}
+.overview-hero {display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:22px}
+.overview-kicker {font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--blue);font-weight:bold}
+.overview-hero h2 {font-size:29px;margin:6px 0}.overview-hero p {color:var(--muted);margin:0}
+.pill-lock {padding:9px 15px;border-radius:30px;background:#42232f;color:#ff9da9;border:1px solid #824352;font-weight:700;font-size:12px}
+.overview-metrics {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:20px}
+.overview-metrics .card {padding:18px;min-height:115px;box-shadow:none}
+.overview-metrics .value {font-size:26px}.overview-metrics .label {font-size:12px}
+.overview-grid {display:grid;grid-template-columns:1.35fr 1fr;gap:18px}
+.overview-panel {padding:22px;background:var(--panel);border:1px solid var(--border);border-radius:16px;min-width:0}
+.overview-panel h3 {margin:0 0 16px;font-size:17px}
+.overview-table {width:100%;min-width:0;background:transparent}.overview-table td,.overview-table th {padding:11px 8px;font-size:12px}
+.overview-table td:first-child {max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.overview-table th {background:transparent}.overview-foot {color:var(--muted);font-size:12px;margin-top:12px;line-height:1.6}
+.overview-status {display:flex;gap:12px;justify-content:space-between;border-bottom:1px solid var(--border);padding:12px 0;font-size:13px}
+.overview-status strong {text-align:right}.overview-actions {display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.overview-actions button {border-color:#45668c}.overview-error {font-size:13px;color:#fda4af;min-height:18px;margin:12px 0}
+@media(max-width:1100px){.overview-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.overview-grid{grid-template-columns:1fr}}
+@media(max-width:650px){.overview-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.overview-metrics .card{padding:13px;min-height:95px}.overview-metrics .value{font-size:21px}.overview-hero h2{font-size:23px}}
 </style>
 </head>
 <body>
@@ -680,29 +702,51 @@
 
     <!-- ==================== SIDEBAR ==================== -->
     <aside>
-      <div class="brand">🚀 Trading Engine</div>
-      <div class="brand-sub">Polymarket Console v2</div>
+      <div class="brand">◈ POLYBOT</div>
+      <div class="brand-sub">Shadow First · PR-034.2</div>
       <div class="nav">
-        <button data-view="portfolio" onclick="showView('portfolio')">📌 Portfolio</button>
-        <button data-view="risk" onclick="showView('risk')">🛡 Risk</button>
-        <button data-view="live" onclick="showView('live')">🚀 Live Readiness</button>
-        <button data-view="shadow" onclick="showView('shadow')">👻 Shadow</button>
-        <button class="active" data-view="reports" onclick="showView('reports')">📄 Reports</button>
-        <button data-view="strategy" onclick="showView('strategy')"> 🧪 Strategy Lab</button>
-        <button data-view="admin" onclick="showView('admin')">🔐 Admin</button>
-        <button data-view="logs" onclick="showView('logs')">📜 Logs</button>
-        <button data-view="ai" onclick="showView('ai')">🤖 AI</button>
+        <button class="active" data-view="overview" onclick="showView('overview')">⌂ Vue d’ensemble</button>
+        <button data-view="shadow" onclick="showView('shadow')">◈ Shadow Trading</button>
+        <button data-view="reports" onclick="showView('reports')">▤ Reports</button>
+        <button data-view="strategy" onclick="showView('strategy')">◉ Strategy Lab / IA</button>
+        <button data-view="risk" onclick="showView('risk')">◇ Risk</button>
+        <button data-view="live" onclick="showView('live')">◎ Live Readiness</button>
+        <button data-view="ai" onclick="showView('ai')">✧ AI Analyst</button>
+        <button data-view="logs" onclick="showView('logs')">≡ Logs</button>
+        <button data-view="admin" onclick="showView('admin')">⚙ Admin</button>
+        <button data-view="portfolio" onclick="showView('portfolio')">▣ Archives Paper</button>
       </div>
     </aside>
 
     <div class="main">
       <header>
-        <h1>Polymarket Bot Dashboard</h1>
-        <div class="subtitle">Trading, P&amp;L, equity curve, dynamic risk, reports et admin console</div>
+        <h1>Trading Command Center</h1>
+        <div class="subtitle">Shadow en priorité · Paper archivé · Live verrouillé</div>
         <div class="refresh" id="lastUpdate">Chargement...</div>
       </header>
 
       <main>
+
+
+        <!-- PR-034.2 — HOME SHADOW FIRST -->
+        <section id="view-overview" class="view active">
+          <div class="overview-hero"><div><div class="overview-kicker">Command Center / Shadow</div><h2>Vue d’ensemble</h2><p>Portefeuille simulé principal · données AWS réelles</p></div><span class="pill-lock" id="overviewLiveLock">LIVE — NON VALIDÉ</span></div>
+          <div class="overview-metrics">
+            <div class="card"><div class="label">P&amp;L total Shadow</div><div class="value" id="ovTotal">—</div></div>
+            <div class="card"><div class="label">P&amp;L réalisé</div><div class="value" id="ovRealized">—</div></div>
+            <div class="card"><div class="label">P&amp;L latent</div><div class="value" id="ovUnrealized">—</div></div>
+            <div class="card"><div class="label">Exposition Shadow</div><div class="value" id="ovExposure">—</div></div>
+            <div class="card"><div class="label">Positions ouvertes</div><div class="value" id="ovOpen">—</div></div>
+            <div class="card"><div class="label">Positions clôturées</div><div class="value" id="ovClosed">—</div></div>
+            <div class="card"><div class="label">Win rate (historique)</div><div class="value" id="ovWinRate">—</div></div>
+            <div class="card"><div class="label">Profit factor (historique)</div><div class="value" id="ovProfitFactor">—</div></div>
+          </div>
+          <div class="overview-error" id="overviewError" role="status"></div>
+          <div class="overview-grid">
+            <div class="overview-panel"><h3>Positions Shadow ouvertes</h3><div style="overflow-x:auto"><table class="overview-table"><thead><tr><th>Marché</th><th>Stratégie</th><th>P&amp;L</th></tr></thead><tbody id="overviewPositions"><tr><td colspan="3">Chargement…</td></tr></tbody></table></div><div class="overview-foot">Valorisation selon les données transmises par shadow_portfolio_api.</div></div>
+            <div class="overview-panel"><h3>État du système</h3><div class="overview-status"><span>Environnement principal</span><strong>SHADOW</strong></div><div class="overview-status"><span>Paper</span><strong>ARCHIVES</strong></div><div class="overview-status"><span>Live readiness</span><strong id="ovReadiness">À vérifier</strong></div><div class="overview-status"><span>Strategy Lab</span><strong id="ovLab">À vérifier</strong></div><div class="overview-status"><span>JEV</span><strong>Non intégré</strong></div><div class="overview-status"><span>Risk Engine PR-035</span><strong>À corriger avant Live</strong></div><div class="overview-actions"><button onclick="showView('shadow')">Voir les positions</button><button onclick="showView('strategy')">Strategy Lab</button><button onclick="showView('live')">Live Readiness</button><button onclick="refreshOverview()">Actualiser</button></div><div class="overview-foot" id="overviewUpdated">Dernière mise à jour : —</div></div>
+          </div>
+        </section>
 
         <!-- ==================== DASHBOARD ==================== -->
         <section id="view-dashboard" class="view">
@@ -745,7 +789,7 @@
 
         <!-- ==================== PORTFOLIO ==================== -->
         <section id="view-portfolio" class="view">
-          <h2>📌 Positions ouvertes</h2>
+          <h2>Archives Paper — positions historiques</h2><p class="muted">Ancien moteur, conservé en lecture seule pour consultation. Les données Paper ne sont pas incluses dans l’accueil Shadow.</p>
           <div class="table-wrap">
             <table>
               <thead>
@@ -1146,7 +1190,7 @@
 
         <section
           id="view-reports"
-          class="view active"
+          class="view"
         >
           <div class="page-header">
             <div>
@@ -1812,7 +1856,7 @@
           </div>
 
           <div id="adminPanel" style="display:none;margin-top:20px;">
-            <h2>⚙️ Risk Configuration</h2>
+            <h2>⚙️ Risk Configuration</h2><p class="muted">Attention : configuration historique paper/live. Ne pas basculer en live avant PR-035 et validation complète.</p>
             <div class="cards">
               <div class="card">
                 <div class="label">Mode</div>
@@ -1955,9 +1999,9 @@
 
           <div class="cards" style="margin-top:20px;">
             <div class="card"><div class="label">1D Net P&amp;L</div><div class="value" id="aiDailyPnl">-</div></div>
-            <div class="card"><div class="label">30D Net P&amp;L</div><div class="value" id="aiNetPnl30d">-</div></div>
-            <div class="card"><div class="label">30D Return</div><div class="value" id="aiReturn30d">-</div></div>
-            <div class="card"><div class="label">30D Win Rate</div><div class="value" id="aiWinRate30d">-</div></div>
+            <div class="card"><div class="label">Expectancy</div><div class="value" id="aiExpectancy">-</div></div>
+            <div class="card"><div class="label">Profit Factor</div><div class="value" id="aiProfitFactor">-</div></div>
+            <div class="card"><div class="label">Drawdown</div><div class="value" id="aiDrawdown">-</div></div>
             <div class="card"><div class="label">Best Theme</div><div class="value" id="aiBestTheme">-</div></div>
             <div class="card"><div class="label">Best Strategy</div><div class="value" id="aiBestStrategy">-</div></div>
           </div>
@@ -2423,6 +2467,8 @@
     const button = document.querySelector(`.nav button[data-view="${name}"]`);
     if (button) button.classList.add('active');
 
+    if (name === 'overview') refreshOverview();
+    if (name === 'portfolio') loadDashboard();
     if (name === 'reports') loadReports();
     if (name === 'risk') loadRiskConfig();
     if (name === 'ai') loadAIReports();
@@ -4840,23 +4886,62 @@ function renderShadowPortfolio(shadowData) {
     }
   }
 
+
+  // PR-034.2: home is read-only and never mixes Paper with Shadow.
+  const ovSet = (id,value) => {const el=document.getElementById(id);if(el) el.textContent=value;};
+  const ovNum = value => value == null || !Number.isFinite(Number(value)) ? '—' : money(value);
+  const ovPnl = (id,value) => {ovSet(id,ovNum(value));const el=document.getElementById(id);if(el){el.classList.toggle('positive',Number(value)>0);el.classList.toggle('negative',Number(value)<0);}};
+  function ovUnwrap(value){if(value && typeof value.body==='string'){try{return JSON.parse(value.body)}catch(_){}}return value;}
+  async function ovFetch(url){const response=await fetch(url,{cache:'no-store'});if(!response.ok)throw new Error('HTTP '+response.status);return ovUnwrap(await response.json());}
+  let overviewRefreshRunning=false;
+  async function refreshOverview(){
+    if(overviewRefreshRunning)return;
+    overviewRefreshRunning=true;
+    ovSet('overviewError','');
+    const results=await Promise.allSettled([
+      ovFetch(SHADOW_PORTFOLIO_API_URL),
+      ovFetch(LIVE_READINESS_API_URL),
+      ovFetch(STRATEGY_LAB_API_URL)
+    ]);
+    if(results[0].status==='fulfilled'){
+      const shadow=results[0].value || {}, p=shadow.portfolio||{};
+      const opened=Array.isArray(shadow.open_positions)?shadow.open_positions:[];
+      ovPnl('ovTotal',p.total_pnl);ovPnl('ovRealized',p.realized_pnl);ovPnl('ovUnrealized',p.unrealized_pnl);
+      ovSet('ovExposure',ovNum(p.exposure));ovSet('ovOpen',p.open_positions ?? opened.length);
+      ovSet('ovClosed',p.closed_positions ?? '—');
+      const closed=Array.isArray(shadow.closed_positions)?shadow.closed_positions:null;
+      // Only derive metrics when complete history is guaranteed by the API.
+      ovSet('ovWinRate','—');ovSet('ovProfitFactor','—');
+      const body=document.getElementById('overviewPositions');
+      if(body)body.innerHTML=opened.length?opened.slice(0,12).map(pos=>`<tr><td title="${shadowEscapeHtml(pos.title||'')}">${shadowEscapeHtml(pos.title||'—')}</td><td>${shadowEscapeHtml(pos.strategy||'—')}</td><td class="${pnlClass(pos.pnl)}">${ovNum(pos.pnl)}</td></tr>`).join(''):'<tr><td colspan="3">Aucune position ouverte.</td></tr>';
+      renderShadowPortfolio(shadow);
+    }else{ovSet('overviewError','Portefeuille Shadow indisponible : '+results[0].reason.message);}
+    if(results[1].status==='fulfilled'){
+      const readiness=results[1].value||{};
+      ovSet('ovReadiness',readiness.status||'Statut indisponible');
+      // Never infer LIVE enabled from readiness; display conservative state.
+      ovSet('overviewLiveLock','LIVE — VALIDATION REQUISE');
+    }else ovSet('ovReadiness','API indisponible');
+    if(results[2].status==='fulfilled'){
+      const lab=results[2].value?.strategy_lab?.scoring||{};
+      ovSet('ovLab',lab.status||'Données disponibles');
+    }else ovSet('ovLab','API indisponible');
+    ovSet('overviewUpdated','Dernière actualisation : '+new Date().toLocaleString());
+    overviewRefreshRunning=false;
+  }
+
   // ==================== INIT ====================
   updateAdminUI();
 
   loadRiskConfig();
-  loadDashboard();
-  loadShadowPortfolio();
-  loadReports();
+  refreshOverview();
 
   setInterval(
-    loadDashboard,
+    refreshOverview,
     30000
   );
 
-  setInterval(
-    loadShadowPortfolio,
-    30000
-  );
+
 
   setInterval(
     loadRiskConfig,
