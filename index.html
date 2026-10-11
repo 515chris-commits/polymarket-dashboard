@@ -746,6 +746,18 @@
             <div class="overview-panel"><h3>Positions Shadow ouvertes</h3><div style="overflow-x:auto"><table class="overview-table"><thead><tr><th>Marché</th><th>Stratégie</th><th>P&amp;L</th></tr></thead><tbody id="overviewPositions"><tr><td colspan="3">Chargement…</td></tr></tbody></table></div><div class="overview-foot">Valorisation selon les données transmises par shadow_portfolio_api.</div></div>
             <div class="overview-panel"><h3>État du système</h3><div class="overview-status"><span>Environnement principal</span><strong>SHADOW</strong></div><div class="overview-status"><span>Paper</span><strong>ARCHIVES</strong></div><div class="overview-status"><span>Live readiness</span><strong id="ovReadiness">À vérifier</strong></div><div class="overview-status"><span>Strategy Lab</span><strong id="ovLab">À vérifier</strong></div><div class="overview-status"><span>JEV</span><strong>Non intégré</strong></div><div class="overview-status"><span>Risk Engine PR-035</span><strong>À corriger avant Live</strong></div><div class="overview-actions"><button onclick="showView('shadow')">Voir les positions</button><button onclick="showView('strategy')">Strategy Lab</button><button onclick="showView('live')">Live Readiness</button><button onclick="refreshOverview()">Actualiser</button></div><div class="overview-foot" id="overviewUpdated">Dernière mise à jour : —</div></div>
           </div>
+          <!-- PR-034.3a: coûts de fonctionnement, lecture seule -->
+          <section class="overview-panel" style="margin-top:18px" aria-label="Coûts d'exploitation">
+            <div class="panel-header"><h3>Coûts d'exploitation</h3><span class="muted" style="font-size:12px">Rapport 30 jours · API polymarket_reports</span></div>
+            <div class="overview-metrics" style="margin-bottom:0">
+              <div class="card"><div class="label">Frais de trading</div><div class="value" id="ovTradingFees">—</div></div>
+              <div class="card"><div class="label">Coûts AWS</div><div class="value" id="ovAwsCosts">—</div></div>
+              <div class="card"><div class="label">P&amp;L avant AWS</div><div class="value" id="ovPnlBeforeAws">—</div></div>
+              <div class="card"><div class="label">P&amp;L après AWS</div><div class="value" id="ovPnlAfterAws">—</div></div>
+            </div>
+            <div class="overview-foot" id="ovCostsNote">Chargement des coûts…</div>
+            <div class="overview-foot">Les P&amp;L de ce bloc proviennent du rapport et peuvent couvrir un périmètre différent du portefeuille Shadow affiché ci-dessus.</div>
+          </section>
         </section>
 
         <!-- ==================== DASHBOARD ==================== -->
@@ -4894,6 +4906,26 @@ function renderShadowPortfolio(shadowData) {
   function ovUnwrap(value){if(value && typeof value.body==='string'){try{return JSON.parse(value.body)}catch(_){}}return value;}
   async function ovFetch(url){const response=await fetch(url,{cache:'no-store'});if(!response.ok)throw new Error('HTTP '+response.status);return ovUnwrap(await response.json());}
   let overviewRefreshRunning=false;
+  function ovCostValue(id, value, pnl=false){
+    const el=document.getElementById(id);
+    if(!el)return;
+    const valid=value!==null && value!==undefined && value!=='' && Number.isFinite(Number(value));
+    el.textContent=valid?reportMoney(value):'—';
+    el.classList.toggle('positive',pnl && valid && Number(value)>0);
+    el.classList.toggle('negative',pnl && valid && Number(value)<0);
+  }
+  function ovRenderCosts(report){
+    const costs=report?.costs||{}, aws=costs.aws||{};
+    ovCostValue('ovTradingFees',costs.trading_fees);
+    ovCostValue('ovAwsCosts',aws.available===true?aws.total:null);
+    ovCostValue('ovPnlBeforeAws',costs.pnl_before_operating_cost,true);
+    ovCostValue('ovPnlAfterAws',aws.available===true?costs.pnl_after_operating_cost:null,true);
+    const scope=aws.scope||'périmètre non précisé';
+    const attribution=aws.attribution||'attribution non précisée';
+    ovSet('ovCostsNote',aws.available===true
+      ? `AWS : ${scope} · ${attribution} · période du rapport : 30 jours`
+      : 'Coûts AWS indisponibles ou non attribués · aucun montant estimé');
+  }
   async function refreshOverview(){
     if(overviewRefreshRunning)return;
     overviewRefreshRunning=true;
@@ -4901,7 +4933,8 @@ function renderShadowPortfolio(shadowData) {
     const results=await Promise.allSettled([
       ovFetch(SHADOW_PORTFOLIO_API_URL),
       ovFetch(LIVE_READINESS_API_URL),
-      ovFetch(STRATEGY_LAB_API_URL)
+      ovFetch(STRATEGY_LAB_API_URL),
+      ovFetch(POLYMARKET_REPORTS_API_URL+'?period=30d&format=json')
     ]);
     if(results[0].status==='fulfilled'){
       const shadow=results[0].value || {}, p=shadow.portfolio||{};
@@ -4933,6 +4966,12 @@ function renderShadowPortfolio(shadowData) {
         ovSet('ovAnalyticsStatus','Historique complet · '+all.closed+' positions clôturées · espérance '+(all.expectancy_usd == null ? '—' : money(all.expectancy_usd))+' / trade · comparaison Recovery : '+(attr.recovery_comparison?.status==='AVAILABLE'?'disponible':'non établie'));
       }else ovSet('ovAnalyticsStatus','Statistiques indisponibles : vérifier PR-034.3 sur scoring_lab_api.');
     }else {ovSet('ovLab','API indisponible');ovSet('ovAnalyticsStatus','Statistiques indisponibles : API Strategy Lab inaccessible.');}
+    if(results[3].status==='fulfilled'){
+      ovRenderCosts(results[3].value||{});
+    }else{
+      ovRenderCosts({});
+      ovSet('ovCostsNote','API des rapports indisponible : '+String(results[3].reason?.message||'erreur inconnue'));
+    }
     ovSet('overviewUpdated','Dernière actualisation : '+new Date().toLocaleString());
     if(results[0].status==='fulfilled')ovSet('lastUpdate','Dernière actualisation Shadow : '+new Date().toLocaleString('fr-CH'));
     overviewRefreshRunning=false;
